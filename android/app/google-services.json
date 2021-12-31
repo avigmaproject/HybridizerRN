@@ -1,0 +1,54 @@
+{
+  "project_info": {
+    "project_number": "263229200785",
+    "project_id": "hybridizerrn",
+    "storage_bucket": "hybridizerrn.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:263229200785:android:d59e7d6c05da106a9de230",
+        "android_client_info": {
+          "package_name": "com.hybridizerrn"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "263229200785-8onneebck3c9an808nout0lor93cjf46.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.hybridizerrn",
+            "certificate_hash": "0f868fe81c628afb8df7bb56313912c14824e8e9"
+          }
+        },
+        {
+          "client_id": "263229200785-ivvh14i7k1jrqetds71nuvcni0vab5aj.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCBz1Eqx4-1Hz2rjqTZ0RoqZkoQ3GXDyEw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "263229200785-38sc7bbstba0gpc1lome84vcpnd65kpc.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "263229200785-jv7s4poktem48439g0qdfbnl3b4tn6ni.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "org.reactjs.native.example.HybridizerRN"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

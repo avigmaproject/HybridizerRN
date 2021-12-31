@@ -1,0 +1,6 @@
+module Pods_HybridizerRN {
+  umbrella header "Pods-HybridizerRN-umbrella.h"
+
+  export *
+  module * { export * }
+}
