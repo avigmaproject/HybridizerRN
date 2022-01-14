@@ -1,0 +1,9 @@
+com/hybridizerrn/MainActivity.java
+ com.hybridizerrn.MainActivity
+com/hybridizerrn/MainApplication.java
+ com.hybridizerrn.MainApplication
+ com.hybridizerrn.MainApplication$1
+com/hybridizerrn/BuildConfig.java
+ com.hybridizerrn.BuildConfig
+com/facebook/react/PackageList.java
+ com.facebook.react.PackageList

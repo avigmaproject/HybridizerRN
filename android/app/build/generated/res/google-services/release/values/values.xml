@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="default_web_client_id" translatable="false">263229200785-ivvh14i7k1jrqetds71nuvcni0vab5aj.apps.googleusercontent.com</string>
+    <string name="gcm_defaultSenderId" translatable="false">263229200785</string>
+    <string name="google_api_key" translatable="false">AIzaSyCBz1Eqx4-1Hz2rjqTZ0RoqZkoQ3GXDyEw</string>
+    <string name="google_app_id" translatable="false">1:263229200785:android:d59e7d6c05da106a9de230</string>
+    <string name="google_crash_reporting_api_key" translatable="false">AIzaSyCBz1Eqx4-1Hz2rjqTZ0RoqZkoQ3GXDyEw</string>
+    <string name="google_storage_bucket" translatable="false">hybridizerrn.appspot.com</string>
+    <string name="project_id" translatable="false">hybridizerrn</string>
+</resources>

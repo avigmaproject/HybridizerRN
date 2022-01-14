@@ -1,0 +1,400 @@
+1<?xml version="1.0" encoding="utf-8"?>
+2<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+3    package="com.hybridizerrn"
+4    android:versionCode="1"
+5    android:versionName="1.0" >
+6
+7    <uses-sdk
+8        android:minSdkVersion="21"
+8-->/Users/avigma/Minal/Project/Hybridizer_RN/android/app/src/main/AndroidManifest.xml
+9        android:targetSdkVersion="30" />
+9-->/Users/avigma/Minal/Project/Hybridizer_RN/android/app/src/main/AndroidManifest.xml
+10
+11    <uses-permission android:name="android.permission.INTERNET" />
+11-->/Users/avigma/Minal/Project/Hybridizer_RN/android/app/src/main/AndroidManifest.xml:4:5-67
+11-->/Users/avigma/Minal/Project/Hybridizer_RN/android/app/src/main/AndroidManifest.xml:4:22-64
+12    <uses-permission android:name="android.permission.WAKE_LOCK" />
+12-->[:react-native-firebase_auth] /Users/avigma/Minal/Project/Hybridizer_RN/node_modules/@react-native-firebase/auth/android/build/intermediates/merged_manifest/release/AndroidManifest.xml:10:5-68
+12-->[:react-native-firebase_auth] /Users/avigma/Minal/Project/Hybridizer_RN/node_modules/@react-native-firebase/auth/android/build/intermediates/merged_manifest/release/AndroidManifest.xml:10:22-65
+13    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+13-->[:react-native-firebase_auth] /Users/avigma/Minal/Project/Hybridizer_RN/node_modules/@react-native-firebase/auth/android/build/intermediates/merged_manifest/release/AndroidManifest.xml:11:5-79
+13-->[:react-native-firebase_auth] /Users/avigma/Minal/Project/Hybridizer_RN/node_modules/@react-native-firebase/auth/android/build/intermediates/merged_manifest/release/AndroidManifest.xml:11:22-76
+14    <uses-permission android:name="com.google.android.finsky.permission.BIND_GET_INSTALL_REFERRER_SERVICE" /> <!-- Include required permissions for Advertising Id -->
+14-->[com.google.android.gms:play-services-measurement:20.0.2] /Users/avigma/.gradle/caches/transforms-3/cdc9f1c91b4dad2a48f1447bc1a92d44/transformed/jetified-play-services-measurement-20.0.2/AndroidManifest.xml:26:5-110
+14-->[com.google.android.gms:play-services-measurement:20.0.2] /Users/avigma/.gradle/caches/transforms-3/cdc9f1c91b4dad2a48f1447bc1a92d44/transformed/jetified-play-services-measurement-20.0.2/AndroidManifest.xml:26:22-107
+15    <uses-permission android:name="com.google.android.gms.permission.AD_ID" />
+15-->[com.google.android.gms:play-services-ads-identifier:18.0.0] /Users/avigma/.gradle/caches/transforms-3/b3ef47b5e6be6f8157a47b101381bb8f/transformed/jetified-play-services-ads-identifier-18.0.0/AndroidManifest.xml:23:5-79
+15-->[com.google.android.gms:play-services-ads-identifier:18.0.0] /Users/avigma/.gradle/caches/transforms-3/b3ef47b5e6be6f8157a47b101381bb8f/transformed/jetified-play-services-ads-identifier-18.0.0/AndroidManifest.xml:23:22-76
+16
+17    <application
+17-->/Users/avigma/Minal/Project/Hybridizer_RN/android/app/src/main/AndroidManifest.xml:6:5-42:19
+18        android:name="com.hybridizerrn.MainApplication"
+18-->/Users/avigma/Minal/Project/Hybridizer_RN/android/app/src/main/AndroidManifest.xml:7:7-38
+19        android:allowBackup="false"
+19-->/Users/avigma/Minal/Project/Hybridizer_RN/android/app/src/main/AndroidManifest.xml:11:7-34
+20        android:appComponentFactory="androidx.core.app.CoreComponentFactory"
+20-->[androidx.core:core:1.6.0] /Users/avigma/.gradle/caches/transforms-3/d3d370670d8dbd7ec202f2a9db7ebc37/transformed/core-1.6.0/AndroidManifest.xml:24:18-86
+21        android:icon="@mipmap/ic_launcher"
+21-->/Users/avigma/Minal/Project/Hybridizer_RN/android/app/src/main/AndroidManifest.xml:9:7-41
+22        android:label="@string/app_name"
+22-->/Users/avigma/Minal/Project/Hybridizer_RN/android/app/src/main/AndroidManifest.xml:8:7-39
+23        android:roundIcon="@mipmap/ic_launcher_round"
+23-->/Users/avigma/Minal/Project/Hybridizer_RN/android/app/src/main/AndroidManifest.xml:10:7-52
+24        android:supportsRtl="true"
+24-->[com.facebook.android:facebook-android-sdk:12.2.0] /Users/avigma/.gradle/caches/transforms-3/80c2ca7aee9fba5b97eba88ea4092e42/transformed/jetified-facebook-android-sdk-12.2.0/AndroidManifest.xml:28:18-44
+25        android:theme="@style/AppTheme" >
+25-->/Users/avigma/Minal/Project/Hybridizer_RN/android/app/src/main/AndroidManifest.xml:12:7-38
+26        <meta-data
+26-->/Users/avigma/Minal/Project/Hybridizer_RN/android/app/src/main/AndroidManifest.xml:13:7-14:50
+27            android:name="com.facebook.sdk.ApplicationId"
+27-->/Users/avigma/Minal/Project/Hybridizer_RN/android/app/src/main/AndroidManifest.xml:13:18-63
+28            android:value="@string/facebook_app_id" />
+28-->/Users/avigma/Minal/Project/Hybridizer_RN/android/app/src/main/AndroidManifest.xml:14:9-48
+29
+30        <activity
+30-->/Users/avigma/Minal/Project/Hybridizer_RN/android/app/src/main/AndroidManifest.xml:16:7-19:44
+31            android:name="com.facebook.FacebookActivity"
+31-->/Users/avigma/Minal/Project/Hybridizer_RN/android/app/src/main/AndroidManifest.xml:16:17-61
+32            android:configChanges="keyboard|keyboardHidden|screenLayout|screenSize|orientation"
+32-->/Users/avigma/Minal/Project/Hybridizer_RN/android/app/src/main/AndroidManifest.xml:17:9-109
+33            android:label="@string/app_name"
+33-->/Users/avigma/Minal/Project/Hybridizer_RN/android/app/src/main/AndroidManifest.xml:19:9-41
+34            android:theme="@style/com_facebook_activity_theme" />
+34-->[com.facebook.android:facebook-common:12.2.0] /Users/avigma/.gradle/caches/transforms-3/5b4cceb9a13dc2758fa246ee362a30ab/transformed/jetified-facebook-common-12.2.0/AndroidManifest.xml:33:13-63
+35        <activity
+35-->/Users/avigma/Minal/Project/Hybridizer_RN/android/app/src/main/AndroidManifest.xml:20:7-29:16
+36            android:name="com.facebook.CustomTabActivity"
+36-->/Users/avigma/Minal/Project/Hybridizer_RN/android/app/src/main/AndroidManifest.xml:21:9-54
+37            android:exported="true" >
+37-->/Users/avigma/Minal/Project/Hybridizer_RN/android/app/src/main/AndroidManifest.xml:22:9-32
+38            <intent-filter>
+38-->/Users/avigma/Minal/Project/Hybridizer_RN/android/app/src/main/AndroidManifest.xml:23:9-28:25
+39                <action android:name="android.intent.action.VIEW" />
+39-->/Users/avigma/Minal/Project/Hybridizer_RN/android/app/src/main/AndroidManifest.xml:24:13-65
+39-->/Users/avigma/Minal/Project/Hybridizer_RN/android/app/src/main/AndroidManifest.xml:24:21-62
+40
+41                <category android:name="android.intent.category.DEFAULT" />
+41-->/Users/avigma/Minal/Project/Hybridizer_RN/android/app/src/main/AndroidManifest.xml:25:13-72
+41-->/Users/avigma/Minal/Project/Hybridizer_RN/android/app/src/main/AndroidManifest.xml:25:23-69
+42                <category android:name="android.intent.category.BROWSABLE" />
+42-->/Users/avigma/Minal/Project/Hybridizer_RN/android/app/src/main/AndroidManifest.xml:26:13-74
+42-->/Users/avigma/Minal/Project/Hybridizer_RN/android/app/src/main/AndroidManifest.xml:26:23-71
+43
+44                <data android:scheme="@string/fb_login_protocol_scheme" />
+44-->/Users/avigma/Minal/Project/Hybridizer_RN/android/app/src/main/AndroidManifest.xml:27:13-71
+44-->/Users/avigma/Minal/Project/Hybridizer_RN/android/app/src/main/AndroidManifest.xml:27:19-68
+45            </intent-filter>
+46            <intent-filter>
+46-->[com.facebook.android:facebook-common:12.2.0] /Users/avigma/.gradle/caches/transforms-3/5b4cceb9a13dc2758fa246ee362a30ab/transformed/jetified-facebook-common-12.2.0/AndroidManifest.xml:39:13-48:29
+47                <action android:name="android.intent.action.VIEW" />
+47-->/Users/avigma/Minal/Project/Hybridizer_RN/android/app/src/main/AndroidManifest.xml:24:13-65
+47-->/Users/avigma/Minal/Project/Hybridizer_RN/android/app/src/main/AndroidManifest.xml:24:21-62
+48
+49                <category android:name="android.intent.category.DEFAULT" />
+49-->/Users/avigma/Minal/Project/Hybridizer_RN/android/app/src/main/AndroidManifest.xml:25:13-72
+49-->/Users/avigma/Minal/Project/Hybridizer_RN/android/app/src/main/AndroidManifest.xml:25:23-69
+50                <category android:name="android.intent.category.BROWSABLE" />
+50-->/Users/avigma/Minal/Project/Hybridizer_RN/android/app/src/main/AndroidManifest.xml:26:13-74
+50-->/Users/avigma/Minal/Project/Hybridizer_RN/android/app/src/main/AndroidManifest.xml:26:23-71
+51
+52                <data
+52-->/Users/avigma/Minal/Project/Hybridizer_RN/android/app/src/main/AndroidManifest.xml:27:13-71
+53                    android:host="cct.com.hybridizerrn"
+54                    android:scheme="fbconnect" />
+54-->/Users/avigma/Minal/Project/Hybridizer_RN/android/app/src/main/AndroidManifest.xml:27:19-68
+55            </intent-filter>
+56        </activity>
+57        <activity
+57-->/Users/avigma/Minal/Project/Hybridizer_RN/android/app/src/main/AndroidManifest.xml:31:7-41:18
+58            android:name="com.hybridizerrn.MainActivity"
+58-->/Users/avigma/Minal/Project/Hybridizer_RN/android/app/src/main/AndroidManifest.xml:32:9-37
+59            android:configChanges="keyboard|keyboardHidden|orientation|screenSize|uiMode"
+59-->/Users/avigma/Minal/Project/Hybridizer_RN/android/app/src/main/AndroidManifest.xml:34:9-86
+60            android:label="@string/app_name"
+60-->/Users/avigma/Minal/Project/Hybridizer_RN/android/app/src/main/AndroidManifest.xml:33:9-41
+61            android:launchMode="singleTask"
+61-->/Users/avigma/Minal/Project/Hybridizer_RN/android/app/src/main/AndroidManifest.xml:35:9-40
+62            android:windowSoftInputMode="adjustResize" >
+62-->/Users/avigma/Minal/Project/Hybridizer_RN/android/app/src/main/AndroidManifest.xml:36:9-51
+63            <intent-filter>
+63-->/Users/avigma/Minal/Project/Hybridizer_RN/android/app/src/main/AndroidManifest.xml:37:9-40:25
+64                <action android:name="android.intent.action.MAIN" />
+64-->/Users/avigma/Minal/Project/Hybridizer_RN/android/app/src/main/AndroidManifest.xml:38:13-65
+64-->/Users/avigma/Minal/Project/Hybridizer_RN/android/app/src/main/AndroidManifest.xml:38:21-62
+65
+66                <category android:name="android.intent.category.LAUNCHER" />
+66-->/Users/avigma/Minal/Project/Hybridizer_RN/android/app/src/main/AndroidManifest.xml:39:13-73
+66-->/Users/avigma/Minal/Project/Hybridizer_RN/android/app/src/main/AndroidManifest.xml:39:23-70
+67            </intent-filter>
+68        </activity>
+69
+70        <meta-data
+70-->[:react-native-firebase_app] /Users/avigma/Minal/Project/Hybridizer_RN/node_modules/@react-native-firebase/app/android/build/intermediates/merged_manifest/release/AndroidManifest.xml:10:9-12:36
+71            android:name="app_data_collection_default_enabled"
+71-->[:react-native-firebase_app] /Users/avigma/Minal/Project/Hybridizer_RN/node_modules/@react-native-firebase/app/android/build/intermediates/merged_manifest/release/AndroidManifest.xml:11:13-63
+72            android:value="true" />
+72-->[:react-native-firebase_app] /Users/avigma/Minal/Project/Hybridizer_RN/node_modules/@react-native-firebase/app/android/build/intermediates/merged_manifest/release/AndroidManifest.xml:12:13-33
+73
+74        <service
+74-->[:react-native-firebase_app] /Users/avigma/Minal/Project/Hybridizer_RN/node_modules/@react-native-firebase/app/android/build/intermediates/merged_manifest/release/AndroidManifest.xml:14:9-18:19
+75            android:name="com.google.firebase.components.ComponentDiscoveryService"
+75-->[:react-native-firebase_app] /Users/avigma/Minal/Project/Hybridizer_RN/node_modules/@react-native-firebase/app/android/build/intermediates/merged_manifest/release/AndroidManifest.xml:14:18-89
+76            android:directBootAware="true"
+76-->[com.google.firebase:firebase-common:20.0.0] /Users/avigma/.gradle/caches/transforms-3/bdacc25ea80059c09049f1581cb7a011/transformed/jetified-firebase-common-20.0.0/AndroidManifest.xml:35:13-43
+77            android:exported="false" >
+77-->[com.google.firebase:firebase-auth:21.0.1] /Users/avigma/.gradle/caches/transforms-3/f2d26ed5eedabf975116ce7f41ef076b/transformed/jetified-firebase-auth-21.0.1/AndroidManifest.xml:76:13-37
+78            <meta-data
+78-->[:react-native-firebase_app] /Users/avigma/Minal/Project/Hybridizer_RN/node_modules/@react-native-firebase/app/android/build/intermediates/merged_manifest/release/AndroidManifest.xml:15:13-17:85
+79                android:name="com.google.firebase.components:io.invertase.firebase.app.ReactNativeFirebaseAppRegistrar"
+79-->[:react-native-firebase_app] /Users/avigma/Minal/Project/Hybridizer_RN/node_modules/@react-native-firebase/app/android/build/intermediates/merged_manifest/release/AndroidManifest.xml:16:17-120
+80                android:value="com.google.firebase.components.ComponentRegistrar" />
+80-->[:react-native-firebase_app] /Users/avigma/Minal/Project/Hybridizer_RN/node_modules/@react-native-firebase/app/android/build/intermediates/merged_manifest/release/AndroidManifest.xml:17:17-82
+81            <meta-data
+81-->[com.google.firebase:firebase-auth:21.0.1] /Users/avigma/.gradle/caches/transforms-3/f2d26ed5eedabf975116ce7f41ef076b/transformed/jetified-firebase-auth-21.0.1/AndroidManifest.xml:77:13-79:85
+82                android:name="com.google.firebase.components:com.google.firebase.auth.FirebaseAuthRegistrar"
+82-->[com.google.firebase:firebase-auth:21.0.1] /Users/avigma/.gradle/caches/transforms-3/f2d26ed5eedabf975116ce7f41ef076b/transformed/jetified-firebase-auth-21.0.1/AndroidManifest.xml:78:17-109
+83                android:value="com.google.firebase.components.ComponentRegistrar" />
+83-->[com.google.firebase:firebase-auth:21.0.1] /Users/avigma/.gradle/caches/transforms-3/f2d26ed5eedabf975116ce7f41ef076b/transformed/jetified-firebase-auth-21.0.1/AndroidManifest.xml:79:17-82
+84            <meta-data
+84-->[com.google.android.gms:play-services-measurement-api:20.0.2] /Users/avigma/.gradle/caches/transforms-3/492264fe29e9f58f333294a6b6cdafbe/transformed/jetified-play-services-measurement-api-20.0.2/AndroidManifest.xml:30:13-32:85
+85                android:name="com.google.firebase.components:com.google.firebase.analytics.connector.internal.AnalyticsConnectorRegistrar"
+85-->[com.google.android.gms:play-services-measurement-api:20.0.2] /Users/avigma/.gradle/caches/transforms-3/492264fe29e9f58f333294a6b6cdafbe/transformed/jetified-play-services-measurement-api-20.0.2/AndroidManifest.xml:31:17-139
+86                android:value="com.google.firebase.components.ComponentRegistrar" />
+86-->[com.google.android.gms:play-services-measurement-api:20.0.2] /Users/avigma/.gradle/caches/transforms-3/492264fe29e9f58f333294a6b6cdafbe/transformed/jetified-play-services-measurement-api-20.0.2/AndroidManifest.xml:32:17-82
+87            <meta-data
+87-->[com.google.firebase:firebase-installations:17.0.0] /Users/avigma/.gradle/caches/transforms-3/8988d75e8fd616751377ffdb863f8c8b/transformed/jetified-firebase-installations-17.0.0/AndroidManifest.xml:18:13-20:85
+88                android:name="com.google.firebase.components:com.google.firebase.installations.FirebaseInstallationsRegistrar"
+88-->[com.google.firebase:firebase-installations:17.0.0] /Users/avigma/.gradle/caches/transforms-3/8988d75e8fd616751377ffdb863f8c8b/transformed/jetified-firebase-installations-17.0.0/AndroidManifest.xml:19:17-127
+89                android:value="com.google.firebase.components.ComponentRegistrar" />
+89-->[com.google.firebase:firebase-installations:17.0.0] /Users/avigma/.gradle/caches/transforms-3/8988d75e8fd616751377ffdb863f8c8b/transformed/jetified-firebase-installations-17.0.0/AndroidManifest.xml:20:17-82
+90        </service>
+91
+92        <provider
+92-->[:react-native-firebase_app] /Users/avigma/Minal/Project/Hybridizer_RN/node_modules/@react-native-firebase/app/android/build/intermediates/merged_manifest/release/AndroidManifest.xml:20:9-24:38
+93            android:name="io.invertase.firebase.app.ReactNativeFirebaseAppInitProvider"
+93-->[:react-native-firebase_app] /Users/avigma/Minal/Project/Hybridizer_RN/node_modules/@react-native-firebase/app/android/build/intermediates/merged_manifest/release/AndroidManifest.xml:21:13-88
+94            android:authorities="com.hybridizerrn.reactnativefirebaseappinitprovider"
+94-->[:react-native-firebase_app] /Users/avigma/Minal/Project/Hybridizer_RN/node_modules/@react-native-firebase/app/android/build/intermediates/merged_manifest/release/AndroidManifest.xml:22:13-86
+95            android:exported="false"
+95-->[:react-native-firebase_app] /Users/avigma/Minal/Project/Hybridizer_RN/node_modules/@react-native-firebase/app/android/build/intermediates/merged_manifest/release/AndroidManifest.xml:23:13-37
+96            android:initOrder="99" />
+96-->[:react-native-firebase_app] /Users/avigma/Minal/Project/Hybridizer_RN/node_modules/@react-native-firebase/app/android/build/intermediates/merged_manifest/release/AndroidManifest.xml:24:13-35
+97
+98        <activity android:name="com.facebook.CustomTabMainActivity" />
+98-->[com.facebook.android:facebook-common:12.2.0] /Users/avigma/.gradle/caches/transforms-3/5b4cceb9a13dc2758fa246ee362a30ab/transformed/jetified-facebook-common-12.2.0/AndroidManifest.xml:34:9-71
+98-->[com.facebook.android:facebook-common:12.2.0] /Users/avigma/.gradle/caches/transforms-3/5b4cceb9a13dc2758fa246ee362a30ab/transformed/jetified-facebook-common-12.2.0/AndroidManifest.xml:34:19-68
+99        <activity
+99-->[com.google.firebase:firebase-auth:21.0.1] /Users/avigma/.gradle/caches/transforms-3/f2d26ed5eedabf975116ce7f41ef076b/transformed/jetified-firebase-auth-21.0.1/AndroidManifest.xml:27:9-44:20
+100            android:name="com.google.firebase.auth.internal.GenericIdpActivity"
+100-->[com.google.firebase:firebase-auth:21.0.1] /Users/avigma/.gradle/caches/transforms-3/f2d26ed5eedabf975116ce7f41ef076b/transformed/jetified-firebase-auth-21.0.1/AndroidManifest.xml:28:13-80
+101            android:excludeFromRecents="true"
+101-->[com.google.firebase:firebase-auth:21.0.1] /Users/avigma/.gradle/caches/transforms-3/f2d26ed5eedabf975116ce7f41ef076b/transformed/jetified-firebase-auth-21.0.1/AndroidManifest.xml:29:13-46
+102            android:exported="true"
+102-->[com.google.firebase:firebase-auth:21.0.1] /Users/avigma/.gradle/caches/transforms-3/f2d26ed5eedabf975116ce7f41ef076b/transformed/jetified-firebase-auth-21.0.1/AndroidManifest.xml:30:13-36
+103            android:launchMode="singleTask"
+103-->[com.google.firebase:firebase-auth:21.0.1] /Users/avigma/.gradle/caches/transforms-3/f2d26ed5eedabf975116ce7f41ef076b/transformed/jetified-firebase-auth-21.0.1/AndroidManifest.xml:31:13-44
+104            android:theme="@android:style/Theme.Translucent.NoTitleBar" >
+104-->[com.google.firebase:firebase-auth:21.0.1] /Users/avigma/.gradle/caches/transforms-3/f2d26ed5eedabf975116ce7f41ef076b/transformed/jetified-firebase-auth-21.0.1/AndroidManifest.xml:32:13-72
+105            <intent-filter>
+105-->[com.google.firebase:firebase-auth:21.0.1] /Users/avigma/.gradle/caches/transforms-3/f2d26ed5eedabf975116ce7f41ef076b/transformed/jetified-firebase-auth-21.0.1/AndroidManifest.xml:33:13-43:29
+106                <action android:name="android.intent.action.VIEW" />
+106-->/Users/avigma/Minal/Project/Hybridizer_RN/android/app/src/main/AndroidManifest.xml:24:13-65
+106-->/Users/avigma/Minal/Project/Hybridizer_RN/android/app/src/main/AndroidManifest.xml:24:21-62
+107
+108                <category android:name="android.intent.category.DEFAULT" />
+108-->/Users/avigma/Minal/Project/Hybridizer_RN/android/app/src/main/AndroidManifest.xml:25:13-72
+108-->/Users/avigma/Minal/Project/Hybridizer_RN/android/app/src/main/AndroidManifest.xml:25:23-69
+109                <category android:name="android.intent.category.BROWSABLE" />
+109-->/Users/avigma/Minal/Project/Hybridizer_RN/android/app/src/main/AndroidManifest.xml:26:13-74
+109-->/Users/avigma/Minal/Project/Hybridizer_RN/android/app/src/main/AndroidManifest.xml:26:23-71
+110
+111                <data
+111-->/Users/avigma/Minal/Project/Hybridizer_RN/android/app/src/main/AndroidManifest.xml:27:13-71
+112                    android:host="firebase.auth"
+113                    android:path="/"
+114                    android:scheme="genericidp" />
+114-->/Users/avigma/Minal/Project/Hybridizer_RN/android/app/src/main/AndroidManifest.xml:27:19-68
+115            </intent-filter>
+116        </activity>
+117        <activity
+117-->[com.google.firebase:firebase-auth:21.0.1] /Users/avigma/.gradle/caches/transforms-3/f2d26ed5eedabf975116ce7f41ef076b/transformed/jetified-firebase-auth-21.0.1/AndroidManifest.xml:45:9-62:20
+118            android:name="com.google.firebase.auth.internal.RecaptchaActivity"
+118-->[com.google.firebase:firebase-auth:21.0.1] /Users/avigma/.gradle/caches/transforms-3/f2d26ed5eedabf975116ce7f41ef076b/transformed/jetified-firebase-auth-21.0.1/AndroidManifest.xml:46:13-79
+119            android:excludeFromRecents="true"
+119-->[com.google.firebase:firebase-auth:21.0.1] /Users/avigma/.gradle/caches/transforms-3/f2d26ed5eedabf975116ce7f41ef076b/transformed/jetified-firebase-auth-21.0.1/AndroidManifest.xml:47:13-46
+120            android:exported="true"
+120-->[com.google.firebase:firebase-auth:21.0.1] /Users/avigma/.gradle/caches/transforms-3/f2d26ed5eedabf975116ce7f41ef076b/transformed/jetified-firebase-auth-21.0.1/AndroidManifest.xml:48:13-36
+121            android:launchMode="singleTask"
+121-->[com.google.firebase:firebase-auth:21.0.1] /Users/avigma/.gradle/caches/transforms-3/f2d26ed5eedabf975116ce7f41ef076b/transformed/jetified-firebase-auth-21.0.1/AndroidManifest.xml:49:13-44
+122            android:theme="@android:style/Theme.Translucent.NoTitleBar" >
+122-->[com.google.firebase:firebase-auth:21.0.1] /Users/avigma/.gradle/caches/transforms-3/f2d26ed5eedabf975116ce7f41ef076b/transformed/jetified-firebase-auth-21.0.1/AndroidManifest.xml:50:13-72
+123            <intent-filter>
+123-->[com.google.firebase:firebase-auth:21.0.1] /Users/avigma/.gradle/caches/transforms-3/f2d26ed5eedabf975116ce7f41ef076b/transformed/jetified-firebase-auth-21.0.1/AndroidManifest.xml:51:13-61:29
+124                <action android:name="android.intent.action.VIEW" />
+124-->/Users/avigma/Minal/Project/Hybridizer_RN/android/app/src/main/AndroidManifest.xml:24:13-65
+124-->/Users/avigma/Minal/Project/Hybridizer_RN/android/app/src/main/AndroidManifest.xml:24:21-62
+125
+126                <category android:name="android.intent.category.DEFAULT" />
+126-->/Users/avigma/Minal/Project/Hybridizer_RN/android/app/src/main/AndroidManifest.xml:25:13-72
+126-->/Users/avigma/Minal/Project/Hybridizer_RN/android/app/src/main/AndroidManifest.xml:25:23-69
+127                <category android:name="android.intent.category.BROWSABLE" />
+127-->/Users/avigma/Minal/Project/Hybridizer_RN/android/app/src/main/AndroidManifest.xml:26:13-74
+127-->/Users/avigma/Minal/Project/Hybridizer_RN/android/app/src/main/AndroidManifest.xml:26:23-71
+128
+129                <data
+129-->/Users/avigma/Minal/Project/Hybridizer_RN/android/app/src/main/AndroidManifest.xml:27:13-71
+130                    android:host="firebase.auth"
+131                    android:path="/"
+132                    android:scheme="recaptcha" />
+132-->/Users/avigma/Minal/Project/Hybridizer_RN/android/app/src/main/AndroidManifest.xml:27:19-68
+133            </intent-filter>
+134        </activity>
+135
+136        <service
+136-->[com.google.firebase:firebase-auth:21.0.1] /Users/avigma/.gradle/caches/transforms-3/f2d26ed5eedabf975116ce7f41ef076b/transformed/jetified-firebase-auth-21.0.1/AndroidManifest.xml:64:9-73:19
+137            android:name="com.google.firebase.auth.api.fallback.service.FirebaseAuthFallbackService"
+137-->[com.google.firebase:firebase-auth:21.0.1] /Users/avigma/.gradle/caches/transforms-3/f2d26ed5eedabf975116ce7f41ef076b/transformed/jetified-firebase-auth-21.0.1/AndroidManifest.xml:65:13-101
+138            android:enabled="true"
+138-->[com.google.firebase:firebase-auth:21.0.1] /Users/avigma/.gradle/caches/transforms-3/f2d26ed5eedabf975116ce7f41ef076b/transformed/jetified-firebase-auth-21.0.1/AndroidManifest.xml:66:13-35
+139            android:exported="false" >
+139-->[com.google.firebase:firebase-auth:21.0.1] /Users/avigma/.gradle/caches/transforms-3/f2d26ed5eedabf975116ce7f41ef076b/transformed/jetified-firebase-auth-21.0.1/AndroidManifest.xml:67:13-37
+140            <intent-filter>
+140-->[com.google.firebase:firebase-auth:21.0.1] /Users/avigma/.gradle/caches/transforms-3/f2d26ed5eedabf975116ce7f41ef076b/transformed/jetified-firebase-auth-21.0.1/AndroidManifest.xml:68:13-72:29
+141                <action android:name="com.google.firebase.auth.api.gms.service.START" />
+141-->[com.google.firebase:firebase-auth:21.0.1] /Users/avigma/.gradle/caches/transforms-3/f2d26ed5eedabf975116ce7f41ef076b/transformed/jetified-firebase-auth-21.0.1/AndroidManifest.xml:69:17-89
+141-->[com.google.firebase:firebase-auth:21.0.1] /Users/avigma/.gradle/caches/transforms-3/f2d26ed5eedabf975116ce7f41ef076b/transformed/jetified-firebase-auth-21.0.1/AndroidManifest.xml:69:25-86
+142
+143                <category android:name="android.intent.category.DEFAULT" />
+143-->/Users/avigma/Minal/Project/Hybridizer_RN/android/app/src/main/AndroidManifest.xml:25:13-72
+143-->/Users/avigma/Minal/Project/Hybridizer_RN/android/app/src/main/AndroidManifest.xml:25:23-69
+144            </intent-filter>
+145        </service>
+146
+147        <activity
+147-->[com.google.android.gms:play-services-auth:20.0.0] /Users/avigma/.gradle/caches/transforms-3/79a5cff356d5bec55bfa164feeaf3080/transformed/jetified-play-services-auth-20.0.0/AndroidManifest.xml:23:9-27:75
+148            android:name="com.google.android.gms.auth.api.signin.internal.SignInHubActivity"
+148-->[com.google.android.gms:play-services-auth:20.0.0] /Users/avigma/.gradle/caches/transforms-3/79a5cff356d5bec55bfa164feeaf3080/transformed/jetified-play-services-auth-20.0.0/AndroidManifest.xml:24:13-93
+149            android:excludeFromRecents="true"
+149-->[com.google.android.gms:play-services-auth:20.0.0] /Users/avigma/.gradle/caches/transforms-3/79a5cff356d5bec55bfa164feeaf3080/transformed/jetified-play-services-auth-20.0.0/AndroidManifest.xml:25:13-46
+150            android:exported="false"
+150-->[com.google.android.gms:play-services-auth:20.0.0] /Users/avigma/.gradle/caches/transforms-3/79a5cff356d5bec55bfa164feeaf3080/transformed/jetified-play-services-auth-20.0.0/AndroidManifest.xml:26:13-37
+151            android:theme="@android:style/Theme.Translucent.NoTitleBar" />
+151-->[com.google.android.gms:play-services-auth:20.0.0] /Users/avigma/.gradle/caches/transforms-3/79a5cff356d5bec55bfa164feeaf3080/transformed/jetified-play-services-auth-20.0.0/AndroidManifest.xml:27:13-72
+152        <!--
+153            Service handling Google Sign-In user revocation. For apps that do not integrate with
+154            Google Sign-In, this service will never be started.
+155        -->
+156        <service
+156-->[com.google.android.gms:play-services-auth:20.0.0] /Users/avigma/.gradle/caches/transforms-3/79a5cff356d5bec55bfa164feeaf3080/transformed/jetified-play-services-auth-20.0.0/AndroidManifest.xml:33:9-37:51
+157            android:name="com.google.android.gms.auth.api.signin.RevocationBoundService"
+157-->[com.google.android.gms:play-services-auth:20.0.0] /Users/avigma/.gradle/caches/transforms-3/79a5cff356d5bec55bfa164feeaf3080/transformed/jetified-play-services-auth-20.0.0/AndroidManifest.xml:34:13-89
+158            android:exported="true"
+158-->[com.google.android.gms:play-services-auth:20.0.0] /Users/avigma/.gradle/caches/transforms-3/79a5cff356d5bec55bfa164feeaf3080/transformed/jetified-play-services-auth-20.0.0/AndroidManifest.xml:35:13-36
+159            android:permission="com.google.android.gms.auth.api.signin.permission.REVOCATION_NOTIFICATION"
+159-->[com.google.android.gms:play-services-auth:20.0.0] /Users/avigma/.gradle/caches/transforms-3/79a5cff356d5bec55bfa164feeaf3080/transformed/jetified-play-services-auth-20.0.0/AndroidManifest.xml:36:13-107
+160            android:visibleToInstantApps="true" />
+160-->[com.google.android.gms:play-services-auth:20.0.0] /Users/avigma/.gradle/caches/transforms-3/79a5cff356d5bec55bfa164feeaf3080/transformed/jetified-play-services-auth-20.0.0/AndroidManifest.xml:37:13-48
+161
+162        <provider
+162-->[com.google.firebase:firebase-common:20.0.0] /Users/avigma/.gradle/caches/transforms-3/bdacc25ea80059c09049f1581cb7a011/transformed/jetified-firebase-common-20.0.0/AndroidManifest.xml:26:9-31:39
+163            android:name="com.google.firebase.provider.FirebaseInitProvider"
+163-->[com.google.firebase:firebase-common:20.0.0] /Users/avigma/.gradle/caches/transforms-3/bdacc25ea80059c09049f1581cb7a011/transformed/jetified-firebase-common-20.0.0/AndroidManifest.xml:27:13-77
+164            android:authorities="com.hybridizerrn.firebaseinitprovider"
+164-->[com.google.firebase:firebase-common:20.0.0] /Users/avigma/.gradle/caches/transforms-3/bdacc25ea80059c09049f1581cb7a011/transformed/jetified-firebase-common-20.0.0/AndroidManifest.xml:28:13-72
+165            android:directBootAware="true"
+165-->[com.google.firebase:firebase-common:20.0.0] /Users/avigma/.gradle/caches/transforms-3/bdacc25ea80059c09049f1581cb7a011/transformed/jetified-firebase-common-20.0.0/AndroidManifest.xml:29:13-43
+166            android:exported="false"
+166-->[com.google.firebase:firebase-common:20.0.0] /Users/avigma/.gradle/caches/transforms-3/bdacc25ea80059c09049f1581cb7a011/transformed/jetified-firebase-common-20.0.0/AndroidManifest.xml:30:13-37
+167            android:initOrder="100" />
+167-->[com.google.firebase:firebase-common:20.0.0] /Users/avigma/.gradle/caches/transforms-3/bdacc25ea80059c09049f1581cb7a011/transformed/jetified-firebase-common-20.0.0/AndroidManifest.xml:31:13-36
+168        <!--
+169         The initialization ContentProvider will call FacebookSdk.sdkInitialize automatically
+170         with the application context. This config is merged in with the host app's manifest,
+171         but there can only be one provider with the same authority activated at any given
+172         point; so if the end user has two or more different apps that use Facebook SDK, only the
+173         first one will be able to use the provider. To work around this problem, we use the
+174         following placeholder in the authority to identify each host application as if it was
+175         a completely different provider.
+176        -->
+177        <provider
+177-->[com.facebook.android:facebook-core:12.2.0] /Users/avigma/.gradle/caches/transforms-3/e27a4d255ddbf7db15454e32a9f8f720/transformed/jetified-facebook-core-12.2.0/AndroidManifest.xml:39:9-42:40
+178            android:name="com.facebook.internal.FacebookInitProvider"
+178-->[com.facebook.android:facebook-core:12.2.0] /Users/avigma/.gradle/caches/transforms-3/e27a4d255ddbf7db15454e32a9f8f720/transformed/jetified-facebook-core-12.2.0/AndroidManifest.xml:40:13-70
+179            android:authorities="com.hybridizerrn.FacebookInitProvider"
+179-->[com.facebook.android:facebook-core:12.2.0] /Users/avigma/.gradle/caches/transforms-3/e27a4d255ddbf7db15454e32a9f8f720/transformed/jetified-facebook-core-12.2.0/AndroidManifest.xml:41:13-72
+180            android:exported="false" />
+180-->[com.facebook.android:facebook-core:12.2.0] /Users/avigma/.gradle/caches/transforms-3/e27a4d255ddbf7db15454e32a9f8f720/transformed/jetified-facebook-core-12.2.0/AndroidManifest.xml:42:13-37
+181
+182        <receiver
+182-->[com.facebook.android:facebook-core:12.2.0] /Users/avigma/.gradle/caches/transforms-3/e27a4d255ddbf7db15454e32a9f8f720/transformed/jetified-facebook-core-12.2.0/AndroidManifest.xml:44:9-50:20
+183            android:name="com.facebook.CurrentAccessTokenExpirationBroadcastReceiver"
+183-->[com.facebook.android:facebook-core:12.2.0] /Users/avigma/.gradle/caches/transforms-3/e27a4d255ddbf7db15454e32a9f8f720/transformed/jetified-facebook-core-12.2.0/AndroidManifest.xml:45:13-86
+184            android:exported="false" >
+184-->[com.facebook.android:facebook-core:12.2.0] /Users/avigma/.gradle/caches/transforms-3/e27a4d255ddbf7db15454e32a9f8f720/transformed/jetified-facebook-core-12.2.0/AndroidManifest.xml:46:13-37
+185            <intent-filter>
+185-->[com.facebook.android:facebook-core:12.2.0] /Users/avigma/.gradle/caches/transforms-3/e27a4d255ddbf7db15454e32a9f8f720/transformed/jetified-facebook-core-12.2.0/AndroidManifest.xml:47:13-49:29
+186                <action android:name="com.facebook.sdk.ACTION_CURRENT_ACCESS_TOKEN_CHANGED" />
+186-->[com.facebook.android:facebook-core:12.2.0] /Users/avigma/.gradle/caches/transforms-3/e27a4d255ddbf7db15454e32a9f8f720/transformed/jetified-facebook-core-12.2.0/AndroidManifest.xml:48:17-95
+186-->[com.facebook.android:facebook-core:12.2.0] /Users/avigma/.gradle/caches/transforms-3/e27a4d255ddbf7db15454e32a9f8f720/transformed/jetified-facebook-core-12.2.0/AndroidManifest.xml:48:25-92
+187            </intent-filter>
+188        </receiver>
+189        <receiver
+189-->[com.facebook.android:facebook-core:12.2.0] /Users/avigma/.gradle/caches/transforms-3/e27a4d255ddbf7db15454e32a9f8f720/transformed/jetified-facebook-core-12.2.0/AndroidManifest.xml:51:9-57:20
+190            android:name="com.facebook.AuthenticationTokenManager$CurrentAuthenticationTokenChangedBroadcastReceiver"
+190-->[com.facebook.android:facebook-core:12.2.0] /Users/avigma/.gradle/caches/transforms-3/e27a4d255ddbf7db15454e32a9f8f720/transformed/jetified-facebook-core-12.2.0/AndroidManifest.xml:52:13-118
+191            android:exported="false" >
+191-->[com.facebook.android:facebook-core:12.2.0] /Users/avigma/.gradle/caches/transforms-3/e27a4d255ddbf7db15454e32a9f8f720/transformed/jetified-facebook-core-12.2.0/AndroidManifest.xml:53:13-37
+192            <intent-filter>
+192-->[com.facebook.android:facebook-core:12.2.0] /Users/avigma/.gradle/caches/transforms-3/e27a4d255ddbf7db15454e32a9f8f720/transformed/jetified-facebook-core-12.2.0/AndroidManifest.xml:54:13-56:29
+193                <action android:name="com.facebook.sdk.ACTION_CURRENT_AUTHENTICATION_TOKEN_CHANGED" />
+193-->[com.facebook.android:facebook-core:12.2.0] /Users/avigma/.gradle/caches/transforms-3/e27a4d255ddbf7db15454e32a9f8f720/transformed/jetified-facebook-core-12.2.0/AndroidManifest.xml:55:17-103
+193-->[com.facebook.android:facebook-core:12.2.0] /Users/avigma/.gradle/caches/transforms-3/e27a4d255ddbf7db15454e32a9f8f720/transformed/jetified-facebook-core-12.2.0/AndroidManifest.xml:55:25-100
+194            </intent-filter>
+195        </receiver>
+196        <receiver
+196-->[com.google.android.gms:play-services-measurement:20.0.2] /Users/avigma/.gradle/caches/transforms-3/cdc9f1c91b4dad2a48f1447bc1a92d44/transformed/jetified-play-services-measurement-20.0.2/AndroidManifest.xml:29:9-33:20
+197            android:name="com.google.android.gms.measurement.AppMeasurementReceiver"
+197-->[com.google.android.gms:play-services-measurement:20.0.2] /Users/avigma/.gradle/caches/transforms-3/cdc9f1c91b4dad2a48f1447bc1a92d44/transformed/jetified-play-services-measurement-20.0.2/AndroidManifest.xml:30:13-85
+198            android:enabled="true"
+198-->[com.google.android.gms:play-services-measurement:20.0.2] /Users/avigma/.gradle/caches/transforms-3/cdc9f1c91b4dad2a48f1447bc1a92d44/transformed/jetified-play-services-measurement-20.0.2/AndroidManifest.xml:31:13-35
+199            android:exported="false" >
+199-->[com.google.android.gms:play-services-measurement:20.0.2] /Users/avigma/.gradle/caches/transforms-3/cdc9f1c91b4dad2a48f1447bc1a92d44/transformed/jetified-play-services-measurement-20.0.2/AndroidManifest.xml:32:13-37
+200        </receiver>
+201
+202        <service
+202-->[com.google.android.gms:play-services-measurement:20.0.2] /Users/avigma/.gradle/caches/transforms-3/cdc9f1c91b4dad2a48f1447bc1a92d44/transformed/jetified-play-services-measurement-20.0.2/AndroidManifest.xml:35:9-38:40
+203            android:name="com.google.android.gms.measurement.AppMeasurementService"
+203-->[com.google.android.gms:play-services-measurement:20.0.2] /Users/avigma/.gradle/caches/transforms-3/cdc9f1c91b4dad2a48f1447bc1a92d44/transformed/jetified-play-services-measurement-20.0.2/AndroidManifest.xml:36:13-84
+204            android:enabled="true"
+204-->[com.google.android.gms:play-services-measurement:20.0.2] /Users/avigma/.gradle/caches/transforms-3/cdc9f1c91b4dad2a48f1447bc1a92d44/transformed/jetified-play-services-measurement-20.0.2/AndroidManifest.xml:37:13-35
+205            android:exported="false" />
+205-->[com.google.android.gms:play-services-measurement:20.0.2] /Users/avigma/.gradle/caches/transforms-3/cdc9f1c91b4dad2a48f1447bc1a92d44/transformed/jetified-play-services-measurement-20.0.2/AndroidManifest.xml:38:13-37
+206        <service
+206-->[com.google.android.gms:play-services-measurement:20.0.2] /Users/avigma/.gradle/caches/transforms-3/cdc9f1c91b4dad2a48f1447bc1a92d44/transformed/jetified-play-services-measurement-20.0.2/AndroidManifest.xml:39:9-43:72
+207            android:name="com.google.android.gms.measurement.AppMeasurementJobService"
+207-->[com.google.android.gms:play-services-measurement:20.0.2] /Users/avigma/.gradle/caches/transforms-3/cdc9f1c91b4dad2a48f1447bc1a92d44/transformed/jetified-play-services-measurement-20.0.2/AndroidManifest.xml:40:13-87
+208            android:enabled="true"
+208-->[com.google.android.gms:play-services-measurement:20.0.2] /Users/avigma/.gradle/caches/transforms-3/cdc9f1c91b4dad2a48f1447bc1a92d44/transformed/jetified-play-services-measurement-20.0.2/AndroidManifest.xml:41:13-35
+209            android:exported="false"
+209-->[com.google.android.gms:play-services-measurement:20.0.2] /Users/avigma/.gradle/caches/transforms-3/cdc9f1c91b4dad2a48f1447bc1a92d44/transformed/jetified-play-services-measurement-20.0.2/AndroidManifest.xml:42:13-37
+210            android:permission="android.permission.BIND_JOB_SERVICE" />
+210-->[com.google.android.gms:play-services-measurement:20.0.2] /Users/avigma/.gradle/caches/transforms-3/cdc9f1c91b4dad2a48f1447bc1a92d44/transformed/jetified-play-services-measurement-20.0.2/AndroidManifest.xml:43:13-69
+211
+212        <activity
+212-->[com.google.android.gms:play-services-base:18.0.0] /Users/avigma/.gradle/caches/transforms-3/3ac5852a6a055360f4e4f7bb39c257a4/transformed/jetified-play-services-base-18.0.0/AndroidManifest.xml:20:9-22:45
+213            android:name="com.google.android.gms.common.api.GoogleApiActivity"
+213-->[com.google.android.gms:play-services-base:18.0.0] /Users/avigma/.gradle/caches/transforms-3/3ac5852a6a055360f4e4f7bb39c257a4/transformed/jetified-play-services-base-18.0.0/AndroidManifest.xml:20:19-85
+214            android:exported="false"
+214-->[com.google.android.gms:play-services-base:18.0.0] /Users/avigma/.gradle/caches/transforms-3/3ac5852a6a055360f4e4f7bb39c257a4/transformed/jetified-play-services-base-18.0.0/AndroidManifest.xml:22:19-43
+215            android:theme="@android:style/Theme.Translucent.NoTitleBar" />
+215-->[com.google.android.gms:play-services-base:18.0.0] /Users/avigma/.gradle/caches/transforms-3/3ac5852a6a055360f4e4f7bb39c257a4/transformed/jetified-play-services-base-18.0.0/AndroidManifest.xml:21:19-78
+216
+217        <meta-data
+217-->[com.google.android.gms:play-services-basement:18.0.0] /Users/avigma/.gradle/caches/transforms-3/0f5596c4a55863aa29d7caf4d041377f/transformed/jetified-play-services-basement-18.0.0/AndroidManifest.xml:21:9-23:69
+218            android:name="com.google.android.gms.version"
+218-->[com.google.android.gms:play-services-basement:18.0.0] /Users/avigma/.gradle/caches/transforms-3/0f5596c4a55863aa29d7caf4d041377f/transformed/jetified-play-services-basement-18.0.0/AndroidManifest.xml:22:13-58
+219            android:value="@integer/google_play_services_version" />
+219-->[com.google.android.gms:play-services-basement:18.0.0] /Users/avigma/.gradle/caches/transforms-3/0f5596c4a55863aa29d7caf4d041377f/transformed/jetified-play-services-basement-18.0.0/AndroidManifest.xml:23:13-66
+220    </application>
+221
+222</manifest>
