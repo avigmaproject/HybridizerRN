@@ -7,13 +7,14 @@ import {
   Image,
   StyleSheet,
   FlatList,
+  TouchableOpacity,
 } from "react-native";
-import EvilIcons from "react-native-vector-icons/EvilIcons";
 import Feather from "react-native-vector-icons/Feather";
 import Entypo from "react-native-vector-icons/Entypo";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import Octicons from "react-native-vector-icons/Octicons";
-
+import DeviceInfo from "react-native-device-info";
+let hasNotch = DeviceInfo.hasNotch();
 import { FAB } from "react-native-paper";
 const DATA = [
   {
@@ -32,22 +33,30 @@ const DATA = [
     account: "minal",
     profile: require("../../../assets/profile.png"),
   },
+  {
+    id: "3",
+    title: "Sun Flower",
+    image: require("../../../assets/image14.png"),
+    like: 14,
+    account: "poonam",
+    profile: require("../../../assets/profile.png"),
+  },
 ];
 export default class Plant extends Component {
   render() {
     return (
-      <SafeAreaView>
+      <View>
         <ScrollView>
           <View>
             <Image
               resizeMode="stretch"
               source={require("../../../assets/Main.png")}
-              style={{ width: "100%", height: 100 }}
+              style={{ width: "100%", height: hasNotch ? 115 : 100 }}
             />
             <View
               style={{
                 position: "absolute",
-                top: 20,
+                top: hasNotch ? 50 : 30,
               }}
             >
               <View
@@ -99,7 +108,13 @@ export default class Plant extends Component {
                 data={DATA}
                 renderItem={({ item }) => {
                   return (
-                    <View
+                    <TouchableOpacity
+                      onPress={() =>
+                        this.props.navigation.navigate("Addplant", {
+                          plantinfo: item,
+                          viewstatus: true,
+                        })
+                      }
                       style={{
                         width: "100%",
                         backgroundColor: "#fff",
@@ -158,7 +173,10 @@ export default class Plant extends Component {
                           alignItems: "center",
                           padding: 20,
                           backgroundColor: "#fff",
-                          elevation: 8,
+                          shadowOffset: { width: 0.1, height: 0.1 },
+                          shadowColor: "gray",
+                          shadowOpacity: 0.5,
+                          elevation: 1,
                           borderBottomEndRadius: 10,
                           borderBottomStartRadius: 10,
                           justifyContent: "space-between",
@@ -208,11 +226,7 @@ export default class Plant extends Component {
                               alignItems: "center",
                             }}
                           >
-                            <EvilIcons
-                              name={"share-google"}
-                              size={30}
-                              color="#ACACAC"
-                            />
+                            <Entypo name={"share"} size={20} color="#ACACAC" />
                           </View>
                         </View>
                         <View style={{}}>
@@ -223,7 +237,7 @@ export default class Plant extends Component {
                           />
                         </View>
                       </View>
-                    </View>
+                    </TouchableOpacity>
                   );
                 }}
                 keyExtractor={(item) => item.id}
@@ -233,11 +247,14 @@ export default class Plant extends Component {
         </ScrollView>
         <FAB
           style={styles.fab}
-          small
           icon="plus"
-          onPress={() => console.log("Pressed")}
+          onPress={() =>
+            this.props.navigation.navigate("Addplant", {
+              viewstatus: false,
+            })
+          }
         />
-      </SafeAreaView>
+      </View>
     );
   }
 }

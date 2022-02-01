@@ -20,6 +20,7 @@ import { setToken, setLoggedIn } from "../../store/action/auth/action";
 import { login } from "../../services/api.function";
 import { useDispatch } from "react-redux";
 import * as Animatable from "react-native-animatable";
+const screenHeight = Dimensions.get("window").height;
 
 const Welcome = ({ navigation }) => {
   const dispatch = useDispatch();
@@ -130,56 +131,61 @@ const Welcome = ({ navigation }) => {
   };
 
   return (
-    <SafeAreaView>
-      <ScrollView contentContainerStyle={{ backgroundColor: "#fff" }}>
-        <View style={{ marginBottom: 10 }}>
-          <View
-            style={{
-              // backgroundColor: "pink",
-              justifyContent: "center",
-              alignItems: "center",
-            }}
-          >
+    // <SafeAreaView>
+    <ScrollView
+      contentContainerStyle={{
+        backgroundColor: "#fff",
+        height: screenHeight + 200,
+      }}
+    >
+      <View style={{ marginBottom: 100 }}>
+        <View
+          style={{
+            backgroundColor: "#fff",
+            justifyContent: "center",
+            alignItems: "center",
+          }}
+        >
+          <Image
+            resizeMode="cover"
+            source={require("../../assets/Rectangle.png")}
+            style={{ width: "100%", height: 370 }}
+          />
+          <Animatable.View animation={"bounceInDown"} style={styles.circle}>
             <Image
-              resizeMode="cover"
-              source={require("../../assets/Rectangle.png")}
-              style={styles.rectangle}
+              resizeMode="stretch"
+              source={require("../../assets/logo.png")}
+              style={{ width: "75%", height: "60%" }}
             />
-            <Animatable.View animation={"bounceInDown"} style={styles.circle}>
-              <Image
-                resizeMode="stretch"
-                source={require("../../assets/logo.png")}
-                style={{ width: "75%", height: "60%" }}
-              />
-            </Animatable.View>
-          </View>
-          <View style={{ alignItems: "center", marginTop: 50 }}>
-            <Text style={styles.welcometext}>Welcome back, yo!</Text>
-            <Text style={styles.desc}>
-              Long time no see! Let’s login to get started.....
-            </Text>
-          </View>
-          <Button
-            text="Continue with Facebook"
-            image={require("./assets/Facebook.png")}
-            onPress={onFBButtonPress}
-          />
-          <Button
-            text="Continue with Google"
-            image={require("./assets/Google.png")}
-            onPress={onGoogle}
-          />
-          <Button
-            text="Continue with Email"
-            image={require("./assets/Email.png")}
-            onPress={() => navigation.navigate("SignIn")}
-            backgroundColor={"#fff"}
-            borderWidth={1}
-            borderColor={"lightgray"}
-          />
+          </Animatable.View>
         </View>
-      </ScrollView>
-    </SafeAreaView>
+        <View style={{ alignItems: "center", marginTop: 50 }}>
+          <Text style={styles.welcometext}>Welcome back, yo!</Text>
+          <Text style={styles.desc}>
+            Long time no see! Let’s login to get started.....
+          </Text>
+        </View>
+        <Button
+          text="Continue with Facebook"
+          image={require("./assets/Facebook.png")}
+          onPress={onFBButtonPress}
+        />
+        <Button
+          text="Continue with Google"
+          image={require("./assets/Google.png")}
+          onPress={onGoogle}
+        />
+        <Button
+          text="Continue with Email"
+          image={require("./assets/Email.png")}
+          onPress={() => navigation.navigate("SignIn")}
+          backgroundColor={"#fff"}
+          borderWidth={1}
+          borderColor={"lightgray"}
+        />
+      </View>
+    </ScrollView>
+    // </SafeAreaView>
   );
 };
 
@@ -199,6 +205,10 @@ const styles = StyleSheet.create({
     elevation: 20,
     position: "absolute",
     bottom: 0,
+    shadowOffset: { width: 0.1, height: 0.1 },
+    shadowColor: "gray",
+    shadowOpacity: 0.5,
+    elevation: 1,
   },
   welcometext: {
     color: "#2E3E5C",

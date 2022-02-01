@@ -129,8 +129,13 @@ const SignIn = ({ navigation }) => {
   };
 
   return (
-    <SafeAreaView>
-      <KeyboardAwareScrollView keyboardShouldPersistTaps="handled">
+    <SafeAreaView style={{ backgroundColor: "#fff" }}>
+      <KeyboardAwareScrollView
+        keyboardShouldPersistTaps="handled"
+        style={{ backgroundColor: "#fff", height: "100%" }}
+      >
+        <Spinner visible={loading} />
+
         <View style={{}}>
           <View>
             <Image
@@ -185,8 +190,10 @@ const SignIn = ({ navigation }) => {
                 marginRight: 20,
               }}
             >
-              <TouchableOpacity>
-                <Text style={styles.forget}>Forget password?</Text>
+              <TouchableOpacity
+                onPress={() => navigation.navigate("ForgotPassword")}
+              >
+                <Text style={styles.forget}>Forgot password?</Text>
               </TouchableOpacity>
             </View>
             <View style={{ marginTop: 20 }}>

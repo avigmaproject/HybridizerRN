@@ -172,11 +172,12 @@ const SignUp = ({ navigation }) => {
   };
 
   return (
-    <SafeAreaView style={{ flex: 1 }}>
+    <SafeAreaView style={{ flex: 1, backgroundColor: "#fff" }}>
       <KeyboardAwareScrollView
         keyboardShouldPersistTaps="handled"
         style={{ height: windowHeight }}
       >
+        <Spinner visible={loading} />
         <View>
           <Image
             source={require("../assets/Rectangle.png")}

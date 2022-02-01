@@ -9,7 +9,12 @@ import { NavigationContainer } from "@react-navigation/native";
 import { NativeBaseProvider } from "native-base";
 const MyStatusBar = ({ backgroundColor, ...props }) => (
   <View style={[styles.statusBar, { backgroundColor }]}>
-    <StatusBar translucent backgroundColor={backgroundColor} {...props} />
+    <StatusBar
+      hidden
+      translucent
+      backgroundColor={backgroundColor}
+      {...props}
+    />
   </View>
 );
 function App() {
@@ -17,11 +22,12 @@ function App() {
   return (
     <NativeBaseProvider>
       <NavigationContainer>
-        <MyStatusBar
+        <StatusBar hidden />
+        {/* <MyStatusBar
           backgroundColor="#30AD4A"
           barStyle="light-content"
           animated={true}
-        />
+        /> */}
         {loggedin ? <MyTabs /> : <AuthNavigation />}
       </NavigationContainer>
     </NativeBaseProvider>

@@ -8,12 +8,13 @@ import {
   StyleSheet,
   FlatList,
 } from "react-native";
-import FontAwesome from "react-native-vector-icons/FontAwesome";
+import AntDesign from "react-native-vector-icons/AntDesign";
 import Feather from "react-native-vector-icons/Feather";
 import Entypo from "react-native-vector-icons/Entypo";
 import { FAB } from "react-native-paper";
 import * as Animatable from "react-native-animatable";
-
+import DeviceInfo from "react-native-device-info";
+let hasNotch = DeviceInfo.hasNotch();
 const DATA = [
   {
     id: "1",
@@ -106,18 +107,18 @@ const DATA = [
 export default class Explore extends Component {
   render() {
     return (
-      <SafeAreaView>
+      <View>
         <ScrollView>
           <View>
             <Image
               resizeMode="stretch"
               source={require("../../../assets/Main.png")}
-              style={{ width: "100%", height: 250 }}
+              style={{ width: "100%", height: hasNotch ? 300 : 250 }}
             />
             <View
               style={{
                 position: "absolute",
-                top: 20,
+                top: hasNotch ? 50 : 30,
               }}
             >
               <View
@@ -150,7 +151,7 @@ export default class Explore extends Component {
                   }}
                 >
                   <View style={styles.icon}>
-                    <FontAwesome name={"bell-o"} size={25} color="#ACACAC" />
+                    <AntDesign name={"bells"} size={25} color="#ACACAC" />
                   </View>
                   <View style={styles.icon}>
                     <Feather name={"search"} size={25} color="#ACACAC" />
@@ -208,7 +209,7 @@ export default class Explore extends Component {
             >
               <View>
                 <Text
-                  style={{ color: "black", fontWeight: "bold", fontSize: 15 }}
+                  style={{ color: "black", fontWeight: "bold", fontSize: 13 }}
                 >
                   Recommended Post
                 </Text>
@@ -272,11 +273,11 @@ export default class Explore extends Component {
         </ScrollView>
         <FAB
           style={styles.fab}
-          small
+          // small
           icon="plus"
           onPress={() => console.log("Pressed")}
         />
-      </SafeAreaView>
+      </View>
     );
   }
 }
@@ -288,7 +289,10 @@ const styles = StyleSheet.create({
     width: 40,
     justifyContent: "center",
     alignItems: "center",
-    elevation: 20,
+    shadowOffset: { width: 0.1, height: 0.1 },
+    shadowColor: "gray",
+    shadowOpacity: 0.5,
+    elevation: 1,
   },
   fab: {
     position: "absolute",

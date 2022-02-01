@@ -70,8 +70,20 @@
 			</dict>
 		</dict>
 	</dict>
-	<key>NSLocationWhenInUseUsageDescription</key>
+		<key>NSCameraUsageDescription</key>
+	<string>Enable's Hybridizer pro to access your camera roll to upload your photos </string>
+	<key>NSHumanReadableCopyright</key>
 	<string></string>
+	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
+	<string>Location required to determine location</string>
+	<key>NSLocationAlwaysUsageDescription</key>
+	<string>Location required to determine location</string>
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>Location required to determine location</string>
+	<key>NSMicrophoneUsageDescription</key>
+	<string>Enable's Hybridizer to access sound while video recording and to upload </string> 
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>Enable's Hybridizer to access your Library to upload your photos </string>
 	<key>UIAppFonts</key>
 	<array>
 		<string>Fontisto.ttf</string>

@@ -9,13 +9,13 @@ import {
   FlatList,
   TextInput,
 } from "react-native";
-import EvilIcons from "react-native-vector-icons/EvilIcons";
 import Feather from "react-native-vector-icons/Feather";
 import Entypo from "react-native-vector-icons/Entypo";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import Octicons from "react-native-vector-icons/Octicons";
 import * as Animatable from "react-native-animatable";
-
+import DeviceInfo from "react-native-device-info";
+let hasNotch = DeviceInfo.hasNotch();
 import { FAB } from "react-native-paper";
 const DATA = [
   {
@@ -52,20 +52,141 @@ const DATA = [
   },
 ];
 export default class Search extends Component {
+  _renderItem = (item) => {
+    return (
+      <Animatable.View
+        animation={"fadeInLeftBig"}
+        style={{
+          width: "100%",
+          backgroundColor: "#fff",
+          marginBottom: 20,
+          paddingHorizontal: 10,
+        }}
+      >
+        <View
+          style={{
+            flexDirection: "row",
+            justifyContent: "space-between",
+            alignItems: "center",
+          }}
+        >
+          <View
+            style={{
+              flexDirection: "row",
+              alignItems: "center",
+              marginBottom: 20,
+            }}
+          >
+            <Image
+              resizeMode="stretch"
+              source={item.profile}
+              style={{ width: 50, height: 50 }}
+            />
+            <View style={{ marginLeft: 10 }}>
+              <Text
+                style={{
+                  color: "black",
+                  fontWeight: "bold",
+                  lineHeight: 20,
+                }}
+              >
+                {item.title}
+              </Text>
+              <Text style={{ fontSize: 10, lineHeight: 20 }}>
+                @{item.account}
+              </Text>
+            </View>
+          </View>
+          <Feather name={"more-vertical"} size={25} color="#ACACAC" />
+        </View>
+        <Image
+          resizeMode="stretch"
+          source={item.image}
+          style={{ width: "100%", height: 200 }}
+        />
+        <View
+          style={{
+            flexDirection: "row",
+            alignItems: "center",
+            padding: 20,
+            backgroundColor: "#fff",
+            shadowOffset: { width: 0.1, height: 0.1 },
+            shadowColor: "gray",
+            shadowOpacity: 0.5,
+            elevation: 1,
+            borderBottomEndRadius: 10,
+            borderBottomStartRadius: 10,
+            justifyContent: "space-between",
+          }}
+        >
+          <View
+            style={{
+              flexDirection: "row",
+              alignItems: "center",
+            }}
+          >
+            <View
+              style={{
+                flexDirection: "row",
+                height: 20,
+                width: 50,
+                justifyContent: "space-around",
+                alignItems: "center",
+                marginRight: 10,
+              }}
+            >
+              <Entypo name={"heart"} size={22} color="#30AD4A" />
+              <Text style={{ fontSize: 15 }}>{item.like}</Text>
+            </View>
+            <View
+              style={{
+                flexDirection: "row",
+                height: 20,
+                width: 50,
+                justifyContent: "space-around",
+                alignItems: "center",
+              }}
+            >
+              <Ionicons
+                name={"chatbubble-ellipses-outline"}
+                size={20}
+                color="#ACACAC"
+              />
+              <Text style={{ fontSize: 15 }}>{item.like}</Text>
+            </View>
+            <View
+              style={{
+                flexDirection: "row",
+                height: 25,
+                width: 50,
+                justifyContent: "space-around",
+                alignItemse: "center",
+              }}
+            >
+              <Entypo name={"share"} size={20} color="#ACACAC" />
+            </View>
+          </View>
+          <View>
+            <Octicons name={"bookmark"} size={20} color="#ACACAC" />
+          </View>
+        </View>
+      </Animatable.View>
+    );
+  };
   render() {
     return (
-      <SafeAreaView>
+      <View>
         <ScrollView>
           <View>
             <Image
               resizeMode="stretch"
               source={require("../../../assets/Main.png")}
-              style={{ width: "100%", height: 150 }}
+              style={{ width: "100%", height: hasNotch ? 200 : 150 }}
             />
             <View
               style={{
                 position: "absolute",
-                top: 20,
+                top: hasNotch ? 50 : 20,
               }}
             >
               <View
@@ -105,9 +226,13 @@ export default class Search extends Component {
                     width: "90%",
                     // backgroundColor: "pink",
                     paddingLeft: 20,
+                    height: 50,
                   }}
                 >
-                  <TextInput style={{}} placeholder="Search by plant name" />
+                  <TextInput
+                    style={{ height: 50, color: "black" }}
+                    placeholder="Search by plant name"
+                  />
                 </View>
                 <View
                   style={{
@@ -131,134 +256,7 @@ export default class Search extends Component {
               <FlatList
                 data={DATA}
                 renderItem={({ item }) => {
-                  return (
-                    <Animatable.View
-                      animation={"fadeInLeftBig"}
-                      style={{
-                        width: "100%",
-                        backgroundColor: "#fff",
-                        marginBottom: 20,
-                        paddingHorizontal: 10,
-                      }}
-                    >
-                      <View
-                        style={{
-                          flexDirection: "row",
-                          justifyContent: "space-between",
-                          alignItems: "center",
-                        }}
-                      >
-                        <View
-                          style={{
-                            flexDirection: "row",
-                            alignItems: "center",
-                            marginBottom: 20,
-                          }}
-                        >
-                          <Image
-                            resizeMode="stretch"
-                            source={item.profile}
-                            style={{ width: 50, height: 50 }}
-                          />
-                          <View style={{ marginLeft: 10 }}>
-                            <Text
-                              style={{
-                                color: "black",
-                                fontWeight: "bold",
-                                lineHeight: 20,
-                              }}
-                            >
-                              {item.title}
-                            </Text>
-                            <Text style={{ fontSize: 10, lineHeight: 20 }}>
-                              @{item.account}
-                            </Text>
-                          </View>
-                        </View>
-                        <Feather
-                          name={"more-vertical"}
-                          size={25}
-                          color="#ACACAC"
-                        />
-                      </View>
-                      <Image
-                        resizeMode="stretch"
-                        source={item.image}
-                        style={{ width: "100%", height: 200 }}
-                      />
-                      <View
-                        style={{
-                          flexDirection: "row",
-                          alignItems: "center",
-                          padding: 20,
-                          backgroundColor: "#fff",
-                          elevation: 8,
-                          borderBottomEndRadius: 10,
-                          borderBottomStartRadius: 10,
-                          justifyContent: "space-between",
-                        }}
-                      >
-                        <View
-                          style={{
-                            flexDirection: "row",
-                            alignItems: "center",
-                          }}
-                        >
-                          <View
-                            style={{
-                              flexDirection: "row",
-                              height: 20,
-                              width: 50,
-                              justifyContent: "space-around",
-                              alignItems: "center",
-                              marginRight: 10,
-                            }}
-                          >
-                            <Entypo name={"heart"} size={22} color="#30AD4A" />
-                            <Text style={{ fontSize: 15 }}>{item.like}</Text>
-                          </View>
-                          <View
-                            style={{
-                              flexDirection: "row",
-                              height: 20,
-                              width: 50,
-                              justifyContent: "space-around",
-                              alignItems: "center",
-                            }}
-                          >
-                            <Ionicons
-                              name={"chatbubble-ellipses-outline"}
-                              size={20}
-                              color="#ACACAC"
-                            />
-                            <Text style={{ fontSize: 15 }}>{item.like}</Text>
-                          </View>
-                          <View
-                            style={{
-                              flexDirection: "row",
-                              height: 25,
-                              width: 50,
-                              justifyContent: "space-around",
-                              alignItems: "center",
-                            }}
-                          >
-                            <EvilIcons
-                              name={"share-google"}
-                              size={30}
-                              color="#ACACAC"
-                            />
-                          </View>
-                        </View>
-                        <View style={{}}>
-                          <Octicons
-                            name={"bookmark"}
-                            size={20}
-                            color="#ACACAC"
-                          />
-                        </View>
-                      </View>
-                    </Animatable.View>
-                  );
+                  return this._renderItem(item);
                 }}
                 keyExtractor={(item) => item.id}
               />
@@ -267,24 +265,14 @@ export default class Search extends Component {
         </ScrollView>
         <FAB
           style={styles.fab}
-          small
           icon="plus"
           onPress={() => console.log("Pressed")}
         />
-      </SafeAreaView>
+      </View>
     );
   }
 }
 const styles = StyleSheet.create({
-  icon: {
-    backgroundColor: "#fff",
-    borderRadius: 45,
-    height: 40,
-    width: 40,
-    justifyContent: "center",
-    alignItems: "center",
-    elevation: 20,
-  },
   fab: {
     position: "absolute",
     margin: 16,
