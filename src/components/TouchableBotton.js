@@ -23,12 +23,12 @@ export default class TouchableBotton extends Component {
       <TouchableOpacity
         onPress={this.props.onPress}
         style={{
-          marginBottom: 20,
+          marginBottom: this.props.marginBottom ? 0 : 20,
           backgroundColor: this.props.backgroundColor,
           width: "100%",
           justifyContent: "center",
           alignItems: "center",
-          height: 50,
+          height: this.props.height,
           borderWidth: this.props.borderWidth,
           borderColor: this.props.borderColor,
           borderStyle: this.props.borderStyle,
@@ -37,7 +37,7 @@ export default class TouchableBotton extends Component {
         <Text
           style={{
             color: "black",
-            fontSize: this.normalize(15),
+            fontSize: this.props.font ? this.normalize(15) : this.normalize(10),
             fontWeight: "bold",
           }}
         >

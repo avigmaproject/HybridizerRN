@@ -11,6 +11,7 @@ export default class InputField extends Component {
           marginVertical: 10,
           height: 40,
           paddingLeft: 10,
+          // width: 300,
         }}
       >
         <TextInput
@@ -18,6 +19,8 @@ export default class InputField extends Component {
           style={{ height: 40 }}
           placeholder={placeholder}
           value={value}
+          // multiline={true}
+          // numberOfLines={10}
         />
       </View>
     );

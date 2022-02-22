@@ -3,9 +3,9 @@
 <plist version="1.0">
 <dict>
 	<key>CLIENT_ID</key>
-	<string>263229200785-ae6fpms9psq8armr27m2qmu315ndjqqh.apps.googleusercontent.com</string>
+	<string>263229200785-jnn6rjvtcqltlrmno5rveme5r7sjedi6.apps.googleusercontent.com</string>
 	<key>REVERSED_CLIENT_ID</key>
-	<string>com.googleusercontent.apps.263229200785-ae6fpms9psq8armr27m2qmu315ndjqqh</string>
+	<string>com.googleusercontent.apps.263229200785-jnn6rjvtcqltlrmno5rveme5r7sjedi6</string>
 	<key>ANDROID_CLIENT_ID</key>
 	<string>263229200785-a92evk13ih74f2i6dt954ggspfp17pb8.apps.googleusercontent.com</string>
 	<key>API_KEY</key>
@@ -15,7 +15,7 @@
 	<key>PLIST_VERSION</key>
 	<string>1</string>
 	<key>BUNDLE_ID</key>
-	<string>org.reactjs.native.example.HybridizerRN</string>
+	<string>com.HybridizerRN</string>
 	<key>PROJECT_ID</key>
 	<string>hybridizerrn</string>
 	<key>STORAGE_BUCKET</key>
@@ -31,6 +31,6 @@
 	<key>IS_SIGNIN_ENABLED</key>
 	<true></true>
 	<key>GOOGLE_APP_ID</key>
-	<string>1:263229200785:ios:cbd9e6e2f24734559de230</string>
+	<string>1:263229200785:ios:703c1023be600eba9de230</string>
 </dict>
 </plist>

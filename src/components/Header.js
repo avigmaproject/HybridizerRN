@@ -45,19 +45,21 @@ export default class Header extends Component {
               <AntDesign name="edit" size={30} color={"black"} />
             </TouchableOpacity>
           )}
-          <TouchableOpacity
-            style={{
-              marginRight: 10,
-              backgroundColor: "#fff",
-              justifyContent: "center",
-              alignItems: "center",
-              borderRadius: 3,
-              padding: 1,
-            }}
-            onPress={() => alert("hiii")}
-          >
-            <Icon name="share-social-outline" size={30} color="black" />
-          </TouchableOpacity>
+          {this.props.share && (
+            <TouchableOpacity
+              style={{
+                marginRight: 10,
+                backgroundColor: "#fff",
+                justifyContent: "center",
+                alignItems: "center",
+                borderRadius: 3,
+                padding: 1,
+              }}
+              onPress={() => alert("hiii")}
+            >
+              <Icon name="share-social-outline" size={30} color="black" />
+            </TouchableOpacity>
+          )}
         </View>
       </View>
     );

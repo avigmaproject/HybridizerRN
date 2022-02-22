@@ -14,7 +14,6 @@ const reducer = (state = initialState, action) => {
       };
     }
     case "SET_PLANT_DESC": {
-      console.log("SET_PLANT_DESC", state.plantdesc);
       return {
         ...state,
         plantdesc: action.plantdesc,

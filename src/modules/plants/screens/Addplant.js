@@ -2,7 +2,6 @@ import React, { Component } from "react";
 import {
   View,
   Platform,
-  PixelRatio,
   Image,
   Text,
   ScrollView,
@@ -10,12 +9,12 @@ import {
   TextInput,
   Alert,
   Dimensions,
+  PixelRatio,
   FlatList,
 } from "react-native";
 import Header from "../../../components/Header";
 import AntDesign from "react-native-vector-icons/AntDesign";
 import Feather from "react-native-vector-icons/Feather";
-import { SafeAreaView } from "react-native";
 import Icon from "react-native-vector-icons/Ionicons";
 import InputField from "../../../components/InputField";
 import ViewButton from "../../../components/ViewButton";
@@ -275,17 +274,6 @@ class Addplant extends Component {
     this.setState({ iconvisible: !this.state.iconvisible });
   };
   onHandleChange = (key, value) => {
-    // if (key === "phonenumber") {
-    //   let phonenumber = value;
-    //   phonenumber = phonenumber.replace(/[^0-9]/gi, "");
-    //   this.setState({
-    //     ...this.state,
-    //     form: {
-    //       ...this.state.form,
-    //       [key]: phonenumber,
-    //     },
-    //   });
-    // }
     if (key.startsWith("Characteristics_")) {
       this.setState({
         ...this.state,
@@ -397,7 +385,7 @@ class Addplant extends Component {
       .then((res) => {
         console.log("res:registerstoreplantimage", res);
         this.setState({ isLoading: false });
-        this.showMessage("Plant save Successfully.", "success");
+        this.showMessage("Plant save successfully.", "success");
       })
       .catch((error) => {
         if (error.request) {
@@ -425,7 +413,6 @@ class Addplant extends Component {
       <View>
         <ScrollView keyboardShouldPersistTaps={"handled"}>
           <Spinner visible={this.state.isLoading} />
-
           <View>
             <View>
               <View
@@ -438,6 +425,7 @@ class Addplant extends Component {
                 <Header
                   onpressedit={() => this.onPressEdit()}
                   edit={true}
+                  share={true}
                   navigation={this.props.navigation}
                 />
               </View>
@@ -475,6 +463,7 @@ class Addplant extends Component {
                 marginTop: -15,
                 paddingHorizontal: 20,
                 height: "100%",
+                paddingBottom: "50%",
               }}
             >
               {addplantvisiable ? (
@@ -714,6 +703,9 @@ class Addplant extends Component {
 
                   <View>
                     <ViewButton
+                      onpress={() =>
+                        this.props.navigation.navigate("AddSpouse")
+                      }
                       source={require("../../../assets/leaftree.png")}
                       title={"Add Seedling/Spouse"}
                     />
@@ -745,17 +737,19 @@ class Addplant extends Component {
                       borderWidth={2}
                       borderColor={"#30AD4A"}
                       borderStyle={"dashed"}
+                      height={50}
+                      font={true}
                     />
 
                     {(this.props.plantdesc.length > 0 ||
                       this.props.plantimage.length > 0) && (
                       <>
-                        <TouchableBotton
+                        {/* <TouchableBotton
                           onPress={() => this.SavePlantDecs()}
                           color={"#fff"}
                           backgroundColor={"#30AD4A"}
                           title={"Save"}
-                        />
+                        /> */}
 
                         <TouchableBotton
                           // onPress={() =>
@@ -763,9 +757,11 @@ class Addplant extends Component {
                           //     require("../../../assets/plantname.png"),
                           //   ])
                           // }
-                          // onPress={() => this.setState({ imagePath: [] })}
+                          onPress={() => this.SavePlantDecs()}
                           backgroundColor={"#EAF7ED"}
                           title={"Save to My Plants"}
+                          height={50}
+                          font={true}
                         />
                       </>
                     )}

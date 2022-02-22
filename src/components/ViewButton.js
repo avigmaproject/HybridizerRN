@@ -1,9 +1,10 @@
 import React, { Component } from "react";
-import { View, Image, Text } from "react-native";
+import { View, Image, Text, TouchableOpacity } from "react-native";
 export default class ViewButton extends Component {
   render() {
     return (
-      <View
+      <TouchableOpacity
+        onPress={this.props.onpress}
         style={{
           backgroundColor: "rgba(218, 230, 228, 0.2)",
           flexDirection: "row",
@@ -34,7 +35,7 @@ export default class ViewButton extends Component {
             {this.props.title}
           </Text>
         </View>
-      </View>
+      </TouchableOpacity>
     );
   }
 }

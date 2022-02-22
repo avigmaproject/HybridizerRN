@@ -1,7 +1,7 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import {
   View,
-  SafeAreaView,
+  AppState,
   ScrollView,
   StyleSheet,
   Image,
@@ -20,10 +20,13 @@ import { setToken, setLoggedIn } from "../../store/action/auth/action";
 import { login } from "../../services/api.function";
 import { useDispatch } from "react-redux";
 import * as Animatable from "react-native-animatable";
+import dynamicLinks from "@react-native-firebase/dynamic-links";
+import firebase from "@react-native-firebase/app";
 const screenHeight = Dimensions.get("window").height;
 
 const Welcome = ({ navigation }) => {
   const dispatch = useDispatch();
+  const [appStates, setappStates] = useState("active");
 
   useFocusEffect(
     React.useCallback(() => {
@@ -33,6 +36,42 @@ const Welcome = ({ navigation }) => {
       });
     }, [])
   );
+
+  const _getInitialUrl = async () => {
+    const url = dynamicLinks().onLink(handleDynamicLink);
+  };
+  const _handleAppStateChange = async (nextAppState) => {
+    if (appStates.match(/inactive|background/) && nextAppState === "active") {
+      _getInitialUrl();
+    }
+    setappStates(appStates);
+  };
+  const handleDynamicLink = (link) => {
+    if (link.url) {
+      const email_link = link.url;
+      if (email_link.includes("forgotpassword")) {
+        navigation.navigate("ResetPassword", { link: email_link });
+      }
+    }
+  };
+  const _getDynamicLink = async () => {
+    await dynamicLinks()
+      .getInitialLink()
+      .then((link) => {
+        if (link) {
+          console.log("Loginlinkinside if", link.url);
+          const email_link = link.url;
+          if (email_link.includes("forgotpassword")) {
+            navigation.navigate("ResetPassword", { link: link.url });
+          }
+        }
+      });
+  };
+  useEffect(() => {
+    _getInitialUrl();
+    AppState.addEventListener("change", _handleAppStateChange);
+    _getDynamicLink();
+  });
 
   const initUser = async (token) => {
     fetch(
@@ -75,11 +114,7 @@ const Welcome = ({ navigation }) => {
         return AccessToken.getCurrentAccessToken();
       })
       .then((data) => {
-        // alert(data.accessToken);
-        // alert(data.applicationID);
         initUser(data.accessToken);
-
-        // console.log("Facebook getting data" + JSON.stringify(data));
       })
       .catch((error) => {
         const { code, message } = error;

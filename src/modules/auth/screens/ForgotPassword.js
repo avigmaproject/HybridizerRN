@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import {
   View,
   SafeAreaView,
@@ -6,12 +6,12 @@ import {
   Image,
   Text,
   Dimensions,
-  Keyboard,
+  Alert,
 } from "react-native";
 import qs from "qs";
 import Spinner from "react-native-loading-spinner-overlay";
 import { useToast } from "native-base";
-import { login } from "../../../services/api.function";
+import { login, forgotpassword } from "../../../services/api.function";
 import { useDispatch } from "react-redux";
 import TextInput from "../../../components/TextInput";
 import Button from "../../../components/Button";
@@ -19,11 +19,15 @@ import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view
 import * as Animatable from "react-native-animatable";
 const windowWidth = Dimensions.get("window").width;
 const windowHeight = Dimensions.get("window").height;
+import dynamicLinks from "@react-native-firebase/dynamic-links";
+import firebase from "@react-native-firebase/app";
+
 export default function ForgotPassword({ navigation }) {
   const dispatch = useDispatch();
   const [email, setEmail] = React.useState("");
-  const [loading, setloading] = React.useState(false);
-
+  const [device, setdevice] = useState(0);
+  const [loading, setloading] = useState(false);
+  // https://hybridizerrn.page.link/
   const toast = useToast();
 
   const Validation = () => {
@@ -64,14 +68,82 @@ export default function ForgotPassword({ navigation }) {
       });
     }
   };
+  const generateLink = async (email) => {
+    setloading(true);
+    const link = await dynamicLinks().buildShortLink(
+      {
+        link: `https://hybridizerrn.page.link/forgotpassword/${email}`,
+        domainUriPrefix: "https://hybridizerrn.page.link",
+        ios: {
+          bundleId: "com.avigma.communv",
+          appStoreId: "1608356127",
+          fallbackUrl:
+            "https://apps.apple.com/us/app/com.gridmaster/id1608356127",
+        },
+        android: {
+          packageName: "com.hybridizerrn",
+          fallbackUrl:
+            "https://play.google.com/store/apps/details?id=com.hybridizerrn",
+        },
+        navigation: {
+          forcedRedirectEnabled: true,
+        },
+      },
+      firebase.dynamicLinks.ShortLinkType.UNGUESSABLE
+    );
+    setloading(false);
+    return link;
+  };
+  useEffect(() => {
+    if (Platform.OS === "android") {
+      setdevice(1);
+    } else {
+      setdevice(2);
+    }
+  });
 
   const _HandleForgotPAssword = async () => {
-    Keyboard.dismiss();
+    setloading(true);
+    const link = await generateLink(email);
     if (Validation()) {
       setloading(true);
-      let data = qs.stringify({
-        username: email,
-      });
+      let data = {
+        EmailID: email,
+        Type: 1,
+        Email_Url: link,
+        Device: device,
+      };
+      console.log(data);
+      await forgotpassword(data)
+        .then((res) => {
+          console.log("res: ", JSON.stringify(res));
+          console.log("res:123", res[0].UserCode);
+          if (res[0].UserCode === "Sucesss") {
+            Alert.alert(
+              "Forgot Password",
+              "Link sent successfully.Please check your registered email.",
+              [{ text: "OK", onPress: () => navigation.navigate("SignIn") }]
+            );
+          }
+          if (res[0].UserCode === "Error") {
+            Alert.alert("Forgot Password", "Please check your email.", [
+              {
+                text: "OK",
+                onPress: () => navigation.navigate("ForgotPassword"),
+              },
+            ]);
+          }
+          setloading(false);
+        })
+        .catch((error) => {
+          if (error.response) {
+            setloading(false);
+            console.log("responce_error", error.response);
+          } else if (error.request) {
+            setloading(false);
+            console.log("request error", error.request);
+          }
+        });
       console.log(data);
       await login(data)
         .then((res) => {

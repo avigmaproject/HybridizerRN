@@ -38,6 +38,16 @@
 				<string>com.googleusercontent.apps.263229200785-ae6fpms9psq8armr27m2qmu315ndjqqh</string>
 			</array>
 		</dict>
+		<dict>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
+			<key>CFBundleURLName</key>
+			<string>Bundle Id</string>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>com.HybridizerRN</string>
+			</array>
+		</dict>
 	</array>
 	<key>CFBundleVersion</key>
 	<string>$(CURRENT_PROJECT_VERSION)</string>
@@ -47,6 +57,10 @@
 	<string>67b40bd8261054367861754bd8b03025</string>
 	<key>FacebookDisplayName</key>
 	<string>HybridizerRN</string>
+	<key>FirebaseDynamicLinksCustomDomains</key>
+	<array>
+		<string>https://hybridizerrn.page.link</string>
+	</array>
 	<key>LSApplicationQueriesSchemes</key>
 	<array>
 		<string>fbapi</string>
@@ -70,7 +84,7 @@
 			</dict>
 		</dict>
 	</dict>
-		<key>NSCameraUsageDescription</key>
+	<key>NSCameraUsageDescription</key>
 	<string>Enable's Hybridizer pro to access your camera roll to upload your photos </string>
 	<key>NSHumanReadableCopyright</key>
 	<string></string>
@@ -81,7 +95,7 @@
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string>Location required to determine location</string>
 	<key>NSMicrophoneUsageDescription</key>
-	<string>Enable's Hybridizer to access sound while video recording and to upload </string> 
+	<string>Enable's Hybridizer to access sound while video recording and to upload </string>
 	<key>NSPhotoLibraryUsageDescription</key>
 	<string>Enable's Hybridizer to access your Library to upload your photos </string>
 	<key>UIAppFonts</key>
