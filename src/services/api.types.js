@@ -8,4 +8,13 @@ export const API = {
   FORGOT_PASSWORD: BASE_URL + "/api/Hybrid/ForGotPassword",
   RESET_PASSWORD: BASE_URL + "/api/Hybrid/ChangePasswordByEmail",
   CREATE_UPDATES_ADD_SEEDLING: BASE_URL + "/api/Hybrid/CreateUpdateAddSeedling",
+  GET_PLANT_MASTER: BASE_URL + "/api/Hybrid/GetPlantMaster",
+  CREATE_UPDATE_ADD_SPOUSE: BASE_URL + "/api/Hybrid/CreateUpdateAddSpouse",
+  GET_USER_MASTER_DATA: BASE_URL + "/api/Hybrid/GetUserMasterData",
+  GET_ADD_SPOUSE: BASE_URL + "/api/Hybrid/GetAddSpouse",
+  CREATE_UPDATE_PLANT_DESCRIPTION:
+    BASE_URL + "/api/Hybrid/CreateUpdatePlantDescription",
+  GET_PLANT_DESCRIPTION: BASE_URL + "/api/Hybrid/GetPlantDescription",
+  GET_HOME_MY_PLANTS: BASE_URL + "/api/Hybrid/GetHomeMyPlants",
+  GET_CATOGORY_MASTER: BASE_URL + "/api/Hybrid/GetCategoryMaster",
 };

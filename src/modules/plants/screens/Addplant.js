@@ -11,10 +11,14 @@ import {
   Dimensions,
   PixelRatio,
   FlatList,
+  Modal,
 } from "react-native";
 import Header from "../../../components/Header";
 import AntDesign from "react-native-vector-icons/AntDesign";
 import Feather from "react-native-vector-icons/Feather";
+import Entypo from "react-native-vector-icons/Entypo";
+
+import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import Icon from "react-native-vector-icons/Ionicons";
 import InputField from "../../../components/InputField";
 import ViewButton from "../../../components/ViewButton";
@@ -29,6 +33,8 @@ import { SliderBox } from "react-native-image-slider-box";
 import {
   registerstoreplantimage,
   createupdateplantmaster,
+  getplantmaster,
+  getcategorymaster,
 } from "../../../services/api.function";
 import { connect } from "react-redux";
 import {
@@ -36,6 +42,7 @@ import {
   setPlantInfo,
   setPlantDesc,
   setPlantImageArr,
+  setPlantId,
 } from "../../../store/action/plant/action";
 import KeyboardSpacer from "react-native-keyboard-spacer";
 import DeviceInfo from "react-native-device-info";
@@ -57,12 +64,11 @@ class Addplant extends Component {
     this.userNameInputRef = React.createRef();
     this.state = {
       addplantvisiable: false,
-      DATA: [],
       isLoading: false,
       input: [],
       plantname: "Hybrid",
       categoryname: "101",
-      form: {},
+      form: { PD_Description: {} },
       description: {},
       viewstatus: false,
       iconvisible: true,
@@ -75,7 +81,23 @@ class Addplant extends Component {
       //   require("../../../assets/plantname.png"), // Local image
       // ],
       setplantdesc: [],
+      savemyplant: false,
+      title: "Save to my plant",
+      formdata: "",
+      plantdescription: [],
+      uploadimage: [],
+      singleitem: [],
+      edit: false,
+      resultdata: [],
+      backupcatogry: [],
+      category: [],
+      filterdata: [],
+      modalVisible: false,
+      catid: 0,
+      setimage: [],
+      setimagearr: [],
     };
+    this.Delete = this.Delete.bind(this);
   }
   normalize(size) {
     const newSize = size * scale;
@@ -110,16 +132,6 @@ class Addplant extends Component {
           multiple: true,
           compressImageQuality: 0.5,
         }).then((image) => {
-          let setimage = [];
-          for (let i = 0; i < image.length; i++) {
-            setimage.push(image[i].path);
-          }
-          console.log(image);
-          // this.setState({
-          //   ...this.state,
-          //   imagePath: setimage,
-          // });
-
           this.uploadImage("gallery", image);
         });
       }.bind(this),
@@ -138,17 +150,6 @@ class Addplant extends Component {
           compressImageQuality: 0.5,
         }).then((image) => {
           console.log(image);
-          let setimage = [];
-          for (let i = 0; i < image.length; i++) {
-            setimage.push(image[i].path);
-          }
-          console.log(image);
-          // this.setState({
-          //   ...this.state,
-          //   imagePath: setimage,
-          // });
-
-          // console.log(this.state.form.imagePath);
           this.uploadImage("camera", image);
         });
       }.bind(this),
@@ -158,7 +159,11 @@ class Addplant extends Component {
   uploadImage = async (type, image) => {
     let setimage = [];
     let setimagearr = [];
+    this.setState({
+      isLoading: true,
+    });
     if (type === "camera") {
+      console.log("image", image);
       let data = JSON.stringify({
         Type: 1,
         Image_Base: "data:image/png;base64, " + image.data,
@@ -167,13 +172,15 @@ class Addplant extends Component {
       // return 0;
       await registerstoreplantimage(data, this.props.token)
         .then((res) => {
-          setimagearr.push(res[0].Image_Path);
-          setimage.push({
+          this.state.setimagearr.push(res[0].Image_Path);
+          this.state.setimage.push({
             PIM_ImageName: image.modificationDate,
             PIM_ImagePath: res[0].Image_Path,
             PIM_Size: image.size,
           });
-
+          this.setState({
+            isLoading: false,
+          });
           console.log("res:registerstoreplantimage", res[0].Image_Path);
         })
         .catch((error) => {
@@ -185,8 +192,22 @@ class Addplant extends Component {
             console.log(error);
           }
         });
+      console.log("==>", setimagearr);
+      this.setState(
+        {
+          ...this.state,
+          imagePath: this.state.setimage,
+        },
+        () => {
+          this.props.setPlantImage(this.state.imagePath);
+        }
+      );
+      this.props.setPlantImageArr(this.state.setimagearr);
     } else {
       for (let i = 0; i < image.length; i++) {
+        this.setState({
+          isLoading: true,
+        });
         let data = JSON.stringify({
           Type: 1,
           Image_Base: "data:image/png;base64, " + image[i].data,
@@ -196,12 +217,15 @@ class Addplant extends Component {
           .then((res) => {
             setimagearr.push(res[0].Image_Path);
             setimage.push({
-              PIM_ImageName: image[i].filename,
+              PIM_ImageName: `index_${i}`,
               PIM_ImagePath: res[0].Image_Path,
               PIM_Size: image[i].size,
+              PIM_IsFirst: i == 0 ? true : false,
             });
-
             console.log("res:registerstoreplantimage", res[0].Image_Path);
+            this.setState({
+              isLoading: false,
+            });
           })
           .catch((error) => {
             if (error.request) {
@@ -213,19 +237,18 @@ class Addplant extends Component {
             }
           });
       }
+      console.log("==>", setimagearr);
+      this.setState(
+        {
+          ...this.state,
+          imagePath: setimage,
+        },
+        () => {
+          this.props.setPlantImage(this.state.imagePath);
+        }
+      );
+      this.props.setPlantImageArr(setimagearr);
     }
-
-    console.log("==>", setimagearr);
-    this.setState(
-      {
-        ...this.state,
-        imagePath: setimage,
-      },
-      () => {
-        this.props.setPlantImage(this.state.imagePath);
-      }
-    );
-    this.props.setPlantImageArr(setimagearr);
     this.Clean();
   };
   Clean = () => {
@@ -234,16 +257,116 @@ class Addplant extends Component {
         console.log("removed all tmp images from tmp directory");
       })
       .catch((e) => {
-        // alert(e);
+        console.log(e);
       });
   };
   componentDidMount = async () => {
     this._unsubscribe = this.props.navigation.addListener("focus", () => {
-      const { viewstatus } = this.props.route.params;
-      this.setState({ viewstatus });
+      // console.log(this.props.plantid);
+      this._GetCategoryMaster();
+      if (this.props.plantid > 0) {
+        this._GetPlantMaster();
+      } else {
+        this.setState({
+          imagePath: [require("../../../assets/plantname.png")],
+          plantname: "Hybrid",
+          categoryname: "101",
+          uploadimage: "",
+          setplantdesc: [],
+          setplantdesc: [],
+        });
+      }
     });
   };
+  _GetCategoryMaster = async () => {
+    let data = {
+      Type: 1,
+    };
+    console.log("_GetCategoryMaster", data, this.props.token);
+    await getcategorymaster(data, this.props.token)
+      .then((res) => {
+        console.log("res:_GetCategoryMaster ", res[0]);
+        this.setState({ category: res[0], backupcatogry: res[0] });
+      })
+      .catch((error) => {
+        if (error.response) {
+          console.log("responce_error", error.response);
+        } else if (error.request) {
+          console.log("request error", error.request);
+        }
+      });
+  };
+  searchText = (e) => {
+    console.log("searchText", e);
+    let text = e.toLowerCase();
+    let category = this.state.backupcatogry;
+    let filteredCategory = category.filter((item) => {
+      return item.Cat_Name.toLowerCase().match(text);
+    });
+    console.log("filteredCategorybefore", filteredCategory);
+    if (Array.isArray(filteredCategory)) {
+      console.log("after", filteredCategory);
+      this.setState({
+        filterdata: filteredCategory,
+        categoryname: e,
+        catid: -90,
+      });
+    } else {
+      this.setState({ categoryname: e, catid: -90 });
+    }
+  };
+  _GetPlantMaster = async () => {
+    this.setState({
+      // isLoading: true,
+    });
+    let imagesrc = [];
+    let data = {
+      Plant_PkeyID: this.props.plantid,
+      Type: 2,
+    };
+    console.log("_GetPlantMaster", data, this.props.token, this.props.plantid);
+    await getplantmaster(data, this.props.token)
+      .then((res) => {
+        var defualt;
+        console.log("res:_GetPlantMaster", res[0][0]);
+        if (res[0][0].plant_Image_Master_DTOs.length > 0) {
+          for (let i = 0; i < res[0][0].plant_Image_Master_DTOs.length; i++) {
+            imagesrc.push(res[0][0].plant_Image_Master_DTOs[i].PIM_ImagePath);
+          }
+        } else {
+          defualt = [require("../../../assets/plantname.png")];
+        }
+
+        this.setState(
+          {
+            plantname: res[0][0].Plant_Name,
+            categoryname: res[0][0].Plant_Cat_Name,
+            catid: res[0][0].Plant_Cat_Pkey,
+            plantimage: res[0][0].plant_Image_Master_DTOs,
+            setplantdesc: res[0][0].plant_Description_DTOs,
+            imagePath:
+              res[0][0].plant_Image_Master_DTOs.length > 0 ? imagesrc : defualt,
+            savemyplant: res[0][0].Plant_MyPlant,
+            title: res[0][0].Plant_MyPlant
+              ? "Remove from my plant"
+              : "Save to my plant",
+            isLoading: false,
+          },
+          () => this.props.setPlantImageArr(this.state.imagePath)
+        );
+        this.props.setPlantImage(res[0][0].plant_Image_Master_DTOs);
+      })
+
+      .catch((error) => {
+        if (error.response) {
+          console.log("responce_error", error.response);
+        } else if (error.request) {
+          console.log("request error", error.request);
+        }
+      });
+  };
   AddInput = (key) => {
+    // console.log("this.state.input", this.state.input);
     let textInput = this.state.input;
     textInput.push(
       <View
@@ -251,9 +374,9 @@ class Addplant extends Component {
       >
         <InputField
           onChangeText={(characteristics) =>
-            this.onHandleChange(`Characteristics_${key + 2}`, characteristics)
+            this.onHandleChange(`Characteristics_${key + 3}`, characteristics)
           }
-          // value={`Characteristics_${key+1}`}
+          // value={this.state.form.PD_Description.Characteristics_1}
           key={key}
           placeholder={`Characteristics`}
         />
@@ -261,8 +384,83 @@ class Addplant extends Component {
     );
     this.setState({ input: textInput });
   };
-  AddplantvisiableClose = () => {
-    this.setState({ addplantvisiable: !this.state.addplantvisiable });
+  AddInput1 = (key, value, index) => {
+    // console.log("this.state.input", this.state.input);
+
+    const { PD_Description } = this.state.form;
+    console.log("value", PD_Description);
+    let textInput = this.state.input;
+    textInput.push(
+      <View
+        style={{ backgroundColor: "#F6F6F6", marginVertical: 10, height: 40 }}
+      >
+        <InputField
+          onChangeText={(characteristics) =>
+            this.onHandleChange(`Characteristics_${index + 2}`, characteristics)
+          }
+          defaultValue={value}
+          // value={}
+          key={key}
+          placeholder={`Characteristics`}
+        />
+      </View>
+    );
+    this.setState({ input: textInput });
+  };
+
+  AddplantvisiableClose = (item, index) => {
+    this.setState({ input: [] });
+    // console.log("item", item);
+    console.log("input", this.state.input);
+    let result = [];
+    let jsonarr;
+    if (typeof item.PD_Description === "object") {
+      jsonarr = item.PD_Description;
+      for (var i in item.PD_Description) result.push([i, jsonarr[i]]);
+      console.log("typeof", result.length);
+      this.setState({
+        ...this.state,
+        addplantvisiable: !this.state.addplantvisiable,
+        edit: true,
+        input: [],
+        form: {
+          ...this.state.form,
+          PD_Title: item.PD_Title,
+          PD_Description: jsonarr,
+        },
+      });
+      {
+        result.length > 3 &&
+          result.splice(3).map((item, index) => {
+            // console.log("descriptiondescription", item);
+            return this.AddInput1(item[0], item[1], index + 4);
+          });
+      }
+    } else {
+      jsonarr = JSON.parse(item.PD_Description);
+      // console.log("jsonarr", jsonarr);
+      for (var i in jsonarr) result.push([i, jsonarr[i]]);
+      // console.log("result", result[2][0]);
+      this.setState({
+        ...this.state,
+        addplantvisiable: !this.state.addplantvisiable,
+        edit: true,
+        form: {
+          ...this.state.form,
+          PD_Title: item.PD_Title,
+          PD_Description: jsonarr,
+        },
+      });
+      {
+        result.length > 3 &&
+          result.splice(3).map((item, index) => {
+            // console.log("descriptiondescription", item[0], item[1]);
+            return this.AddInput1(item[0], item[1], index);
+          });
+      }
+    }
+
+    this.state.setplantdesc.splice(index, 1);
   };
   _ChangeName = (action) => {
     if (action) {
@@ -290,43 +488,68 @@ class Addplant extends Component {
         ...this.state,
         form: {
           ...this.state.form,
-
           [key]: value,
         },
       });
     }
   };
-  Delete = (id) => {
-    let plant = this.props.plantdesc;
+
+  Delete = (index) => {
+    const reducedArr = [...this.state.setplantdesc];
+    reducedArr.splice(index, 1);
+    this.setState({ setplantdesc: reducedArr });
   };
-  DeleteDescription = (id) =>
+  DeleteDescription = (item, index) =>
     Alert.alert("Delete", "Are you sure to delete description", [
       {
         text: "Cancel",
         onPress: () => console.log("Cancel Pressed"),
         style: "cancel",
       },
-      { text: "OK", onPress: () => this.Delete(id) },
+      { text: "OK", onPress: () => this.Delete(index) },
     ]);
   _handleSave = () => {
-    this.state.setplantdesc.push(this.state.form);
+    // let arr = [];
+    console.log("==<******>==", this.state.form.PD_Description);
+    let form1 = {
+      PD_Description: JSON.stringify(this.state.form.PD_Description),
+      PD_Title: this.state.form.PD_Title,
+    };
+    // arr.push(form1);
+    let stringdata = JSON.stringify(form1);
+    console.log("===>>>****", stringdata);
+    this.state.setplantdesc.push(form1);
+    this.setState({ setplantdesc: [...this.state.setplantdesc, form1] });
     this.props.setPlantDesc(this.state.setplantdesc);
-    this.setState(
-      {
-        ...this.state,
-        form: {},
-      },
-      () => this.AddplantvisiableClose()
-    );
+    console.log(this.state.setplantdesc);
+
+    this.setState({
+      ...this.state,
+      input: [],
+      // formdata: stringdata,
+      addplantvisiable: !this.state.addplantvisiable,
+      form: { PD_Description: {} },
+    });
   };
+
   _renderItem = (item, index) => {
-    let arr = Object.values(item.PD_Description);
+    console.log("typeof", typeof item);
+    // let jsonarr = JSON.parse(item.PD_Description);
+    // let arr = Object.values(jsonarr);
+    var arr;
+    if (typeof item.PD_Description === "object") {
+      arr = Object.values(item.PD_Description);
+    } else {
+      let jsonarr = JSON.parse(item.PD_Description);
+      arr = Object.values(jsonarr);
+    }
     return (
       <View>
         <View
           style={{
             flexDirection: "row",
             alignItems: "center",
+            // backgroundColor: "pink",
           }}
         >
           <Text
@@ -334,20 +557,27 @@ class Addplant extends Component {
               fontSize: this.normalize(20),
               color: "#000",
               lineHeight: 50,
+              textTransform: "capitalize",
             }}
           >
             {item.PD_Title}
             {"  "}
           </Text>
-          <TouchableOpacity onPress={() => this.AddplantvisiableClose(index)}>
+          <TouchableOpacity
+            style={{ marginLeft: 10 }}
+            onPress={() => this.AddplantvisiableClose(item, index)}
+          >
             <Feather name="edit" size={18} color={"gray"} />
           </TouchableOpacity>
-          <TouchableOpacity onPress={() => this.DeleteDescription(index)}>
+          <TouchableOpacity
+            style={{ marginLeft: 10 }}
+            onPress={() => this.DeleteDescription(item, index)}
+          >
             <AntDesign name="delete" size={20} color={"gray"} />
           </TouchableOpacity>
         </View>
-        {arr.map((comment, index) => {
-          // console.log("descriptiondescription", comment, index);
+        {arr.map((comment) => {
+          // console.log("descriptiondescription", comment);
           return (
             <View>
               <Text
@@ -367,25 +597,48 @@ class Addplant extends Component {
       </View>
     );
   };
+
   SavePlantDecs = async () => {
-    this.setState({ isLoading: true });
+    console.log("SavePlantDecs", this.state.data);
+    this.setState({
+      // isLoading: true,
+    });
     let data = {
-      Type: 1,
+      Type: this.props.plantid > 0 ? 2 : 1,
       strPlant_Image_Master_DTO: JSON.stringify(this.props.plantimage),
-      strPlant_Description_DTO: JSON.stringify(this.props.plantdesc),
+      strPlant_Description_DTO: JSON.stringify(this.state.setplantdesc),
+      Plant_Name: this.state.plantname,
+      Plant_Cat_Pkey: parseInt(this.state.catid),
+      Plant_Cat_Name: this.state.categoryname,
+      Plant_IsParent: 1,
+      Plant_MyPlant: this.state.savemyplant,
+      Plant_PkeyID: this.props.plantid > 0 ? this.props.plantid : 0,
+      Plant_IsActive: 1,
     };
-    // let data1 = {
-    //   Type: 1,
-    //   strPlant_Image_Master_DTO: this.state.imagePath,
-    //   strPlant_Description_DTO: this.props.plantdesc,
-    // };
+
     console.log(data, this.props.token);
     // return 0;
     await createupdateplantmaster(data, this.props.token)
       .then((res) => {
-        console.log("res:registerstoreplantimage", res);
-        this.setState({ isLoading: false });
+        console.log("res:createupdateplantmaster", res[0]);
+        this.setState({
+          isLoading: false,
+          // imagePath: [require("../../../assets/plantname.png")],
+          // plantname: "",
+          // categoryname: 0,
+          // uploadimage: "",
+          // setplantdesc: null,
+          // setplantdesc: null,
+        });
+        // if (this.props.plantid === 0) {
+        //   this.props.setPlantId(res[0]);
+        // }
+        this.props.setPlantId(res[0]);
+
+        // this.props.setPlantImage([require("../../../assets/plantname.png")]); //this.props.setPlantImage(this.state.imagePath);
+        // this.props.setPlantImageArr([require("../../../assets/plantname.png")]);
         this.showMessage("Plant save successfully.", "success");
+        this._GetPlantMaster();
       })
       .catch((error) => {
         if (error.request) {
@@ -397,20 +650,226 @@ class Addplant extends Component {
         }
       });
   };
+  SaveToMyPlant = () => {
+    if (this.state.savemyplant) {
+      this.setState({ title: "Save to my plant" });
+    } else {
+      this.setState({ title: "Remove from my plant" });
+    }
+    this.setState({ savemyplant: !this.state.savemyplant });
+  };
+  AddCharacteristics = () => {
+    this.setState({
+      input: [],
+      addplantvisiable: !this.state.addplantvisiable,
+      form: { PD_Description: {} },
+    });
+  };
+  ListViewItemSeparator = () => {
+    //Item sparator view
+    return (
+      <View
+        style={{
+          height: 0.3,
+          width: "90%",
+          backgroundColor: "#080808",
+        }}
+      />
+    );
+  };
+  _SelectCategory = (bool, item) => {
+    if (bool) {
+      this.setState({
+        modalVisible: !this.state.modalVisible,
+        catid: -90,
+      });
+    } else {
+      this.setState({
+        categoryname: item.Cat_Name,
+        modalVisible: !this.state.modalVisible,
+        catid: item.Cat_Pkey,
+      });
+    }
+  };
+  _renderModal = () => {
+    return (
+      <View
+        style={{
+          flex: 1,
+          justifyContent: "center",
+          alignItems: "center",
+        }}
+      >
+        <Modal
+          animationType="slide"
+          transparent={true}
+          visible={this.state.modalVisible}
+          onRequestClose={() => {
+            this.setState({ modalVisible: !this.state.modalVisible });
+          }}
+        >
+          <ScrollView>
+            <View
+              style={{
+                marginTop: 150,
+                margin: 20,
+                backgroundColor: "white",
+                borderRadius: 20,
+                alignItems: "center",
+                shadowColor: "#000",
+                shadowOffset: {
+                  width: 0,
+                  height: 2,
+                },
+                shadowOpacity: 0.25,
+                shadowRadius: 4,
+                elevation: 5,
+                width: "90%",
+                paddingBottom: 100,
+              }}
+            >
+              <View
+                style={{
+                  width: "100%",
+                  flexDirection: "row",
+                  justifyContent: "flex-end",
+                  paddingRight: 20,
+                  paddingTop: 10,
+                }}
+              >
+                <Entypo
+                  name="circle-with-cross"
+                  size={18}
+                  color={"black"}
+                  onPress={() =>
+                    this.setState({ modalVisible: !this.state.modalVisible })
+                  }
+                />
+              </View>
+              <View
+                style={{
+                  width: "100%",
+                  flexDirection: "row",
+                  // backgroundColor: "pink",
+                  justifyContent: "center",
+                  alignItems: "center",
+                }}
+              >
+                <View
+                  style={{
+                    width: "85%",
+                    paddingLeft: 20,
+                  }}
+                >
+                  <InputField
+                    onChangeText={(categoryname) => {
+                      this.searchText(categoryname);
+                      // this.setState({ categoryname });
+                    }}
+                    // value={categoryname}
+                    placeholder={"Category"}
+                  />
+                </View>
+
+                <View
+                  style={{
+                    width: "15%",
+                    justifyContent: "center",
+                    alignItems: "center",
+                  }}
+                >
+                  {this.state.filterdata.length === 0 &&
+                    this.state.categoryname !== "" && (
+                      <Entypo
+                        name="add-to-list"
+                        size={18}
+                        color={"black"}
+                        onPress={() => this._SelectCategory(true)}
+                      />
+                    )}
+                </View>
+              </View>
+              <View
+                style={{
+                  width: "90%",
+                  justifyContent: "center",
+                  // alignItems: "center",
+                }}
+              >
+                <FlatList
+                  data={this.state.filterdata}
+                  // ItemSeparatorComponent={this.ListViewItemSeparator}
+                  renderItem={({ item }) => {
+                    return (
+                      <TouchableOpacity
+                        onPress={() => this._SelectCategory(false, item)}
+                        style={{
+                          marginBottom: 5,
+                          paddingVertical: 5,
+                          backgroundColor: "#EAF7ED",
+                          // paddingHorizontal: "40%",
+                          justifyContent: "center",
+                          alignItems: "center",
+                          width: "90%",
+                        }}
+                      >
+                        <Text
+                          style={{
+                            fontSize: 15,
+                            fontWeight: "bold",
+                            textTransform: "capitalize",
+                            color: "#30AD4A",
+                            width: "100%",
+                          }}
+                        >
+                          {item.Cat_Name}
+                        </Text>
+                      </TouchableOpacity>
+                    );
+                  }}
+                  enableEmptySections={true}
+                  // style={{
+                  //   marginTop: "40%",
+                  //   position: "absolute",
+                  //   zIndex: 11111,
+                  // }}
+                  keyExtractor={(item, index) => index.toString()}
+                  ListHeaderComponent={() => {
+                    return <View style={{ height: 10, width: "100%" }}></View>;
+                  }}
+                  ListFooterComponent={() => {
+                    return <View style={{ height: 10, width: "100%" }}></View>;
+                  }}
+                />
+              </View>
+            </View>
+          </ScrollView>
+        </Modal>
+      </View>
+    );
+  };
   render() {
-    const { title } = this.state.form;
+    const { PD_Title, PD_Description } = this.state.form;
     const {
-      viewstatus,
+      Characteristics_0,
+      Characteristics_2,
+      Characteristics_1,
+    } = PD_Description;
+    const {
       addplantvisiable,
       form,
       plantname,
       categoryname,
+      input,
     } = this.state;
-    console.log("form", form);
-    console.log("state", this.state.imagePath);
-    console.log("props", this.props.plantimagearr);
+    console.log(
+      this.props.plantdesc.length > 0 &&
+        // &&  this.props.plantimage.length > 0
+        this.state.categoryname !== "" &&
+        this.state.plantname !== ""
+    );
     return (
-      <View>
+      <View style={{ height: "100%" }}>
         <ScrollView keyboardShouldPersistTaps={"handled"}>
           <Spinner visible={this.state.isLoading} />
           <View>
@@ -467,152 +926,159 @@ class Addplant extends Component {
               }}
             >
               {addplantvisiable ? (
-                <View
-                  style={{
-                    backgroundColor: "#fff",
-                    padding: 20,
-                  }}
-                >
+                <ScrollView>
                   <View
                     style={{
-                      flexDirection: "row",
-                      justifyContent: "space-between",
-                      alignItems: "center",
+                      backgroundColor: "#fff",
+                      padding: 20,
                     }}
                   >
-                    <Text
-                      style={{
-                        color: "#000",
-                        fontWeight: "bold",
-                        fontSize: this.normalize(20),
-                      }}
-                    >
-                      Title
-                    </Text>
-                    <Icon
-                      name="close-circle-outline"
-                      size={20}
-                      onPress={() => this.AddplantvisiableClose()}
-                    />
-                  </View>
-                  <InputField
-                    onChangeText={(title) =>
-                      this.onHandleChange("PD_Title", title)
-                    }
-                    value={title}
-                    placeholder={"Title"}
-                  />
-                  <View>
-                    <Text
-                      style={{
-                        color: "#000",
-                        fontWeight: "bold",
-                        fontSize: this.normalize(20),
-                      }}
-                    >
-                      Description
-                    </Text>
-                    <InputField
-                      onChangeText={(characteristics) =>
-                        this.onHandleChange(
-                          `Characteristics_0`,
-                          characteristics
-                        )
-                      }
-                      placeholder={"Characteristics"}
-                    />
-                    <InputField
-                      onChangeText={(characteristics) =>
-                        this.onHandleChange(
-                          `Characteristics_1`,
-                          characteristics
-                        )
-                      }
-                      placeholder={"Characteristics"}
-                    />
-                    <InputField
-                      onChangeText={(characteristics) =>
-                        this.onHandleChange(
-                          `Characteristics_2`,
-                          characteristics
-                        )
-                      }
-                      placeholder={"Characteristics"}
-                    />
-                    {this.state.input.map((value, index) => {
-                      return value;
-                    })}
-
                     <View
                       style={{
-                        marginTop: 20,
                         flexDirection: "row",
-                        // backgroundColor: "red",
                         justifyContent: "space-between",
+                        alignItems: "center",
                       }}
                     >
-                      <View style={{ width: "45%", height: 50 }}>
-                        <Image
-                          resizeMode="stretch"
-                          style={{ width: "100%", height: "100%" }}
-                          source={require("../../../assets/Rectangle1.png")}
-                        />
-                        <TouchableOpacity
-                          onPress={() =>
-                            this.AddInput(this.state.input.length + 1)
-                          }
-                          style={{
-                            // backgroundColor: "red",
-                            position: "absolute",
-                            width: "100%",
-                            height: "100%",
-                            justifyContent: "center",
-                            alignItems: "center",
-                          }}
-                        >
-                          <Text
-                            style={{
-                              color: "#30AD4A",
-                              fontSize: this.normalize(15),
-                              fontWeight: "bold",
-                            }}
-                          >
-                            + <Text>Add more</Text>
-                          </Text>
-                        </TouchableOpacity>
-                      </View>
-                      <View style={{ width: "45%", height: 50 }}>
-                        <Image
-                          resizeMode="stretch"
-                          style={{ width: "100%", height: "100%" }}
-                          source={require("../../../assets/Rectangle1.png")}
-                        />
-                        <TouchableOpacity
-                          onPress={() => this._handleSave()}
-                          style={{
-                            // backgroundColor: "pink",
-                            position: "absolute",
-                            width: "100%",
-                            height: "100%",
-                            justifyContent: "center",
-                            alignItems: "center",
-                          }}
-                        >
-                          <Text
-                            style={{
-                              color: "#30AD4A",
-                              fontSize: this.normalize(15),
-                              fontWeight: "bold",
-                            }}
-                          >
-                            <Text>Save</Text>
-                          </Text>
-                        </TouchableOpacity>
-                      </View>
+                      <Text
+                        style={{
+                          color: "#000",
+                          fontWeight: "bold",
+                          fontSize: this.normalize(20),
+                        }}
+                      >
+                        Title
+                      </Text>
+                      <Icon
+                        name="close-circle-outline"
+                        size={20}
+                        onPress={() =>
+                          this.setState({
+                            addplantvisiable: !this.state.addplantvisiable,
+                          })
+                        }
+                      />
                     </View>
-                    <KeyboardSpacer />
+                    <InputField
+                      onChangeText={(title) =>
+                        this.onHandleChange("PD_Title", title)
+                      }
+                      value={PD_Title}
+                      placeholder={"Title"}
+                    />
+                    <View>
+                      <Text
+                        style={{
+                          color: "#000",
+                          fontWeight: "bold",
+                          fontSize: this.normalize(20),
+                        }}
+                      >
+                        Description
+                      </Text>
+                      <InputField
+                        onChangeText={(characteristics) =>
+                          this.onHandleChange(
+                            `Characteristics_0`,
+                            characteristics
+                          )
+                        }
+                        placeholder={"Characteristics"}
+                        value={Characteristics_0 || ""}
+                      />
+                      <InputField
+                        onChangeText={(characteristics) =>
+                          this.onHandleChange(
+                            `Characteristics_1`,
+                            characteristics
+                          )
+                        }
+                        placeholder={"Characteristics"}
+                        value={Characteristics_1 || ""}
+                      />
+                      <InputField
+                        onChangeText={(characteristics) =>
+                          this.onHandleChange(
+                            `Characteristics_2`,
+                            characteristics
+                          )
+                        }
+                        placeholder={"Characteristics"}
+                        value={Characteristics_2 || ""}
+                      />
+                      {this.state.input.map((value, index) => {
+                        return value;
+                      })}
+
+                      <View
+                        style={{
+                          marginTop: 20,
+                          flexDirection: "row",
+                          justifyContent: "space-between",
+                        }}
+                      >
+                        <View style={{ width: "45%", height: 50 }}>
+                          <Image
+                            resizeMode="stretch"
+                            style={{ width: "100%", height: "100%" }}
+                            source={require("../../../assets/Rectangle1.png")}
+                          />
+                          <TouchableOpacity
+                            onPress={() =>
+                              this.AddInput(this.state.input.length + 1)
+                            }
+                            style={{
+                              position: "absolute",
+                              width: "100%",
+                              height: "100%",
+                              justifyContent: "center",
+                              alignItems: "center",
+                            }}
+                          >
+                            <Text
+                              style={{
+                                color: "#30AD4A",
+                                fontSize: this.normalize(15),
+                                fontWeight: "bold",
+                              }}
+                            >
+                              + <Text>Add more</Text>
+                            </Text>
+                          </TouchableOpacity>
+                        </View>
+                        <View style={{ width: "45%", height: 50 }}>
+                          <Image
+                            resizeMode="stretch"
+                            style={{ width: "100%", height: "100%" }}
+                            source={require("../../../assets/Rectangle1.png")}
+                          />
+                          <TouchableOpacity
+                            onPress={() => this._handleSave()}
+                            style={{
+                              // backgroundColor: "pink",
+                              position: "absolute",
+                              width: "100%",
+                              height: "100%",
+                              justifyContent: "center",
+                              alignItems: "center",
+                            }}
+                          >
+                            <Text
+                              style={{
+                                color: "#30AD4A",
+                                fontSize: this.normalize(15),
+                                fontWeight: "bold",
+                              }}
+                            >
+                              <Text>Save</Text>
+                            </Text>
+                          </TouchableOpacity>
+                        </View>
+                      </View>
+                      <KeyboardSpacer />
+                    </View>
                   </View>
-                </View>
+                </ScrollView>
               ) : (
                 <View>
                   <View style={{ paddingVertical: 5 }}>
@@ -674,14 +1140,42 @@ class Addplant extends Component {
                               placeholder={"Plant Name"}
                             />
                           </View>
-                          <View style={{ width: "49%" }}>
-                            <InputField
-                              onChangeText={(categoryname) =>
-                                this.setState({ categoryname })
+                          <View
+                            style={{
+                              // backgroundColor: "pink",
+                              width: "49%",
+                              zIndex: 11,
+                            }}
+                          >
+                            <TouchableOpacity
+                              onPress={() =>
+                                this.setState({
+                                  modalVisible: !this.state.modalVisible,
+                                  categoryname: "",
+                                })
                               }
+                              style={{
+                                backgroundColor: "#F6F6F6",
+                                marginVertical: 10,
+                                height: 40,
+                                paddingLeft: 10,
+                                // width: 300,
+                                justifyContent: "center",
+                                width: "100%",
+                              }}
+                            >
+                              <Text style={{ textTransform: "capitalize" }}>
+                                {categoryname}
+                              </Text>
+                              {/* <InputField
+                              editable={true}
+                              // onChangeText={(categoryname) => {
+                              //   this.setState({ categoryname });
+                              // }}
                               value={categoryname}
                               placeholder={"Category"}
-                            />
+                            /> */}
+                            </TouchableOpacity>
                           </View>
                         </View>
                         <View>
@@ -702,35 +1196,77 @@ class Addplant extends Component {
                   /> */}
 
                   <View>
-                    <ViewButton
-                      onpress={() =>
-                        this.props.navigation.navigate("AddSpouse")
-                      }
-                      source={require("../../../assets/leaftree.png")}
-                      title={"Add Seedling/Spouse"}
-                    />
+                    {this.props.plantid > 0 && (
+                      <ViewButton
+                        onpress={() =>
+                          this.props.navigation.navigate("AddSpouse")
+                        }
+                        source={require("../../../assets/leaftree.png")}
+                        title={"Add Seedling/Spouse"}
+                      />
+                    )}
 
                     <View
                       style={{
                         backgroundColor: "#F7F8FD",
                         borderTopLeftRadius: 50,
-                        borderTopRightRadius: 20,
-                        paddingHorizontal: 20,
-                        paddingVertical: 10,
+                        borderTopRightRadius: 25,
+                        paddingHorizontal:
+                          this.state.setplantdesc.length > 0 ? 20 : 0,
+                        paddingVertical:
+                          this.state.setplantdesc.length > 0 ? 10 : 0,
                         marginHorizontal: -17,
                       }}
                     >
                       <FlatList
-                        data={this.props.plantdesc}
+                        data={this.state.setplantdesc}
+                        // data={this.props.plantdesc}
                         renderItem={({ item, index }) => {
                           return this._renderItem(item, index);
                         }}
                         keyExtractor={(item) => item.id}
                       />
                     </View>
-
+                    <View
+                      style={{
+                        flexDirection: "row",
+                        alignItems: "center",
+                        // paddingVertical: 10,
+                        marginBottom: 10,
+                        // backgroundColor: "red",
+                      }}
+                    >
+                      {!this.state.savemyplant ? (
+                        <View>
+                          <MaterialCommunityIcons
+                            onPress={() => this.SaveToMyPlant()}
+                            name="checkbox-blank-outline"
+                            size={30}
+                            color={"#30AD4A"}
+                          />
+                        </View>
+                      ) : (
+                        <View>
+                          <MaterialCommunityIcons
+                            onPress={() => this.SaveToMyPlant()}
+                            name="checkbox-intermediate"
+                            size={30}
+                            color={"#30AD4A"}
+                          />
+                        </View>
+                      )}
+                      <Text
+                        style={{
+                          marginLeft: 10,
+                          color: "#30AD4A",
+                          fontWeight: "bold",
+                        }}
+                      >
+                        {this.state.title}
+                      </Text>
+                    </View>
                     <TouchableBotton
-                      onPress={() => this.AddplantvisiableClose()}
+                      onPress={() => this.AddCharacteristics()}
                       color={"#30AD4A"}
                       backgroundColor={"#EAF7ED"}
                       title={"+ Add Characteristics"}
@@ -741,30 +1277,29 @@ class Addplant extends Component {
                       font={true}
                     />
 
-                    {(this.props.plantdesc.length > 0 ||
-                      this.props.plantimage.length > 0) && (
-                      <>
-                        {/* <TouchableBotton
-                          onPress={() => this.SavePlantDecs()}
-                          color={"#fff"}
-                          backgroundColor={"#30AD4A"}
-                          title={"Save"}
-                        /> */}
+                    {this.props.plantdesc.length > 0 &&
+                      this.props.plantimagearr.length > 0 &&
+                      this.state.categoryname !== "" &&
+                      this.state.plantname !== "" && (
+                        <>
+                          {/* <TouchableBotton
+                            onPress={() => this.SaveToMyPlant()}
+                            backgroundColor={"#EAF7ED"}
+                            title={this.state.title}
+                            height={50}
+                            font={true}
+                          /> */}
 
-                        <TouchableBotton
-                          // onPress={() =>
-                          //   this.props.setPlantImage([
-                          //     require("../../../assets/plantname.png"),
-                          //   ])
-                          // }
-                          onPress={() => this.SavePlantDecs()}
-                          backgroundColor={"#EAF7ED"}
-                          title={"Save to My Plants"}
-                          height={50}
-                          font={true}
-                        />
-                      </>
-                    )}
+                          <TouchableBotton
+                            onPress={() => this.SavePlantDecs()}
+                            color={"#fff"}
+                            backgroundColor={"#30AD4A"}
+                            title={"Save"}
+                            height={50}
+                            font={true}
+                          />
+                        </>
+                      )}
 
                     <ActionSheet
                       ref={(o) => (this.ActionSheet = o)}
@@ -798,7 +1333,7 @@ class Addplant extends Component {
             </View>
           </View>
         </ScrollView>
-        {viewstatus ||
+        {/* {viewstatus ||
           ((this.props.plantdesc.length > 0 ||
             this.props.plantimage.length > 0) && (
             <TouchableOpacity
@@ -815,7 +1350,8 @@ class Addplant extends Component {
                 source={require("../../../assets/Duplicate.png")}
               />
             </TouchableOpacity>
-          ))}
+          ))} */}
+        {this._renderModal()}
       </View>
     );
   }
@@ -825,6 +1361,7 @@ const mapStateToProps = (state, ownProps) => ({
   plantdesc: state.plantReducer.plantdesc,
   plantimage: state.plantReducer.plantimage,
   plantimagearr: state.plantReducer.plantimagearr,
+  plantid: state.plantReducer.plantid,
 });
 
 const mapDispatchToProps = {
@@ -832,5 +1369,6 @@ const mapDispatchToProps = {
   setPlantDesc,
   setPlantImage,
   setPlantImageArr,
+  setPlantId,
 };
 export default connect(mapStateToProps, mapDispatchToProps)(Addplant);

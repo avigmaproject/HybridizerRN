@@ -32,16 +32,22 @@ export default class TouchableBotton extends Component {
           borderWidth: this.props.borderWidth,
           borderColor: this.props.borderColor,
           borderStyle: this.props.borderStyle,
+          paddingHorizontal: 5,
         }}
       >
         <Text
+          ellipsizeMode={"tail"}
+          numberOfLines={2}
           style={{
-            color: "black",
+            // color: "black",
             fontSize: this.props.font ? this.normalize(15) : this.normalize(10),
             fontWeight: "bold",
+            color: this.props.color,
           }}
         >
-          <Text style={{ color: this.props.color }}>{this.props.title}</Text>
+          {/* <Text style={{ }}> */}
+          {this.props.title}
+          {/* </Text> */}
         </Text>
       </TouchableOpacity>
     );

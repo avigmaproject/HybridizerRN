@@ -3,7 +3,7 @@ import { TextInput, View } from "react-native";
 
 export default class InputField extends Component {
   render() {
-    const { placeholder, onChangeText, value } = this.props;
+    const { placeholder, onChangeText, value, onBlur, editable } = this.props;
     return (
       <View
         style={{
@@ -19,8 +19,11 @@ export default class InputField extends Component {
           style={{ height: 40 }}
           placeholder={placeholder}
           value={value}
+          defaultValue={this.props.defaultValue}
+          onBlur={onBlur}
           // multiline={true}
           // numberOfLines={10}
+          editable={!editable}
         />
       </View>
     );

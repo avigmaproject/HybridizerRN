@@ -127,8 +127,6 @@ export default function ResetPassword({ navigation, route }) {
             console.log("request error", error.request);
           }
         });
-    } else {
-      alert("hiii");
     }
   };
   return (

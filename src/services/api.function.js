@@ -92,3 +92,118 @@ export const createupdatesddseedling = async (data, access_token) => {
       throw error;
     });
 };
+export const getplantmaster = async (data, access_token) => {
+  return axios(API.GET_PLANT_MASTER, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: "Bearer " + access_token,
+    },
+    data,
+  })
+    .then((response) => response.data)
+    .catch((error) => {
+      throw error;
+    });
+};
+export const createupdateaddspouse = async (data, access_token) => {
+  return axios(API.CREATE_UPDATE_ADD_SPOUSE, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: "Bearer " + access_token,
+    },
+    data,
+  })
+    .then((response) => response.data)
+    .catch((error) => {
+      throw error;
+    });
+};
+export const getaddspouse = async (data, access_token) => {
+  return axios(API.GET_ADD_SPOUSE, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: "Bearer " + access_token,
+    },
+    data,
+  })
+    .then((response) => response.data)
+    .catch((error) => {
+      throw error;
+    });
+};
+export const gethomemyplants = async (data, access_token) => {
+  return axios(API.GET_HOME_MY_PLANTS, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: "Bearer " + access_token,
+    },
+    data,
+  })
+    .then((response) => response.data)
+    .catch((error) => {
+      throw error;
+    });
+};
+export const getcategorymaster = async (data, access_token) => {
+  return axios(API.GET_CATOGORY_MASTER, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: "Bearer " + access_token,
+    },
+    data,
+  })
+    .then((response) => response.data)
+    .catch((error) => {
+      throw error;
+    });
+};
+export const getusermasterdata = async (data, access_token) => {
+  //left
+  return axios(API.GET_USER_MASTER_DATA, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: "Bearer " + access_token,
+    },
+    data,
+  })
+    .then((response) => response.data)
+    .catch((error) => {
+      throw error;
+    });
+};
+export const createupdateplantdescription = async (data, access_token) => {
+  //left
+  return axios(API.CREATE_UPDATE_PLANT_DESCRIPTION, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: "Bearer " + access_token,
+    },
+    data,
+  })
+    .then((response) => response.data)
+    .catch((error) => {
+      throw error;
+    });
+};
+export const getplantdescription = async (data, access_token) => {
+  //left
+  return axios(API.GET_PLANT_DESCRIPTION, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: "Bearer " + access_token,
+    },
+    data,
+  })
+    .then((response) => response.data)
+    .catch((error) => {
+      throw error;
+    });
+};

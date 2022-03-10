@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import {
-  SafeAreaView,
+  TouchableOpacity,
   Text,
   View,
   ScrollView,
@@ -16,42 +16,142 @@ import Octicons from "react-native-vector-icons/Octicons";
 import * as Animatable from "react-native-animatable";
 import DeviceInfo from "react-native-device-info";
 let hasNotch = DeviceInfo.hasNotch();
+import { connect } from "react-redux";
+import { gethomemyplants } from "../../../services/api.function";
+import { setUserID } from "../../../store/action/auth/action";
+import { setPlantId, logoutAccount } from "../../../store/action/plant/action";
 import { FAB } from "react-native-paper";
-const DATA = [
-  {
-    id: "1",
-    title: "Top Flower",
-    image: require("../../../assets/image13.png"),
-    like: 12,
-    account: "minal",
-    profile: require("../../../assets/profile2.png"),
-  },
-  {
-    id: "2",
-    title: "Top Flower",
-    image: require("../../../assets/image14.png"),
-    like: 12,
-    account: "minal",
-    profile: require("../../../assets/profile.png"),
-  },
-  {
-    id: "3",
-    title: "Top Flower",
-    image: require("../../../assets/image15.png"),
-    like: 10,
-    account: "minal",
-    profile: require("../../../assets/profile.png"),
-  },
-  {
-    id: "4",
-    title: "Top Flower",
-    image: require("../../../assets/image16.png"),
-    like: 0,
-    account: "minal",
-    profile: require("../../../assets/profile.png"),
-  },
-];
-export default class Search extends Component {
+// const DATA = [
+//   {
+//     id: "1",
+//     title: "Top Flower",
+//     image: require("../../../assets/image13.png"),
+//     like: 12,
+//     account: "minal",
+//     profile: require("../../../assets/profile2.png"),
+//   },
+//   {
+//     id: "2",
+//     title: "Top Flower",
+//     image: require("../../../assets/image14.png"),
+//     like: 12,
+//     account: "minal",
+//     profile: require("../../../assets/profile.png"),
+//   },
+//   {
+//     id: "3",
+//     title: "Top Flower",
+//     image: require("../../../assets/image15.png"),
+//     like: 10,
+//     account: "minal",
+//     profile: require("../../../assets/profile.png"),
+//   },
+//   {
+//     id: "4",
+//     title: "Top Flower",
+//     image: require("../../../assets/image16.png"),
+//     like: 0,
+//     account: "minal",
+//     profile: require("../../../assets/profile.png"),
+//   },
+// ];
+class Search extends Component {
+  constructor(props) {
+    super(props);
+    this.userNameInputRef = React.createRef();
+    this.state = {
+      title: true,
+      titlename: "",
+      plant: [],
+      backupplant: [],
+      search: "",
+    };
+  }
+  componentDidMount = () => {
+    this._unsubscribe = this.props.navigation.addListener("focus", () => {
+      this._GetHomeMyPlants();
+    });
+  };
+
+  searchText = (e) => {
+    console.log("searchText", e);
+    let text = e.toLowerCase();
+
+    if (text) {
+      const lowercasedFilter = text.toLowerCase();
+      const filteredData = this.state.backupplant.filter((item) => {
+        console.log("inside", item);
+        return Object.keys(item).some(
+          (key) =>
+            typeof item[key] === "string" &&
+            item[key].toLowerCase().includes(lowercasedFilter)
+        );
+      });
+      if (filteredData.length > 0) {
+        this.setState({
+          plant: filteredData,
+        });
+      } else {
+        alert("Nothing to search!!!!");
+      }
+    } else {
+      this.setState({
+        plant: this.state.backupplant,
+      });
+    }
+    // let category = this.state.backupplant;
+    // let filteredCategory = category.filter((item) => {
+    //   return item.Plant_Name.toLowerCase().match(text);
+    // });
+    // console.log("filteredCategorybefore", filteredCategory);
+    // if (Array.isArray(filteredCategory)) {
+    //   console.log("after", filteredCategory);
+    //   this.setState({
+    //     plant: filteredCategory,
+    //     search: e,
+    //   });
+    // } else {
+    //   this.setState({
+    //     plant: filteredCategory,
+    //   });
+    // }
+  };
+  _GetHomeMyPlants = async () => {
+    let data = {
+      // Plant_User_PkeyID: this.props.userid,
+      Type: 2,
+    };
+    console.log("_GetHomeMyPlants", data, this.props.token);
+    await gethomemyplants(data, this.props.token)
+      .then((res) => {
+        console.log("res:gethomemyplants ", res[0]);
+        this.setState({ plant: res[0], backupplant: res[0] });
+      })
+      .catch((error) => {
+        if (error.response) {
+          console.log("responce_error", error.response);
+        } else if (error.request) {
+          console.log("request error", error.request);
+        }
+      });
+  };
+  _ChangeTitle = (type) => {
+    if (type) {
+      this.props.setPlantTitle(this.state.titlename);
+    }
+    this.setState({ title: !this.state.title });
+  };
+  _SelectItem = (type, item) => {
+    if (type) {
+      this.props.setPlantId(item.Plant_PkeyID);
+      this.props.navigation.navigate("Plant", { screen: "Addplant" });
+    } else {
+      this.props.setPlantId(0);
+      this.props.logoutAccount();
+      this.props.navigation.navigate("Plant", { screen: "Addplant" });
+    }
+  };
+
   _renderItem = (item) => {
     return (
       <Animatable.View
@@ -63,7 +163,8 @@ export default class Search extends Component {
           paddingHorizontal: 10,
         }}
       >
-        <View
+        <TouchableOpacity
+          onPress={() => this._SelectItem(true, item)}
           style={{
             flexDirection: "row",
             justifyContent: "space-between",
@@ -77,11 +178,11 @@ export default class Search extends Component {
               marginBottom: 20,
             }}
           >
-            <Image
+            {/* <Image
               resizeMode="stretch"
               source={item.profile}
               style={{ width: 50, height: 50 }}
-            />
+            /> */}
             <View style={{ marginLeft: 10 }}>
               <Text
                 style={{
@@ -90,25 +191,41 @@ export default class Search extends Component {
                   lineHeight: 20,
                 }}
               >
-                {item.title}
+                {item.Plant_Name}
               </Text>
               <Text style={{ fontSize: 10, lineHeight: 20 }}>
-                @{item.account}
+                @{item.Cat_Name}
               </Text>
             </View>
           </View>
           <Feather name={"more-vertical"} size={25} color="#ACACAC" />
-        </View>
-        <Image
-          resizeMode="stretch"
-          source={item.image}
-          style={{ width: "100%", height: 200 }}
-        />
+        </TouchableOpacity>
+        {!item.PIM_ImagePath ? (
+          <Image
+            resizeMode="cover"
+            source={require("../../../assets/plantname.png")}
+            style={{
+              width: "100%",
+              height: 150,
+              borderRadius: 3,
+            }}
+          />
+        ) : (
+          <Image
+            resizeMode="cover"
+            source={{ uri: item.PIM_ImagePath }}
+            style={{
+              width: "100%",
+              height: 150,
+              borderRadius: 3,
+            }}
+          />
+        )}
         <View
           style={{
             flexDirection: "row",
             alignItems: "center",
-            padding: 20,
+            padding: 5,
             backgroundColor: "#fff",
             shadowOffset: { width: 0.1, height: 0.1 },
             shadowColor: "gray",
@@ -119,7 +236,7 @@ export default class Search extends Component {
             justifyContent: "space-between",
           }}
         >
-          <View
+          {/* <View
             style={{
               flexDirection: "row",
               alignItems: "center",
@@ -168,14 +285,15 @@ export default class Search extends Component {
           </View>
           <View>
             <Octicons name={"bookmark"} size={20} color="#ACACAC" />
-          </View>
+          </View> */}
         </View>
       </Animatable.View>
     );
   };
   render() {
+    console.log(this.props.plantid);
     return (
-      <View>
+      <View style={{ height: "100%" }}>
         <ScrollView>
           <View>
             <Image
@@ -232,6 +350,11 @@ export default class Search extends Component {
                   <TextInput
                     style={{ height: 50, color: "black" }}
                     placeholder="Search by plant name"
+                    onChangeText={(search) => {
+                      this.searchText(search);
+                      this.setState({ search });
+                    }}
+                    value={this.state.search}
                   />
                 </View>
                 <View
@@ -254,11 +377,34 @@ export default class Search extends Component {
               }}
             >
               <FlatList
-                data={DATA}
+                data={this.state.plant}
                 renderItem={({ item }) => {
                   return this._renderItem(item);
                 }}
-                keyExtractor={(item) => item.id}
+                ListHeaderComponent={() => {
+                  return <View></View>;
+                }}
+                ListFooterComponent={() => {
+                  return <View></View>;
+                }}
+                ListEmptyComponent={() => {
+                  return (
+                    <View
+                      style={{
+                        flex: 1,
+                        // backgroundColor: "pink",
+                        justifyContent: "center",
+                        alignItems: "center",
+                        marginTop: 30,
+                      }}
+                    >
+                      <Text style={{ fontSize: 50, fontWeight: "bold" }}>
+                        No Plant Found
+                      </Text>
+                    </View>
+                  );
+                }}
+                keyExtractor={(item) => item.Plant_PkeyID}
               />
             </View>
           </View>
@@ -266,12 +412,21 @@ export default class Search extends Component {
         <FAB
           style={styles.fab}
           icon="plus"
-          onPress={() => console.log("Pressed")}
+          onPress={() => this._SelectItem(false, 0)}
         />
       </View>
     );
   }
 }
+const mapStateToProps = (state, ownProps) => ({
+  token: state.authReducer.token,
+  plantid: state.plantReducer.plantid,
+});
+const mapDispatchToProps = {
+  setPlantId,
+  logoutAccount,
+};
+export default connect(mapStateToProps, mapDispatchToProps)(Search);
 const styles = StyleSheet.create({
   fab: {
     position: "absolute",

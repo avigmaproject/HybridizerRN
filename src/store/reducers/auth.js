@@ -6,34 +6,35 @@ export const initialState = {
   cartitem: null,
   id: null,
   imageid: null,
-  usertype: false,
+  userid: 0,
 };
 
 const reducer = (state = initialState, action) => {
   switch (action.type) {
-    case 'SET_LOGGED': {
+    case "SET_LOGGED": {
       return {
         ...state,
         loggedin: true,
       };
     }
-    case 'SIGN_OUT': {
+    case "SIGN_OUT": {
       return {
         ...state,
         loggedin: false,
         token: null,
+        userid: 0,
       };
     }
-    case 'SET_TOKEN': {
+    case "SET_TOKEN": {
       return {
         ...state,
         token: action.token,
       };
     }
-    case 'SET_USER_TYPE': {
+    case "SET_USER_ID": {
       return {
         ...state,
-        usertype: action.usertype,
+        userid: action.userid,
       };
     }
     default: {

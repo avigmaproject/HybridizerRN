@@ -180,7 +180,7 @@ export default function ForgotPassword({ navigation }) {
           <Animatable.View animation={"fadeInUpBig"} style={styles.card}>
             <View style={{ marginTop: 25, paddingHorizontal: 25 }}>
               <Text style={styles.welcometext}>Welcome Back!</Text>
-              <Text style={styles.desc}>Forgot your passord !!</Text>
+              <Text style={styles.desc}>Forgot your password !!</Text>
             </View>
             <View style={{ marginTop: 35, paddingHorizontal: 25 }}>
               <TextInput

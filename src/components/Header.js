@@ -34,7 +34,7 @@ export default class Header extends Component {
             <TouchableOpacity
               style={{
                 marginRight: 10,
-                backgroundColor: "#fff",
+                // backgroundColor: "#fff",
                 justifyContent: "center",
                 alignItems: "center",
                 borderRadius: 3,
@@ -49,7 +49,7 @@ export default class Header extends Component {
             <TouchableOpacity
               style={{
                 marginRight: 10,
-                backgroundColor: "#fff",
+                // backgroundColor: "#fff",
                 justifyContent: "center",
                 alignItems: "center",
                 borderRadius: 3,

@@ -1,28 +1,27 @@
-export const setToken = token => {
-  return dispatch => {
-    dispatch({type: 'SET_TOKEN', token});
+export const setToken = (token) => {
+  return (dispatch) => {
+    dispatch({ type: "SET_TOKEN", token });
   };
 };
 
 export const signout = () => {
-  return dispatch => {
-    dispatch({type: 'SIGN_OUT'});
+  return (dispatch) => {
+    dispatch({ type: "SIGN_OUT" });
   };
 };
 
 export const setLoggedIn = () => {
-  return dispatch => {
+  return (dispatch) => {
     dispatch({
-      type: 'SET_LOGGED',
+      type: "SET_LOGGED",
     });
   };
 };
-export const setUserType = usertype => {
-  console.log(usertype);
-  return dispatch => {
+export const setUserID = (userid) => {
+  return (dispatch) => {
     dispatch({
-      type: 'SET_USER_TYPE',
-      usertype,
+      type: "SET_USER_ID",
+      userid,
     });
   };
 };

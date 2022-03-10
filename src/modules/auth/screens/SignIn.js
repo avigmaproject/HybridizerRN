@@ -115,6 +115,7 @@ const SignIn = ({ navigation }) => {
           dispatch(setLoggedIn(true));
         })
         .catch((error) => {
+          console.log(error);
           setloading(false);
           if (
             error.response.data.error_description ===
