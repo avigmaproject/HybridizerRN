@@ -11,9 +11,7 @@ import {
   Keyboard,
 } from "react-native";
 import Feather from "react-native-vector-icons/Feather";
-import Entypo from "react-native-vector-icons/Entypo";
-import Ionicons from "react-native-vector-icons/Ionicons";
-import Octicons from "react-native-vector-icons/Octicons";
+import Spinner from "react-native-loading-spinner-overlay";
 import DeviceInfo from "react-native-device-info";
 import AntDesign from "react-native-vector-icons/AntDesign";
 let hasNotch = DeviceInfo.hasNotch();
@@ -70,6 +68,7 @@ class Plant extends Component {
     });
   };
   _GetHomeMyPlants = async () => {
+    this.setState({ isLoading: true });
     let data = {
       // Plant_User_PkeyID: this.props.userid,
       Type: 2,
@@ -78,7 +77,7 @@ class Plant extends Component {
     await gethomemyplants(data, this.props.token)
       .then((res) => {
         console.log("res:gethomemyplants ", res[0]);
-        this.setState({ plant: res[0] });
+        this.setState({ plant: res[0], isLoading: false });
       })
       .catch((error) => {
         if (error.response) {
@@ -102,63 +101,35 @@ class Plant extends Component {
   _SelectItem = (type, item) => {
     if (type) {
       this.props.setPlantId(item.Plant_PkeyID);
-      this.props.navigation.navigate("Addplant");
+      this.props.navigation.navigate("Addplant", { savemyplant: true });
     } else {
       this.props.setPlantId(0);
       this.props.logoutAccount();
-      this.props.navigation.navigate("Addplant");
+      this.props.navigation.navigate("Addplant", { savemyplant: true });
     }
   };
+
   _renderItem = (item) => {
     return (
       <TouchableOpacity
         onPress={() => this._SelectItem(true, item)}
         style={{
-          width: "100%",
+          width: "50%",
           backgroundColor: "#fff",
-          marginBottom: 30,
-          paddingHorizontal: 10,
+          borderRadius: 5,
+          // paddingHorizontal: 5,
+          marginTop: 10,
+          marginRight: 10,
+          shadowOffset: { width: 1, height: 1 },
+          shadowColor: "gray",
+          shadowOpacity: 0.9,
+          elevation: 5,
+          marginBottom: 5,
         }}
       >
-        <View
-          style={{
-            flexDirection: "row",
-            justifyContent: "space-between",
-            alignItems: "center",
-          }}
-        >
-          <View
-            style={{
-              flexDirection: "row",
-              alignItems: "center",
-              marginBottom: 20,
-            }}
-          >
-            {/* <Image
-          resizeMode="stretch"
-          source={item.profile}
-          style={{ width: 50, height: 50 }}
-        /> */}
-            <View style={{ marginLeft: 10 }}>
-              <Text
-                style={{
-                  color: "black",
-                  fontWeight: "bold",
-                  lineHeight: 20,
-                }}
-              >
-                {item.Plant_Name}
-              </Text>
-              <Text style={{ fontSize: 10, lineHeight: 20 }}>
-                @{item.Cat_Name}
-              </Text>
-            </View>
-          </View>
-          <Feather name={"more-vertical"} size={25} color="#ACACAC" />
-        </View>
         {!item.PIM_ImagePath ? (
           <Image
-            resizeMode="cover"
+            resizeMode="stretch"
             source={require("../../../assets/plantname.png")}
             style={{
               width: "100%",
@@ -177,89 +148,191 @@ class Plant extends Component {
             }}
           />
         )}
-        {/* <Image
-          resizeMode="stretch"
-          source={item.image}
-          style={{ width: "100%", height: 200 }}
-        /> */}
+
         <View
           style={{
             flexDirection: "row",
-            alignItems: "center",
-            padding: 5,
-            backgroundColor: "#fff",
-            shadowOffset: { width: 0.1, height: 0.1 },
-            shadowColor: "gray",
-            shadowOpacity: 0.5,
-            elevation: 1,
-            borderBottomEndRadius: 10,
-            borderBottomStartRadius: 10,
             justifyContent: "space-between",
+            alignItems: "center",
+            padding: 10,
           }}
         >
+          <View>
+            <Text style={{ color: "black", fontWeight: "bold" }}>
+              {item.Plant_Name}
+            </Text>
+            <Text style={{ fontSize: 10 }}>@{item.Cat_Name}</Text>
+          </View>
           {/* <View
-        style={{
-          flexDirection: "row",
-          alignItems: "center",
-        }}
-      >
-        <View
-          style={{
-            flexDirection: "row",
-            height: 20,
-            width: 50,
-            justifyContent: "space-around",
-            alignItems: "center",
-            marginRight: 10,
-          }}
-        >
-          <Entypo name={"heart"} size={22} color="#30AD4A" />
-          <Text style={{ fontSize: 15 }}>{item.like}</Text>
-        </View>
-        <View
-          style={{
-            flexDirection: "row",
-            height: 20,
-            width: 50,
-            justifyContent: "space-around",
-            alignItems: "center",
-          }}
-        >
-          <Ionicons
-            name={"chatbubble-ellipses-outline"}
-            size={20}
-            color="#ACACAC"
-          />
-          <Text style={{ fontSize: 15 }}>{item.like}</Text>
-        </View>
-        <View
-          style={{
-            flexDirection: "row",
-            height: 25,
-            width: 50,
-            justifyContent: "space-around",
-            alignItems: "center",
-          }}
-        >
-          <Entypo name={"share"} size={20} color="#ACACAC" />
-        </View>
-      </View> */}
-          {/* <View style={{}}>
-        <Octicons
-          name={"bookmark"}
-          size={20}
-          color="#ACACAC"
-        />
-      </View> */}
+            style={{
+              flexDirection: "row",
+              borderWidth: 1,
+              borderColor: "lightgray",
+              height: 20,
+              width: 40,
+              justifyContent: "space-around",
+              alignItems: "center",
+            }}
+          >
+            <Entypo name={"heart"} size={15} color="#30AD4A" />
+            <Text style={{ fontSize: 10 }}>{item.like}</Text>
+          </View> */}
         </View>
       </TouchableOpacity>
     );
+
+    // return (
+    //   <TouchableOpacity
+    //     onPress={() => this._SelectItem(true, item)}
+    //     style={{
+    //       width: "100%",
+    //       backgroundColor: "#fff",
+    //       marginBottom: 30,
+    //       paddingHorizontal: 10,
+    //     }}
+    //   >
+    //     <View
+    //       style={{
+    //         flexDirection: "row",
+    //         justifyContent: "space-between",
+    //         alignItems: "center",
+    //       }}
+    //     >
+    //       <View
+    //         style={{
+    //           flexDirection: "row",
+    //           alignItems: "center",
+    //           marginBottom: 20,
+    //         }}
+    //       >
+    //         {/* <Image
+    //       resizeMode="stretch"
+    //       source={item.profile}
+    //       style={{ width: 50, height: 50 }}
+    //     /> */}
+    //         <View style={{ marginLeft: 10 }}>
+    //           <Text
+    //             style={{
+    //               color: "black",
+    //               fontWeight: "bold",
+    //               lineHeight: 20,
+    //             }}
+    //           >
+    //             {item.Plant_Name}
+    //           </Text>
+    //           <Text style={{ fontSize: 10, lineHeight: 20 }}>
+    //             @{item.Cat_Name}
+    //           </Text>
+    //         </View>
+    //       </View>
+    //       <Feather name={"more-vertical"} size={25} color="#ACACAC" />
+    //     </View>
+    //     {!item.PIM_ImagePath ? (
+    //       <Image
+    //         resizeMode="cover"
+    //         source={require("../../../assets/plantname.png")}
+    //         style={{
+    //           width: "100%",
+    //           height: 150,
+    //           borderRadius: 3,
+    //         }}
+    //       />
+    //     ) : (
+    //       <Image
+    //         resizeMode="stretch"
+    //         source={{ uri: item.PIM_ImagePath }}
+    //         style={{
+    //           width: "100%",
+    //           height: 150,
+    //           borderRadius: 3,
+    //         }}
+    //       />
+    //     )}
+    //     {/* <Image
+    //       resizeMode="stretch"
+    //       source={item.image}
+    //       style={{ width: "100%", height: 200 }}
+    //     /> */}
+    //     <View
+    //       style={{
+    //         flexDirection: "row",
+    //         alignItems: "center",
+    //         padding: 5,
+    //         backgroundColor: "#fff",
+    //         shadowOffset: { width: 0.1, height: 0.1 },
+    //         shadowColor: "gray",
+    //         shadowOpacity: 0.5,
+    //         elevation: 1,
+    //         borderBottomEndRadius: 10,
+    //         borderBottomStartRadius: 10,
+    //         justifyContent: "space-between",
+    //       }}
+    //     >
+    //       {/* <View
+    //     style={{
+    //       flexDirection: "row",
+    //       alignItems: "center",
+    //     }}
+    //   >
+    //     <View
+    //       style={{
+    //         flexDirection: "row",
+    //         height: 20,
+    //         width: 50,
+    //         justifyContent: "space-around",
+    //         alignItems: "center",
+    //         marginRight: 10,
+    //       }}
+    //     >
+    //       <Entypo name={"heart"} size={22} color="#30AD4A" />
+    //       <Text style={{ fontSize: 15 }}>{item.like}</Text>
+    //     </View>
+    //     <View
+    //       style={{
+    //         flexDirection: "row",
+    //         height: 20,
+    //         width: 50,
+    //         justifyContent: "space-around",
+    //         alignItems: "center",
+    //       }}
+    //     >
+    //       <Ionicons
+    //         name={"chatbubble-ellipses-outline"}
+    //         size={20}
+    //         color="#ACACAC"
+    //       />
+    //       <Text style={{ fontSize: 15 }}>{item.like}</Text>
+    //     </View>
+    //     <View
+    //       style={{
+    //         flexDirection: "row",
+    //         height: 25,
+    //         width: 50,
+    //         justifyContent: "space-around",
+    //         alignItems: "center",
+    //       }}
+    //     >
+    //       <Entypo name={"share"} size={20} color="#ACACAC" />
+    //     </View>
+    //   </View> */}
+    //       {/* <View style={{}}>
+    //     <Octicons
+    //       name={"bookmark"}
+    //       size={20}
+    //       color="#ACACAC"
+    //     />
+    //   </View> */}
+    //     </View>
+    //   </TouchableOpacity>
+    // );
   };
   render() {
     console.log("this.props.planttitle", this.props.planttitle);
     return (
       <View style={{ height: "100%" }}>
-        <ScrollView keyboardShouldPersistTaps="always">
+        <ScrollView keyboardShouldPersistTaps="handled">
+          <Spinner visible={this.state.isLoading} />
+
           <View>
             <Image
               resizeMode="stretch"
@@ -346,6 +419,7 @@ class Plant extends Component {
               }}
             >
               <FlatList
+                numColumns={2}
                 data={this.state.plant}
                 ListHeaderComponent={() => {
                   return <View></View>;

@@ -21,9 +21,10 @@ import {
   gethomemyplants,
 } from "../../../services/api.function";
 import { connect } from "react-redux";
-import { setUserID } from "../../../store/action/auth/action";
+import { setUserID, setValidUserID } from "../../../store/action/auth/action";
 import { setPlantId, logoutAccount } from "../../../store/action/plant/action";
 import InputField from "../../../components/InputField";
+import Spinner from "react-native-loading-spinner-overlay";
 
 let hasNotch = DeviceInfo.hasNotch();
 // const DATA = [
@@ -124,6 +125,7 @@ class Explore extends Component {
       modalVisible: false,
       backupplant: [],
       plantname: "",
+      isLoading: false,
     };
   }
   componentDidMount = () => {
@@ -134,6 +136,7 @@ class Explore extends Component {
   };
 
   _GetHomeMyPlants = async () => {
+    this.setState({ isLoading: true });
     let data = {
       Type: 1,
     };
@@ -141,7 +144,8 @@ class Explore extends Component {
     await gethomemyplants(data, this.props.token)
       .then((res) => {
         console.log("res:gethomemyplantsexplore ", res[0]);
-        this.setState({ plant: res[0], backupplant: res[0] });
+        this.setState({ plant: res[0], backupplant: res[0], isLoading: false });
+        this.setState({ isLoading: false });
       })
       .catch((error) => {
         if (error.response) {
@@ -152,6 +156,7 @@ class Explore extends Component {
       });
   };
   _GetUserMasterData = async () => {
+    // this.setState({ isLoading: true });
     let data = {
       Type: 2,
     };
@@ -159,7 +164,7 @@ class Explore extends Component {
     await getusermasterdata(data, this.props.token)
       .then((res) => {
         console.log("res:getusermasterdata ", res[0][0].User_PkeyID);
-        this.setState({ userid: res[0][0].User_PkeyID });
+        this.setState({ userid: res[0][0].User_PkeyID, isLoading: false });
         this.props.setUserID(res[0][0].User_PkeyID);
       })
       .catch((error) => {
@@ -171,10 +176,17 @@ class Explore extends Component {
       });
   };
   _SelectItem = (type, item) => {
+    console.log("_SelectItem", item);
     if (type) {
+      if (item.Plant_User_PkeyID === this.props.userid) {
+        this.props.setValidUserID(true);
+      } else {
+        this.props.setValidUserID(false);
+      }
       this.props.setPlantId(item.Plant_PkeyID);
       this.props.navigation.navigate("Plant", { screen: "Addplant" });
     } else {
+      this.props.setValidUserID(false);
       this.props.setPlantId(0);
       this.props.logoutAccount();
       this.props.navigation.navigate("Plant", { screen: "Addplant" });
@@ -309,12 +321,13 @@ class Explore extends Component {
   render() {
     return (
       <View style={{ height: "100%" }}>
-        <ScrollView>
+        <ScrollView keyboardShouldPersistTaps={"handled"}>
+          <Spinner visible={this.state.isLoading} />
           <View>
             <Image
               resizeMode="stretch"
               source={require("../../../assets/Main.png")}
-              style={{ width: "100%", height: hasNotch ? 300 : 250 }}
+              style={{ width: "100%", height: hasNotch ? 285 : 250 }}
             />
             <View
               style={{
@@ -345,7 +358,6 @@ class Explore extends Component {
                 <View
                   style={{
                     flexDirection: "row",
-                    // backgroundColor: "red",
                     width: "45%",
                     justifyContent: "space-around",
                     alignItems: "center",
@@ -416,19 +428,21 @@ class Explore extends Component {
                 data={this.state.plant}
                 ListHeaderComponent={() => {
                   return (
-                    <View>
+                    <>
                       {this.state.plant.length > 0 && (
-                        <Text
-                          style={{
-                            color: "black",
-                            fontWeight: "bold",
-                            fontSize: 20,
-                          }}
-                        >
-                          Recommended Post
-                        </Text>
+                        <View>
+                          <Text
+                            style={{
+                              color: "black",
+                              fontWeight: "bold",
+                              fontSize: 20,
+                            }}
+                          >
+                            Recommended Post
+                          </Text>
+                        </View>
                       )}
-                    </View>
+                    </>
                   );
                 }}
                 ListFooterComponent={() => {
@@ -442,7 +456,7 @@ class Explore extends Component {
                         // backgroundColor: "pink",
                         justifyContent: "center",
                         alignItems: "center",
-                        marginTop: 30,
+                        marginTop: 20,
                       }}
                     >
                       <Text style={{ fontSize: 50, fontWeight: "bold" }}>
@@ -562,11 +576,14 @@ const styles = StyleSheet.create({
 });
 const mapStateToProps = (state, ownProps) => ({
   token: state.authReducer.token,
+  userid: state.authReducer.userid,
+  isvalid: state.authReducer.isvalid,
 });
 
 const mapDispatchToProps = {
   setUserID,
   setPlantId,
   logoutAccount,
+  setValidUserID,
 };
 export default connect(mapStateToProps, mapDispatchToProps)(Explore);

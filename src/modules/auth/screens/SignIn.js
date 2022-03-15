@@ -110,9 +110,9 @@ const SignIn = ({ navigation }) => {
         .then((res) => {
           showMessage("Login successfully");
           console.log("res: ", res);
-          setloading(false);
           dispatch(setToken(res.access_token));
           dispatch(setLoggedIn(true));
+          setloading(false);
         })
         .catch((error) => {
           console.log(error);

@@ -7,6 +7,7 @@ export const initialState = {
   id: null,
   imageid: null,
   userid: 0,
+  isvalid: false,
 };
 
 const reducer = (state = initialState, action) => {
@@ -35,6 +36,12 @@ const reducer = (state = initialState, action) => {
       return {
         ...state,
         userid: action.userid,
+      };
+    }
+    case "SET_VALID_USER_ID": {
+      return {
+        ...state,
+        isvalid: action.isvalid,
       };
     }
     default: {

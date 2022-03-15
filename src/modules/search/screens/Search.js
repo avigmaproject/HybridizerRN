@@ -10,9 +10,7 @@ import {
   TextInput,
 } from "react-native";
 import Feather from "react-native-vector-icons/Feather";
-import Entypo from "react-native-vector-icons/Entypo";
-import Ionicons from "react-native-vector-icons/Ionicons";
-import Octicons from "react-native-vector-icons/Octicons";
+import Spinner from "react-native-loading-spinner-overlay";
 import * as Animatable from "react-native-animatable";
 import DeviceInfo from "react-native-device-info";
 let hasNotch = DeviceInfo.hasNotch();
@@ -79,21 +77,44 @@ class Search extends Component {
 
     if (text) {
       const lowercasedFilter = text.toLowerCase();
-      const filteredData = this.state.backupplant.filter((item) => {
-        console.log("inside", item);
-        return Object.keys(item).some(
-          (key) =>
-            typeof item[key] === "string" &&
-            item[key].toLowerCase().includes(lowercasedFilter)
-        );
+      let filteredplant = this.state.backupplant.filter((item) => {
+        return item.Plant_Name.toLowerCase().match(lowercasedFilter);
       });
-      if (filteredData.length > 0) {
+      console.log("filteredplantbefore", filteredplant);
+      if (Array.isArray(filteredplant)) {
+        console.log("after", filteredplant);
         this.setState({
-          plant: filteredData,
+          plant: filteredplant,
+          plantname: e,
         });
       } else {
-        alert("Nothing to search!!!!");
+        this.setState({ plantname: e, plant: this.state.backupplant });
       }
+      // const filteredplant = this.state.backupplant.filter((item) => {
+      //   return item.Plant_Name.toLowerCase().match(lowercasedFilter);
+      // });
+      // // const filteredplant = this.state.backupplant.filter((item) => {
+      // //   console.log("inside", item);
+      // //   return Object.keys(item).some(
+      // //     (key) =>
+      // //       typeof item[key] === "string" &&
+      // //       item[key].toLowerCase().includes(lowercasedFilter)
+      // //   );
+      // // });
+      // if (Array.isArray(filteredplant)) {
+      //   console.log("after", filteredplant);
+      //   this.setState({
+      //     plant: filteredplant,
+      //     plantname: e,
+      //   });
+      // } else {
+      //   this.setState({ plantname: e, plant: this.state.backupplant });
+      // }
+      // if (filteredData.length > 0) {
+      //   this.setState({
+      //     plant: filteredData,
+      //   });
+      // }
     } else {
       this.setState({
         plant: this.state.backupplant,
@@ -117,6 +138,7 @@ class Search extends Component {
     // }
   };
   _GetHomeMyPlants = async () => {
+    this.setState({ isLoading: true });
     let data = {
       // Plant_User_PkeyID: this.props.userid,
       Type: 2,
@@ -125,7 +147,7 @@ class Search extends Component {
     await gethomemyplants(data, this.props.token)
       .then((res) => {
         console.log("res:gethomemyplants ", res[0]);
-        this.setState({ plant: res[0], backupplant: res[0] });
+        this.setState({ plant: res[0], backupplant: res[0], isLoading: false });
       })
       .catch((error) => {
         if (error.response) {
@@ -294,7 +316,9 @@ class Search extends Component {
     console.log(this.props.plantid);
     return (
       <View style={{ height: "100%" }}>
-        <ScrollView>
+        <ScrollView keyboardShouldPersistTaps={"handled"}>
+          <Spinner visible={this.state.isLoading} />
+
           <View>
             <Image
               resizeMode="stretch"

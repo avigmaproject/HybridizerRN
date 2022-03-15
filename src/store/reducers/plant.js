@@ -59,6 +59,7 @@ const reducer = (state = initialState, action) => {
         planttitle: action.planttitle,
       };
     }
+
     case "DELETE_PLANT_DETAIL": {
       return {
         ...state,

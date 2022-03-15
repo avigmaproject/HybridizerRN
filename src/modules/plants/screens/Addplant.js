@@ -66,8 +66,8 @@ class Addplant extends Component {
       addplantvisiable: false,
       isLoading: false,
       input: [],
-      plantname: "Hybrid",
-      categoryname: "101",
+      plantname: "Plant Name",
+      categoryname: "Category",
       form: { PD_Description: {} },
       description: {},
       viewstatus: false,
@@ -262,18 +262,19 @@ class Addplant extends Component {
   };
   componentDidMount = async () => {
     this._unsubscribe = this.props.navigation.addListener("focus", () => {
-      // console.log(this.props.plantid);
+      // console.log("componentDidMount", this.props.route.params.savemyplant);
       this._GetCategoryMaster();
       if (this.props.plantid > 0) {
         this._GetPlantMaster();
       } else {
         this.setState({
           imagePath: [require("../../../assets/plantname.png")],
-          plantname: "Hybrid",
-          categoryname: "101",
+          plantname: "Plant Name",
+          categoryname: "Category",
           uploadimage: "",
           setplantdesc: [],
           setplantdesc: [],
+          savemyplant: false,
         });
       }
     });
@@ -351,6 +352,7 @@ class Addplant extends Component {
               ? "Remove from my plant"
               : "Save to my plant",
             isLoading: false,
+            plantuserid: res[0][0].Plant_User_PkeyID,
           },
           () => this.props.setPlantImageArr(this.state.imagePath)
         );
@@ -385,8 +387,6 @@ class Addplant extends Component {
     this.setState({ input: textInput });
   };
   AddInput1 = (key, value, index) => {
-    // console.log("this.state.input", this.state.input);
-
     const { PD_Description } = this.state.form;
     console.log("value", PD_Description);
     let textInput = this.state.input;
@@ -469,7 +469,10 @@ class Addplant extends Component {
         PlantCategory: this.state.categoryname,
       });
     }
-    this.setState({ iconvisible: !this.state.iconvisible });
+    this.setState({
+      iconvisible: !this.state.iconvisible,
+      plantname: "",
+    });
   };
   onHandleChange = (key, value) => {
     if (key.startsWith("Characteristics_")) {
@@ -509,27 +512,39 @@ class Addplant extends Component {
       { text: "OK", onPress: () => this.Delete(index) },
     ]);
   _handleSave = () => {
-    // let arr = [];
-    console.log("==<******>==", this.state.form.PD_Description);
-    let form1 = {
-      PD_Description: JSON.stringify(this.state.form.PD_Description),
-      PD_Title: this.state.form.PD_Title,
-    };
-    // arr.push(form1);
-    let stringdata = JSON.stringify(form1);
-    console.log("===>>>****", stringdata);
-    this.state.setplantdesc.push(form1);
-    this.setState({ setplantdesc: [...this.state.setplantdesc, form1] });
-    this.props.setPlantDesc(this.state.setplantdesc);
-    console.log(this.state.setplantdesc);
+    const { PD_Title, PD_Description } = this.state.form;
+    const {
+      Characteristics_0,
+      Characteristics_2,
+      Characteristics_1,
+    } = PD_Description;
+    if (Characteristics_0 === undefined && PD_Title === undefined) {
+      this.showMessage("Please enter title and description.", "error");
+    } else {
+      console.log(
+        "inammmmmm",
+        Characteristics_0,
+        PD_Title,
+        Characteristics_0 === "" && PD_Title === ""
+      );
+      let form1 = {
+        PD_Description: JSON.stringify(this.state.form.PD_Description),
+        PD_Title: PD_Title,
+      };
+      this.state.setplantdesc.push(form1);
+      this.setState({ setplantdesc: [...this.state.setplantdesc, form1] });
+      this.props.setPlantDesc(this.state.setplantdesc);
+      console.log(this.state.setplantdesc);
 
-    this.setState({
-      ...this.state,
-      input: [],
-      // formdata: stringdata,
-      addplantvisiable: !this.state.addplantvisiable,
-      form: { PD_Description: {} },
-    });
+      this.setState({
+        ...this.state,
+        input: [],
+        // formdata: stringdata,
+        addplantvisiable: !this.state.addplantvisiable,
+        form: { PD_Description: {} },
+      });
+    }
+    // let arr = [];
   };
 
   _renderItem = (item, index) => {
@@ -563,18 +578,22 @@ class Addplant extends Component {
             {item.PD_Title}
             {"  "}
           </Text>
-          <TouchableOpacity
-            style={{ marginLeft: 10 }}
-            onPress={() => this.AddplantvisiableClose(item, index)}
-          >
-            <Feather name="edit" size={18} color={"gray"} />
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={{ marginLeft: 10 }}
-            onPress={() => this.DeleteDescription(item, index)}
-          >
-            <AntDesign name="delete" size={20} color={"gray"} />
-          </TouchableOpacity>
+          {this.pros.isvalid && (
+            <>
+              <TouchableOpacity
+                style={{ marginLeft: 10 }}
+                onPress={() => this.AddplantvisiableClose(item, index)}
+              >
+                <Feather name="edit" size={18} color={"gray"} />
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={{ marginLeft: 10 }}
+                onPress={() => this.DeleteDescription(item, index)}
+              >
+                <AntDesign name="delete" size={20} color={"gray"} />
+              </TouchableOpacity>
+            </>
+          )}
         </View>
         {arr.map((comment) => {
           // console.log("descriptiondescription", comment);
@@ -811,6 +830,7 @@ class Addplant extends Component {
                           justifyContent: "center",
                           alignItems: "center",
                           width: "90%",
+                          paddingLeft: 10,
                         }}
                       >
                         <Text
@@ -820,6 +840,7 @@ class Addplant extends Component {
                             textTransform: "capitalize",
                             color: "#30AD4A",
                             width: "100%",
+                            marginLeft: 10,
                           }}
                         >
                           {item.Cat_Name}
@@ -883,7 +904,8 @@ class Addplant extends Component {
               >
                 <Header
                   onpressedit={() => this.onPressEdit()}
-                  edit={true}
+                  // edit={true}
+                  edit={this.pros.isvalid}
                   share={true}
                   navigation={this.props.navigation}
                 />
@@ -922,7 +944,7 @@ class Addplant extends Component {
                 marginTop: -15,
                 paddingHorizontal: 20,
                 height: "100%",
-                paddingBottom: "50%",
+                paddingBottom: "90%",
               }}
             >
               {addplantvisiable ? (
@@ -1105,11 +1127,13 @@ class Addplant extends Component {
                           </Text>
                         </View>
                         <View>
-                          <TouchableOpacity
-                            onPress={() => this._ChangeName(false)}
-                          >
-                            <AntDesign name="edit" size={25} color={"gray"} />
-                          </TouchableOpacity>
+                          {this.pros.isvalid && (
+                            <TouchableOpacity
+                              onPress={() => this._ChangeName(false)}
+                            >
+                              <AntDesign name="edit" size={25} color={"gray"} />
+                            </TouchableOpacity>
+                          )}
                         </View>
                       </View>
                     ) : (
@@ -1196,14 +1220,18 @@ class Addplant extends Component {
                   /> */}
 
                   <View>
-                    {this.props.plantid > 0 && (
-                      <ViewButton
-                        onpress={() =>
-                          this.props.navigation.navigate("AddSpouse")
-                        }
-                        source={require("../../../assets/leaftree.png")}
-                        title={"Add Seedling/Spouse"}
-                      />
+                    {this.pros.isvalid && (
+                      <View>
+                        {this.props.plantid > 0 && (
+                          <ViewButton
+                            onpress={() =>
+                              this.props.navigation.navigate("AddSpouse")
+                            }
+                            source={require("../../../assets/leaftree.png")}
+                            title={"Add Seedling/Spouse"}
+                          />
+                        )}
+                      </View>
                     )}
 
                     <View
@@ -1227,56 +1255,59 @@ class Addplant extends Component {
                         keyExtractor={(item) => item.id}
                       />
                     </View>
-                    <View
-                      style={{
-                        flexDirection: "row",
-                        alignItems: "center",
-                        // paddingVertical: 10,
-                        marginBottom: 10,
-                        // backgroundColor: "red",
-                      }}
-                    >
-                      {!this.state.savemyplant ? (
-                        <View>
-                          <MaterialCommunityIcons
-                            onPress={() => this.SaveToMyPlant()}
-                            name="checkbox-blank-outline"
-                            size={30}
-                            color={"#30AD4A"}
-                          />
-                        </View>
-                      ) : (
-                        <View>
-                          <MaterialCommunityIcons
-                            onPress={() => this.SaveToMyPlant()}
-                            name="checkbox-intermediate"
-                            size={30}
-                            color={"#30AD4A"}
-                          />
-                        </View>
-                      )}
-                      <Text
+                    {this.pros.isvalid && (
+                      <View
                         style={{
-                          marginLeft: 10,
-                          color: "#30AD4A",
-                          fontWeight: "bold",
+                          flexDirection: "row",
+                          alignItems: "center",
+                          // paddingVertical: 10,
+                          marginBottom: 10,
+                          // backgroundColor: "red",
                         }}
                       >
-                        {this.state.title}
-                      </Text>
-                    </View>
-                    <TouchableBotton
-                      onPress={() => this.AddCharacteristics()}
-                      color={"#30AD4A"}
-                      backgroundColor={"#EAF7ED"}
-                      title={"+ Add Characteristics"}
-                      borderWidth={2}
-                      borderColor={"#30AD4A"}
-                      borderStyle={"dashed"}
-                      height={50}
-                      font={true}
-                    />
-
+                        {!this.state.savemyplant ? (
+                          <View>
+                            <MaterialCommunityIcons
+                              onPress={() => this.SaveToMyPlant()}
+                              name="checkbox-blank-outline"
+                              size={30}
+                              color={"#30AD4A"}
+                            />
+                          </View>
+                        ) : (
+                          <View>
+                            <MaterialCommunityIcons
+                              onPress={() => this.SaveToMyPlant()}
+                              name="checkbox-intermediate"
+                              size={30}
+                              color={"#30AD4A"}
+                            />
+                          </View>
+                        )}
+                        <Text
+                          style={{
+                            marginLeft: 10,
+                            color: "#30AD4A",
+                            fontWeight: "bold",
+                          }}
+                        >
+                          {this.state.title}
+                        </Text>
+                      </View>
+                    )}
+                    {this.pros.isvalid && (
+                      <TouchableBotton
+                        onPress={() => this.AddCharacteristics()}
+                        color={"#30AD4A"}
+                        backgroundColor={"#EAF7ED"}
+                        title={"+ Add Characteristics"}
+                        borderWidth={2}
+                        borderColor={"#30AD4A"}
+                        borderStyle={"dashed"}
+                        height={50}
+                        font={true}
+                      />
+                    )}
                     {this.props.plantdesc.length > 0 &&
                       this.props.plantimagearr.length > 0 &&
                       this.state.categoryname !== "" &&
@@ -1362,6 +1393,8 @@ const mapStateToProps = (state, ownProps) => ({
   plantimage: state.plantReducer.plantimage,
   plantimagearr: state.plantReducer.plantimagearr,
   plantid: state.plantReducer.plantid,
+  userid: state.authReducer.userid,
+  isvalid: state.authReducer.isvalid,
 });
 
 const mapDispatchToProps = {

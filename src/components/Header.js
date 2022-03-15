@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import { Text, View, TouchableOpacity } from "react-native";
 import Icon from "react-native-vector-icons/Ionicons";
 import AntDesign from "react-native-vector-icons/AntDesign";
+import Entypo from "react-native-vector-icons/Entypo";
 import DeviceInfo from "react-native-device-info";
 let hasNotch = DeviceInfo.hasNotch();
 export default class Header extends Component {
@@ -58,6 +59,21 @@ export default class Header extends Component {
               onPress={() => alert("hiii")}
             >
               <Icon name="share-social-outline" size={30} color="black" />
+            </TouchableOpacity>
+          )}
+          {this.props.logout && (
+            <TouchableOpacity
+              style={{
+                marginRight: 10,
+                // backgroundColor: "#fff",
+                justifyContent: "center",
+                alignItems: "center",
+                borderRadius: 3,
+                padding: 1,
+              }}
+              onPress={this.props.Logout}
+            >
+              <Entypo name="log-out" size={30} color="black" />
             </TouchableOpacity>
           )}
         </View>

@@ -37,6 +37,8 @@ import {
   setPlantDesc,
   setPlantImageArr,
   setSpouseId,
+  logoutAccount,
+  setPlantId,
 } from "../../../store/action/plant/action";
 import { setCustomeView } from "../../../store/action/custom/action";
 import DeviceInfo from "react-native-device-info";
@@ -64,8 +66,24 @@ class AddSpouse extends Component {
       hide: false,
       imagePath: [require("../../../assets/plantname.png")],
       setplantdesc: [],
-      duplicates: 10,
+      duplicates: 0,
       plant: [],
+      // plant: [
+      //   {
+      //     Plant_PkeyID: 207,
+      //     Plant_Name: "Plant p",
+      //     Plant_Description: null,
+      //     Plant_ParentID: 206,
+      //     Plant_IsParent: true,
+      //   },
+      //   {
+      //     Plant_PkeyID: 206,
+      //     Plant_Name: "Seedling 2",
+      //     Plant_Description: null,
+      //     Plant_ParentID: 0,
+      //     Plant_IsParent: true,
+      //   },
+      // ],
       newplantarrar: [],
       plantid: 0,
       selectedid: 0,
@@ -84,7 +102,8 @@ class AddSpouse extends Component {
   showMessage = (message, status) => {
     if (message !== "" && message !== null && message !== undefined) {
       Toast.show({
-        title: message,
+        description: message,
+        title: status,
         placement: "bottom",
         status: status,
         duration: 5000,
@@ -93,39 +112,50 @@ class AddSpouse extends Component {
   };
   AddplantvisiableClose = (item) => {
     this.props.setSpouseId(item.ASP_PkeyID);
-    this.setState({ addplantvisiable: !this.state.addplantvisiable });
+    this.setState({
+      addplantvisiable: !this.state.addplantvisiable,
+      duplicates: 1,
+      plantname: "Plant name",
+    });
   };
   SavePlantDecs = async () => {
-    this.setState({ isLoading: true });
-    let data = {
-      Type: 1,
-      ASE_Title: this.state.plantname,
-      ASE_NO_Dup: this.state.duplicates,
-      ASE_Plant_PkeyID: this.props.plantid, //minal
-      ASE_ASP_PkeyID: this.props.spouseid,
-    };
-    console.log(data, this.props.token);
-    // return 0;
-    await createupdatesddseedling(data, this.props.token)
-      .then((res) => {
-        console.log("res:createupdatesddseedling", res);
-        this.setState({
-          isLoading: false,
-          addplantvisiable: !this.state.addplantvisiable,
-          hide: !this.state.hide,
+    if (this.state.plantname !== "" && this.state.duplicates > 0) {
+      this.setState({ isLoading: true });
+      let data = {
+        Type: 1,
+        ASE_Title: this.state.plantname,
+        ASE_NO_Dup: this.state.duplicates,
+        ASE_Plant_PkeyID: this.props.plantid, //minal
+        ASE_ASP_PkeyID: this.props.spouseid,
+      };
+      console.log(data, this.props.token);
+      // return 0;
+      await createupdatesddseedling(data, this.props.token)
+        .then((res) => {
+          console.log("res:createupdatesddseedling", res);
+          this.setState({
+            isLoading: false,
+            addplantvisiable: !this.state.addplantvisiable,
+            hide: !this.state.hide,
+          });
+          this.GetAddSpouse();
+          this.showMessage("Seedling saved successfully.", "success");
+        })
+        .catch((error) => {
+          if (error.request) {
+            console.log(error.request);
+          } else if (error.responce) {
+            console.log(error.responce);
+          } else {
+            console.log(error);
+          }
         });
-        this.GetAddSpouse();
-        this.showMessage("Seedling save successfully.", "success");
-      })
-      .catch((error) => {
-        if (error.request) {
-          console.log(error.request);
-        } else if (error.responce) {
-          console.log(error.responce);
-        } else {
-          console.log(error);
-        }
-      });
+    } else {
+      this.showMessage(
+        "Please enter plant name and number of duplicates.",
+        "error"
+      );
+    }
   };
   GetAddSpouse = async () => {
     this.setState({ isLoading: true });
@@ -174,7 +204,7 @@ class AddSpouse extends Component {
         this.setState({
           isLoading: false,
         });
-        this.showMessage("Spouse plant save successfully.", "success");
+        this.showMessage("Spouse plant saved successfully.", "success");
       })
       .catch((error) => {
         if (error.request) {
@@ -188,7 +218,7 @@ class AddSpouse extends Component {
   };
 
   DeleteDescription = (item) =>
-    Alert.alert("Delete", "Are you sure to delete description", [
+    Alert.alert("Delete", "Are you sure to delete Spouse plant.", [
       {
         text: "Cancel",
         onPress: () => console.log("Cancel Pressed"),
@@ -228,20 +258,57 @@ class AddSpouse extends Component {
   componentDidMount = async () => {
     this._unsubscribe = this.props.navigation.addListener("focus", () => {
       if (this.props.plantid > 0) {
-        this._GetPlantMaster();
+        this._GetPlantMaster1();
         this.GetAddSpouse();
+        this._GetPlantMaster();
       }
     });
   };
-  _GetPlantMaster = async () => {
+  _GetPlantMaster1 = async () => {
     let data = {
       Type: 1,
     };
+
     console.log("_GetPlantMaster", data, this.props.token);
     await getplantmaster(data, this.props.token)
       .then((res) => {
         console.log("res: ", res[0]);
         this.setState({ plant: res[0] });
+      })
+      .catch((error) => {
+        if (error.response) {
+          console.log("responce_error", error.response);
+        } else if (error.request) {
+          console.log("request error", error.request);
+        }
+      });
+  };
+  _GetPlantMaster = async () => {
+    let imagesrc = [];
+    let data = {
+      Plant_PkeyID: this.props.plantid,
+      Type: 2,
+    };
+
+    console.log("_GetPlantMaster", data, this.props.token);
+    await getplantmaster(data, this.props.token)
+      .then((res) => {
+        if (res[0][0].plant_Image_Master_DTOs.length > 0) {
+          for (let i = 0; i < res[0][0].plant_Image_Master_DTOs.length; i++) {
+            imagesrc.push(res[0][0].plant_Image_Master_DTOs[i].PIM_ImagePath);
+            console.log(imagesrc);
+          }
+        } else {
+          defualt = [require("../../../assets/plantname.png")];
+        }
+
+        this.setState({
+          imagePath:
+            res[0][0].plant_Image_Master_DTOs.length > 0 ? imagesrc : defualt,
+          isLoading: false,
+        });
+        this.props.setPlantImageArr(this.state.imagePath);
+        this.props.setPlantImage(res[0][0].plant_Image_Master_DTOs);
       })
       .catch((error) => {
         if (error.response) {
@@ -265,29 +332,45 @@ class AddSpouse extends Component {
     this.setState({ iconvisible: !this.state.iconvisible });
   };
   Hide = (item) => {
+    this.props.setSpouseId(item.ASP_PkeyID);
     this.setState({ hide: !this.state.hide, selectedid: item.ASP_PkeyID });
   };
   AddNote = async () => {
-    let data = {
-      Type: 6,
-      ASP_Description: this.state.note,
-      ASP_PkeyID: this.props.spouseid,
-    };
-    console.log(data, this.props.token);
-    await createupdateplantdescription(data, this.props.token)
-      .then((res) => {
-        console.log("res: ", res);
-        this.setState({ plant: res[0] });
-      })
-      .catch((error) => {
-        if (error.response) {
-          console.log("responce_error", error.response);
-        } else if (error.request) {
-          console.log("request error", error.request);
-        }
-      });
-  };
+    if (this.state.note === "") {
+      alert("Please enter note.");
+    } else {
+      this.setState({ isLoading: true });
 
+      let data = {
+        Type: 6,
+        ASP_Description: this.state.note,
+        ASP_PkeyID: this.props.spouseid,
+      };
+      console.log(data, this.props.token);
+      await createupdateplantdescription(data, this.props.token)
+        .then((res) => {
+          console.log("res: ", res);
+          this.setState({
+            modalVisible: !this.state.modalVisible,
+            isLoading: false,
+          });
+
+          this.showMessage("Note saved successfully.", "success");
+        })
+        .catch((error) => {
+          if (error.response) {
+            console.log("responce_error", error.response);
+          } else if (error.request) {
+            console.log("request error", error.request);
+          }
+        });
+    }
+  };
+  _SelectItem = (item) => {
+    console.log("_SelectItem", item.ASP_Plant_PkeyID);
+    this.props.setSpouseId(item.ASP_Plant_PkeyID);
+    this.props.navigation.navigate("AddNewSpouse");
+  };
   AddInput = (item) => {
     console.log("AddInput", item);
     let totalduplicates = 0;
@@ -297,21 +380,23 @@ class AddSpouse extends Component {
           totalduplicates + item.add_Seedling_DTOs[i].ASE_NO_Dup;
       }
     }
-
     return (
       <View
         style={{
           backgroundColor:
             this.state.hide && this.props.spouseid === item.ASP_PkeyID
-              ? "#EAF7ED"
+              ? "#ECFCEF"
               : "#fff",
           // marginVertical: 10,
           paddingHorizontal: 10,
           marginTop: 10,
           borderColor:
-            this.props.spouseid === item.ASP_PkeyID ? "black" : "lightgray",
+            !this.state.hide && this.props.spouseid === item.ASP_PkeyID
+              ? "black"
+              : "lightgray",
           borderWidth: 1,
           paddingVertical: 10,
+          borderRadius: 10,
         }}
       >
         <View
@@ -336,9 +421,7 @@ class AddSpouse extends Component {
             />
             <View style={{ marginTop: 10 }} />
             <TouchableBotton
-              // onPress={() =>
-              //   this.props.navigation.navigate("Addplant")
-              // }
+              onPress={() => this._SelectItem(item)}
               color={"#30AD4A"}
               backgroundColor={"#EAF7ED"}
               title={item.ASP_Title}
@@ -356,13 +439,11 @@ class AddSpouse extends Component {
             <Image
               resizeMode="contain"
               style={{ height: 40, width: 40 }}
-              source={require("../../../assets/clipboard-notes.png")}
+              source={require("../../../assets/notes.png")}
             />
             <View style={{ marginTop: 10 }} />
             <TouchableBotton
-              onPress={() =>
-                this.setState({ modalVisible: !this.state.modalVisible })
-              }
+              onPress={() => this.AddNotes(item)}
               color={"#30AD4A"}
               backgroundColor={"#EAF7ED"}
               title={"Notes"}
@@ -407,7 +488,7 @@ class AddSpouse extends Component {
                     justifyContent: "center",
                   }}
                 >
-                  <AntDesign name="down" size={25} color={"gray"} />
+                  <AntDesign name="down" size={25} color="gray" />
                 </TouchableOpacity>
               ) : (
                 <TouchableOpacity
@@ -434,7 +515,7 @@ class AddSpouse extends Component {
                 justifyContent: "center",
               }}
             >
-              <AntDesign name="delete" size={25} color={"gray"} />
+              <AntDesign name="delete" size={25} color="gray" />
             </TouchableOpacity>
           </View>
         </View>
@@ -446,10 +527,10 @@ class AddSpouse extends Component {
             // numColumns={4}
             data={item.add_Seedling_DTOs}
             renderItem={({ item, index }) => {
-              // console.log("add_Seedling_DTOs", item);
+              console.log("add_Seedling_DTOs", item);
               return (
                 <TouchableOpacity
-                  onPress={() => alert(`${item.ASE_Title}_${index}`)}
+                  onPress={() => alert(`${item.ASE_Title}_${index + 1}`)}
                   style={{
                     height: 100,
                     width: 90,
@@ -505,54 +586,11 @@ class AddSpouse extends Component {
       </View>
     );
   };
-  flower = (totalduplicates) => {
-    var indents = [];
-    for (let i = 0; i < parseInt(totalduplicates); i++) {
-      indents.push(
-        <TouchableOpacity
-          onPress={() => alert(i)}
-          style={{
-            height: 90,
-            width: 80,
-            alignItems: "center",
-            marginRight: 10,
-            backgroundColor: "#fff",
-            marginTop: 10,
-          }}
-        >
-          <View
-            style={{
-              height: "70%",
-              width: "50%",
-              paddingVertical: 3,
-            }}
-          >
-            <Image
-              resizeMode="stretch"
-              style={{ height: "90%", width: "90%" }}
-              source={require("../../../assets/flower1.png")}
-            />
-          </View>
-          <View
-            style={{
-              backgroundColor: "#30AD4A",
-              width: "100%",
-              height: "30%",
-              justifyContent: "center",
-              alignItems: "center",
-              borderTopEndRadius: 10,
-              borderTopStartRadius: 10,
-            }}
-          >
-            <Text
-              style={{ color: "#fff" }}
-            >{`${this.state.plantname}_${i}`}</Text>
-          </View>
-        </TouchableOpacity>
-      );
-    }
-    return indents;
+  AddNotes = (item) => {
+    this.setState({ modalVisible: !this.state.modalVisible });
+    this.props.setSpouseId(item.ASP_PkeyID);
   };
+
   renderModal = () => {
     return (
       <View style={styles.centeredView}>
@@ -638,9 +676,12 @@ class AddSpouse extends Component {
     this.CreateUpdateAddSpouse(item);
   };
   addNewPlant = () => {
-    alert("Functionality is Left.");
-    // this.props.navigation.navigate("Addplant");
+    // alert("Functionality is Left.");
+    this.props.setPlantImageArr([require("../../../assets/plantname.png")]);
+    this.props.setSpouseId(0);
+    this.props.navigation.navigate("AddNewSpouse");
   };
+
   render() {
     const {
       addplantvisiable,
@@ -648,7 +689,6 @@ class AddSpouse extends Component {
       duplicates,
       newplantarrar,
     } = this.state;
-    console.log("plantid at spouse", this.props.plantid);
     return (
       <View style={{ height: "100%" }}>
         <ScrollView keyboardShouldPersistTaps={"handled"}>
@@ -731,7 +771,7 @@ class AddSpouse extends Component {
                           <TouchableOpacity
                             onPress={() => this._ChangeName(false)}
                           >
-                            <AntDesign name="edit" size={25} color={"gray"} />
+                            <AntDesign name="edit" size={25} color="gray" />
                           </TouchableOpacity>
                         </View>
                       </View>
@@ -768,7 +808,7 @@ class AddSpouse extends Component {
                           <TouchableOpacity
                             onPress={() => this._ChangeName(true)}
                           >
-                            <AntDesign name="save" size={30} color={"gray"} />
+                            <AntDesign name="save" size={30} color="gray" />
                           </TouchableOpacity>
                         </View>
                       </View>
@@ -809,24 +849,36 @@ class AddSpouse extends Component {
                         marginTop: 10,
                         justifyContent: "center",
                         alignItems: "center",
-                        marginLeft: 20,
+                        // marginLeft: 20,
                       }}
                     >
-                      <TouchableOpacity
-                        onPress={() => this.addNewPlant()}
-                        style={{ padding: 20, backgroundColor: "#F7F8FD" }}
-                      >
-                        <AntDesign
-                          name="pluscircleo"
-                          size={25}
-                          color={"gray"}
-                        />
-                      </TouchableOpacity>
-                      <View style={{ marginTop: 10, marginLeft: 20 }}>
+                      <View style={{ marginTop: 10 }}>
                         <FlatList
                           showsHorizontalScrollIndicator={false}
                           horizontal
                           data={this.state.plant}
+                          ListHeaderComponentStyle={{
+                            justifyContent: "center",
+                            alignItems: "center",
+                            marginRight: 20,
+                          }}
+                          ListHeaderComponent={() => {
+                            return (
+                              <TouchableOpacity
+                                onPress={() => this.addNewPlant()}
+                                style={{
+                                  padding: 25,
+                                  backgroundColor: "#F7F8FD",
+                                }} //"#F7F8FD"
+                              >
+                                <AntDesign
+                                  name="pluscircleo"
+                                  size={25}
+                                  color="gray"
+                                />
+                              </TouchableOpacity>
+                            );
+                          }}
                           renderItem={({ item }) => {
                             return (
                               <TouchableOpacity
@@ -835,7 +887,7 @@ class AddSpouse extends Component {
                                 }
                                 onPress={() => this._AddToPlant(item)}
                                 style={{
-                                  padding: 4,
+                                  // backgroundColor: "pink",
                                   borderColor:
                                     this.props.plantid === item.Plant_PkeyID
                                       ? "#30AD4A"
@@ -843,37 +895,53 @@ class AddSpouse extends Component {
                                   borderWidth: 1,
                                   justifyContent: "center",
                                   alignItems: "center",
-                                  marginRight: 4,
+                                  marginRight: 5,
+                                  padding: 4,
+                                  // width: "10%",
                                 }}
                               >
-                                {item.plant_Image_Master_DTOs ? (
-                                  <Image
-                                    resizeMode="stretch"
-                                    style={{ height: 40, width: 40 }}
-                                    source={{
-                                      uri:
-                                        item.plant_Image_Master_DTOs[0]
-                                          .PIM_ImagePath,
-                                    }}
-                                  />
-                                ) : (
-                                  <Image
-                                    resizeMode="stretch"
-                                    style={{ height: 40, width: 40 }}
-                                    source={require("../../../assets/leaftree.png")}
-                                  />
-                                )}
-
-                                <Text
+                                <View>
+                                  {item.plant_Image_Master_DTOs ? (
+                                    <Image
+                                      resizeMode="stretch"
+                                      style={{ height: 40, width: 40 }}
+                                      source={{
+                                        uri:
+                                          item.plant_Image_Master_DTOs[0]
+                                            .PIM_ImagePath,
+                                      }}
+                                    />
+                                  ) : (
+                                    <Image
+                                      resizeMode="stretch"
+                                      style={{ height: 40, width: 40 }}
+                                      source={require("../../../assets/leaftree.png")}
+                                    />
+                                  )}
+                                </View>
+                                <View
                                   style={{
-                                    color:
-                                      this.props.plantid === item.Plant_PkeyID
-                                        ? "#30AD4A"
-                                        : "#f6f6f6f",
+                                    justifyContent: "center",
+                                    alignItems: "center",
+                                    // backgroundColor: "red",
+                                    width: "100%",
                                   }}
                                 >
-                                  {item.Plant_Name}
-                                </Text>
+                                  <Text
+                                    ellipsizeMode={"tail"}
+                                    numberOfLines={2}
+                                    style={{
+                                      color:
+                                        this.props.plantid === item.Plant_PkeyID
+                                          ? "#30AD4A"
+                                          : "black",
+                                      width: 70,
+                                      // alignSelf: "center",
+                                    }}
+                                  >
+                                    {item.Plant_Name}
+                                  </Text>
+                                </View>
                               </TouchableOpacity>
                             );
                           }}
@@ -957,6 +1025,8 @@ const mapDispatchToProps = {
   setPlantImageArr,
   setCustomeView,
   setSpouseId,
+  logoutAccount,
+  setPlantId,
 };
 export default connect(mapStateToProps, mapDispatchToProps)(AddSpouse);
 const styles = StyleSheet.create({

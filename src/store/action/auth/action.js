@@ -25,3 +25,11 @@ export const setUserID = (userid) => {
     });
   };
 };
+export const setValidUserID = (isvalid) => {
+  return (dispatch) => {
+    dispatch({
+      type: "SET_VALID_USER_ID",
+      isvalid,
+    });
+  };
+};
