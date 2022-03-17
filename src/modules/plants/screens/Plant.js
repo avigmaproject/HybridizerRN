@@ -21,6 +21,7 @@ import {
   setPlantTitle,
   logoutAccount,
 } from "../../../store/action/plant/action";
+import { setValidUserID } from "../../../store/action/auth/action";
 import { gethomemyplants } from "../../../services/api.function";
 import { FAB } from "react-native-paper";
 import InputField from "../../../components/InputField";
@@ -99,15 +100,32 @@ class Plant extends Component {
     this.setState({ title: !this.state.title });
   };
   _SelectItem = (type, item) => {
+    console.log("_SelectItem", item);
     if (type) {
+      if (item.Plant_User_PkeyID === this.props.userid) {
+        this.props.setValidUserID(true);
+      } else {
+        this.props.setValidUserID(false);
+      }
       this.props.setPlantId(item.Plant_PkeyID);
-      this.props.navigation.navigate("Addplant", { savemyplant: true });
+      this.props.navigation.navigate("Addplant");
     } else {
+      this.props.setValidUserID(true);
       this.props.setPlantId(0);
       this.props.logoutAccount();
-      this.props.navigation.navigate("Addplant", { savemyplant: true });
+      this.props.navigation.navigate("Addplant");
     }
   };
+  // _SelectItem = (type, item) => {
+  //   if (type) {
+  //     this.props.setPlantId(item.Plant_PkeyID);
+  //     this.props.navigation.navigate("Addplant", { savemyplant: true });
+  //   } else {
+  //     this.props.setPlantId(0);
+  //     this.props.logoutAccount();
+  //     this.props.navigation.navigate("Addplant", { savemyplant: true });
+  //   }
+  // };
 
   _renderItem = (item) => {
     return (
@@ -470,6 +488,7 @@ const mapDispatchToProps = {
   setPlantId,
   setPlantTitle,
   logoutAccount,
+  setValidUserID,
 };
 export default connect(mapStateToProps, mapDispatchToProps)(Plant);
 const styles = StyleSheet.create({

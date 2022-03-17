@@ -186,7 +186,7 @@ class Explore extends Component {
       this.props.setPlantId(item.Plant_PkeyID);
       this.props.navigation.navigate("Plant", { screen: "Addplant" });
     } else {
-      this.props.setValidUserID(false);
+      this.props.setValidUserID(true);
       this.props.setPlantId(0);
       this.props.logoutAccount();
       this.props.navigation.navigate("Plant", { screen: "Addplant" });
@@ -252,7 +252,7 @@ class Explore extends Component {
                 shadowRadius: 4,
                 elevation: 5,
                 width: "90%",
-                paddingBottom: 100,
+                paddingBottom: 30,
               }}
             >
               <View
@@ -476,6 +476,10 @@ class Explore extends Component {
                         // paddingHorizontal: 5,
                         marginTop: 10,
                         marginRight: 5,
+                        shadowOffset: { width: 1, height: 1 },
+                        shadowColor: "gray",
+                        shadowOpacity: 0.9,
+                        elevation: 5,
                       }}
                     >
                       {!item.PIM_ImagePath ? (
@@ -506,6 +510,7 @@ class Explore extends Component {
                       /> */}
                       <View
                         style={{
+                          // backgroundColor: "pink",
                           flexDirection: "row",
                           justifyContent: "space-between",
                           alignItems: "center",

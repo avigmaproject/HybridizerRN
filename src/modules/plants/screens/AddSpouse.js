@@ -116,6 +116,7 @@ class AddSpouse extends Component {
       addplantvisiable: !this.state.addplantvisiable,
       duplicates: 1,
       plantname: "Plant name",
+      iconvisible: true,
     });
   };
   SavePlantDecs = async () => {
@@ -137,6 +138,8 @@ class AddSpouse extends Component {
             isLoading: false,
             addplantvisiable: !this.state.addplantvisiable,
             hide: !this.state.hide,
+            iconvisible: true,
+            isLoading: false,
           });
           this.GetAddSpouse();
           this.showMessage("Seedling saved successfully.", "success");
@@ -158,7 +161,7 @@ class AddSpouse extends Component {
     }
   };
   GetAddSpouse = async () => {
-    this.setState({ isLoading: true });
+    // this.setState({ isLoading: true });
     let data = {
       Type: 3,
       ASP_Plant_PkeyID: this.props.plantid,
@@ -171,6 +174,7 @@ class AddSpouse extends Component {
         console.log("res:getaddspouse", res[0]);
         this.setState({
           newplantarrar: res[0],
+          isLoading: false,
           isLoading: false,
         });
       })
@@ -191,8 +195,8 @@ class AddSpouse extends Component {
       Type: 1,
       ASP_Title: item.Plant_Name,
       ASP_Description: item.Plant_Description,
-      ASP_PkeyID: item.Plant_PkeyID,
-      ASP_Plant_PkeyID: this.props.plantid,
+      ASP_Plant_PkeyID: item.Plant_PkeyID,
+      ASP_ParentID: this.props.plantid,
     };
 
     console.log(data, this.props.token);
@@ -265,6 +269,7 @@ class AddSpouse extends Component {
     });
   };
   _GetPlantMaster1 = async () => {
+    let newplant = [];
     let data = {
       Type: 1,
     };
@@ -273,7 +278,15 @@ class AddSpouse extends Component {
     await getplantmaster(data, this.props.token)
       .then((res) => {
         console.log("res: ", res[0]);
-        this.setState({ plant: res[0] });
+        for (let i = 0; i < res[0].length; i++) {
+          if (res[0][i].Plant_PkeyID !== this.props.plantid) {
+            newplant.push(res[0][i]);
+          } else {
+            console.log("else paert same id", res[0][i]);
+          }
+        }
+        console.log("newplantnewplant", newplant);
+        this.setState({ plant: newplant });
       })
       .catch((error) => {
         if (error.response) {
@@ -347,13 +360,16 @@ class AddSpouse extends Component {
         ASP_PkeyID: this.props.spouseid,
       };
       console.log(data, this.props.token);
-      await createupdateplantdescription(data, this.props.token)
+      await createupdateaddspouse(data, this.props.token)
         .then((res) => {
           console.log("res: ", res);
-          this.setState({
-            modalVisible: !this.state.modalVisible,
-            isLoading: false,
-          });
+          this.setState(
+            {
+              modalVisible: !this.state.modalVisible,
+              isLoading: false,
+            },
+            () => this.GetAddSpouse()
+          );
 
           this.showMessage("Note saved successfully.", "success");
         })
@@ -372,7 +388,7 @@ class AddSpouse extends Component {
     this.props.navigation.navigate("AddNewSpouse");
   };
   AddInput = (item) => {
-    console.log("AddInput", item);
+    // console.log("AddInput", item);
     let totalduplicates = 0;
     if (item.add_Seedling_DTOs.length > 0) {
       for (let i = 0; i < item.add_Seedling_DTOs.length; i++) {
@@ -527,7 +543,7 @@ class AddSpouse extends Component {
             // numColumns={4}
             data={item.add_Seedling_DTOs}
             renderItem={({ item, index }) => {
-              console.log("add_Seedling_DTOs", item);
+              // console.log("add_Seedling_DTOs", item);
               return (
                 <TouchableOpacity
                   onPress={() => alert(`${item.ASE_Title}_${index + 1}`)}
@@ -562,11 +578,14 @@ class AddSpouse extends Component {
                       alignItems: "center",
                       borderTopEndRadius: 10,
                       borderTopStartRadius: 10,
+                      padding: 5,
                     }}
                   >
                     <Text
+                      ellipsizeMode={"middle"}
+                      numberOfLines={2}
                       style={{ color: "#fff" }}
-                    >{`${item.ASE_Title}_${index}`}</Text>
+                    >{`${item.ASE_Title}_${index + 1}`}</Text>
                   </View>
                 </TouchableOpacity>
               );
@@ -587,7 +606,10 @@ class AddSpouse extends Component {
     );
   };
   AddNotes = (item) => {
-    this.setState({ modalVisible: !this.state.modalVisible });
+    this.setState({
+      modalVisible: !this.state.modalVisible,
+      note: item.ASP_Description,
+    });
     this.props.setSpouseId(item.ASP_PkeyID);
   };
 
@@ -649,10 +671,12 @@ class AddSpouse extends Component {
                       height: 200,
                       paddingLeft: 20,
                       backgroundColor: "#f6f6f6",
+                      paddingTop: 20,
                     }}
                     placeholder={"Enter a note"}
                     multiline={true}
                     numberOfLines={10}
+                    value={this.state.note}
                   />
                 </View>
               </View>
@@ -688,27 +712,55 @@ class AddSpouse extends Component {
       plantname,
       duplicates,
       newplantarrar,
+      note,
     } = this.state;
+    console.log("note", note);
     return (
       <View style={{ height: "100%" }}>
         <ScrollView keyboardShouldPersistTaps={"handled"}>
           <Spinner visible={this.state.isLoading} />
           <View>
             <View>
-              <View
-                style={{
-                  position: "absolute",
-                  zIndex: 1,
-                  width: "100%",
-                }}
-              >
-                <Header
-                  onpressedit={() => this.onPressEdit()}
-                  edit={false}
-                  share={false}
-                  navigation={this.props.navigation}
-                />
-              </View>
+              {this.state.addplantvisiable && (
+                <View
+                  style={{
+                    position: "absolute",
+                    zIndex: 1,
+                    width: "100%",
+                  }}
+                >
+                  <Header
+                    back2={true}
+                    onpressedit={() => this.onPressEdit()}
+                    edit={false}
+                    share={false}
+                    navigation={this.props.navigation}
+                  />
+                </View>
+              )}
+
+              {!this.state.addplantvisiable && (
+                <TouchableOpacity
+                  onPress={() =>
+                    this.setState({
+                      addplantvisiable: !this.state.addplantvisiable,
+                    })
+                  }
+                  style={{
+                    backgroundColor: "#fff",
+                    justifyContent: "center",
+                    alignItems: "center",
+                    borderRadius: 3,
+                    position: "absolute",
+                    zIndex: 1,
+                    // padding: 1,
+                    marginLeft: 10,
+                    marginTop: 55,
+                  }}
+                >
+                  <Icon name="chevron-back-outline" size={30} />
+                </TouchableOpacity>
+              )}
               <View style={{}}>
                 <SliderBox
                   imageLoadingColor={"#30AD4A"}
@@ -843,113 +895,186 @@ class AddSpouse extends Component {
                     <Text style={{ fontWeight: "bold", fontSize: 20 }}>
                       Select existing profile as spouse
                     </Text>
+
                     <View
                       style={{
-                        flexDirection: "row",
-                        marginTop: 10,
-                        justifyContent: "center",
-                        alignItems: "center",
-                        // marginLeft: 20,
+                        // backgroundColor: "pink",
+                        paddingVertical: 10,
+                        paddingHorizontal: 10,
                       }}
                     >
-                      <View style={{ marginTop: 10 }}>
-                        <FlatList
-                          showsHorizontalScrollIndicator={false}
-                          horizontal
-                          data={this.state.plant}
-                          ListHeaderComponentStyle={{
-                            justifyContent: "center",
-                            alignItems: "center",
-                            marginRight: 20,
-                          }}
-                          ListHeaderComponent={() => {
-                            return (
-                              <TouchableOpacity
-                                onPress={() => this.addNewPlant()}
+                      <FlatList
+                        showsHorizontalScrollIndicator={false}
+                        horizontal
+                        data={this.state.plant}
+                        ListHeaderComponentStyle={{
+                          justifyContent: "center",
+                          alignItems: "center",
+                          marginRight: 20,
+                        }}
+                        ListHeaderComponent={() => {
+                          return (
+                            <TouchableOpacity
+                              onPress={() => this.addNewPlant()}
+                              style={{
+                                backgroundColor: "#F7F8FD",
+                              }} //"#F7F8FD"
+                            >
+                              <AntDesign
+                                name="pluscircleo"
+                                size={25}
+                                color="gray"
+                                style={{ padding: 20, alignSelf: "center" }}
+                              />
+                              <Text
                                 style={{
-                                  padding: 25,
-                                  backgroundColor: "#F7F8FD",
-                                }} //"#F7F8FD"
-                              >
-                                <AntDesign
-                                  name="pluscircleo"
-                                  size={25}
-                                  color="gray"
-                                />
-                              </TouchableOpacity>
-                            );
-                          }}
-                          renderItem={({ item }) => {
-                            return (
-                              <TouchableOpacity
-                                disabled={
-                                  this.props.plantid === item.Plant_PkeyID
-                                }
-                                onPress={() => this._AddToPlant(item)}
-                                style={{
-                                  // backgroundColor: "pink",
-                                  borderColor:
-                                    this.props.plantid === item.Plant_PkeyID
-                                      ? "#30AD4A"
-                                      : "black",
-                                  borderWidth: 1,
-                                  justifyContent: "center",
-                                  alignItems: "center",
-                                  marginRight: 5,
-                                  padding: 4,
-                                  // width: "10%",
+                                  fontWeight: "bold",
+                                  paddingHorizontal: 5,
+                                  paddingBottom: 10,
                                 }}
                               >
-                                <View>
-                                  {item.plant_Image_Master_DTOs ? (
-                                    <Image
-                                      resizeMode="stretch"
-                                      style={{ height: 40, width: 40 }}
-                                      source={{
-                                        uri:
-                                          item.plant_Image_Master_DTOs[0]
-                                            .PIM_ImagePath,
-                                      }}
-                                    />
-                                  ) : (
-                                    <Image
-                                      resizeMode="stretch"
-                                      style={{ height: 40, width: 40 }}
-                                      source={require("../../../assets/leaftree.png")}
-                                    />
-                                  )}
-                                </View>
-                                <View
+                                Add Spouse
+                              </Text>
+                            </TouchableOpacity>
+                          );
+                        }}
+                        renderItem={({ item }) => {
+                          return (
+                            <TouchableOpacity
+                              onPress={() => this._AddToPlant(item)}
+                              style={{
+                                width: 90,
+                                backgroundColor: "#fff",
+                                borderRadius: 5,
+                                marginRight: 5,
+                                shadowOffset: { width: 1, height: 1 },
+                                shadowColor: "gray",
+                                shadowOpacity: 0.9,
+                                elevation: 5,
+                                height: 90,
+                                marginVertical: 5,
+                              }}
+                            >
+                              {!item.plant_Image_Master_DTOs ? (
+                                <Image
+                                  resizeMode="stretch"
+                                  source={require("../../../assets/plantname.png")}
                                   style={{
-                                    justifyContent: "center",
-                                    alignItems: "center",
-                                    // backgroundColor: "red",
                                     width: "100%",
+                                    height: 50,
+                                    borderRadius: 3,
+                                  }}
+                                />
+                              ) : (
+                                <Image
+                                  resizeMode="stretch"
+                                  source={{
+                                    uri:
+                                      item.plant_Image_Master_DTOs[0]
+                                        .PIM_ImagePath,
+                                  }}
+                                  style={{
+                                    width: "100%",
+                                    height: 150,
+                                    borderRadius: 3,
+                                  }}
+                                />
+                              )}
+                              {/* <Image
+                                resizeMode="stretch"
+                                source={item.PIM_ImagePath}
+                                style={{ width: "100%", height: 150, borderRadius: 3 }}
+                              /> */}
+
+                              <View
+                                style={{
+                                  width: "100%",
+                                  // backgroundColor: "pink",
+                                  justifyContent: "center",
+                                  alignItems: "center",
+                                  height: 40,
+                                }}
+                              >
+                                <Text
+                                  ellipsizeMode={"tail"}
+                                  numberOfLines={2}
+                                  style={{
+                                    color: "black",
+                                    fontWeight: "bold",
                                   }}
                                 >
-                                  <Text
-                                    ellipsizeMode={"tail"}
-                                    numberOfLines={2}
-                                    style={{
-                                      color:
-                                        this.props.plantid === item.Plant_PkeyID
-                                          ? "#30AD4A"
-                                          : "black",
-                                      width: 70,
-                                      // alignSelf: "center",
-                                    }}
-                                  >
-                                    {item.Plant_Name}
-                                  </Text>
-                                </View>
-                              </TouchableOpacity>
-                            );
-                          }}
-                          keyExtractor={() =>
-                            "_" + Math.random().toString(36).substr(2, 9)
-                          }
-                        />
-                      </View>
+                                  {item.Plant_Name}
+                                </Text>
+                              </View>
+                            </TouchableOpacity>
+                            // <TouchableOpacity
+                            //   disabled={
+                            //     this.props.plantid === item.Plant_PkeyID
+                            //   }
+                            //   onPress={() => this._AddToPlant(item)}
+                            //   style={{
+                            //     // backgroundColor: "pink",
+                            //     borderColor:
+                            //       this.props.plantid === item.Plant_PkeyID
+                            //         ? "#30AD4A"
+                            //         : "black",
+                            //     borderWidth: 1,
+                            //     justifyContent: "center",
+                            //     alignItems: "center",
+                            //     marginRight: 5,
+                            //     padding: 4,
+                            //     // width: "10%",
+                            //   }}
+                            // >
+                            //   <View>
+                            //     {item.plant_Image_Master_DTOs ? (
+                            //       <Image
+                            //         resizeMode="stretch"
+                            //         style={{ height: 40, width: 40 }}
+                            //         source={{
+                            //           uri:
+                            //             item.plant_Image_Master_DTOs[0]
+                            //               .PIM_ImagePath,
+                            //         }}
+                            //       />
+                            //     ) : (
+                            //       <Image
+                            //         resizeMode="stretch"
+                            //         style={{ height: 40, width: 40 }}
+                            //         source={require("../../../assets/leaftree.png")}
+                            //       />
+                            //     )}
+                            //   </View>
+                            //   <View
+                            //     style={{
+                            //       justifyContent: "center",
+                            //       alignItems: "center",
+                            //       // backgroundColor: "red",
+                            //       width: "100%",
+                            //     }}
+                            //   >
+                            //     <Text
+                            //       ellipsizeMode={"tail"}
+                            //       numberOfLines={2}
+                            //       style={{
+                            //         color:
+                            //           this.props.plantid === item.Plant_PkeyID
+                            //             ? "#30AD4A"
+                            //             : "black",
+                            //         width: 70,
+                            //         // alignSelf: "center",
+                            //       }}
+                            //     >
+                            //       {item.Plant_Name}
+                            //     </Text>
+                            //   </View>
+                            // </TouchableOpacity>
+                          );
+                        }}
+                        keyExtractor={() =>
+                          "_" + Math.random().toString(36).substr(2, 9)
+                        }
+                      />
                     </View>
                   </View>
 

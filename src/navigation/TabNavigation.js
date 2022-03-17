@@ -55,7 +55,18 @@ export default function MyTabs() {
       })}
     >
       <Tab.Screen name="Explore" component={ExploreNavigation} />
-      <Tab.Screen name="Plant" component={PlantNavigation} />
+      <Tab.Screen
+        name="Plant"
+        component={PlantNavigation}
+        listeners={({ navigation, route }) => ({
+          tabPress: async (e) => {
+            navigation.reset({
+              index: 0,
+              routes: [{ name: "PlantScreen" }],
+            });
+          },
+        })}
+      />
       <Tab.Screen name="Pot" component={PotNavigation} />
       <Tab.Screen name="Search" component={SearchNavigation} />
       <Tab.Screen name="Profile" component={ProfileNavigation} />

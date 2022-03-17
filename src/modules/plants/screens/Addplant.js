@@ -66,8 +66,8 @@ class Addplant extends Component {
       addplantvisiable: false,
       isLoading: false,
       input: [],
-      plantname: "Plant Name",
-      categoryname: "Category",
+      plantname: "",
+      categoryname: "",
       form: { PD_Description: {} },
       description: {},
       viewstatus: false,
@@ -177,11 +177,12 @@ class Addplant extends Component {
             PIM_ImageName: image.modificationDate,
             PIM_ImagePath: res[0].Image_Path,
             PIM_Size: image.size,
+            PIM_IsFirst: this.state.setimage.length === 0 ? true : false,
           });
           this.setState({
             isLoading: false,
           });
-          console.log("res:registerstoreplantimage", res[0].Image_Path);
+          console.log("res:registerstoreplantimage", this.state.setimage);
         })
         .catch((error) => {
           if (error.request) {
@@ -262,19 +263,20 @@ class Addplant extends Component {
   };
   componentDidMount = async () => {
     this._unsubscribe = this.props.navigation.addListener("focus", () => {
-      // console.log("componentDidMount", this.props.route.params.savemyplant);
+      console.log("componentDidMount", this.props.route.name);
       this._GetCategoryMaster();
       if (this.props.plantid > 0) {
         this._GetPlantMaster();
       } else {
         this.setState({
           imagePath: [require("../../../assets/plantname.png")],
-          plantname: "Plant Name",
-          categoryname: "Category",
+          plantname: "",
+          categoryname: "",
           uploadimage: "",
           setplantdesc: [],
           setplantdesc: [],
           savemyplant: false,
+          iconvisible: true,
         });
       }
     });
@@ -318,7 +320,7 @@ class Addplant extends Component {
   };
   _GetPlantMaster = async () => {
     this.setState({
-      // isLoading: true,
+      isLoading: true,
     });
     let imagesrc = [];
     let data = {
@@ -353,6 +355,7 @@ class Addplant extends Component {
               : "Save to my plant",
             isLoading: false,
             plantuserid: res[0][0].Plant_User_PkeyID,
+            iconvisible: true,
           },
           () => this.props.setPlantImageArr(this.state.imagePath)
         );
@@ -417,7 +420,7 @@ class Addplant extends Component {
     if (typeof item.PD_Description === "object") {
       jsonarr = item.PD_Description;
       for (var i in item.PD_Description) result.push([i, jsonarr[i]]);
-      console.log("typeof", result.length);
+      // console.log("typeof", result.length);
       this.setState({
         ...this.state,
         addplantvisiable: !this.state.addplantvisiable,
@@ -471,7 +474,6 @@ class Addplant extends Component {
     }
     this.setState({
       iconvisible: !this.state.iconvisible,
-      plantname: "",
     });
   };
   onHandleChange = (key, value) => {
@@ -548,7 +550,7 @@ class Addplant extends Component {
   };
 
   _renderItem = (item, index) => {
-    console.log("typeof", typeof item);
+    // console.log("typeof", typeof item);
     // let jsonarr = JSON.parse(item.PD_Description);
     // let arr = Object.values(jsonarr);
     var arr;
@@ -578,7 +580,7 @@ class Addplant extends Component {
             {item.PD_Title}
             {"  "}
           </Text>
-          {this.pros.isvalid && (
+          {this.props.isvalid && (
             <>
               <TouchableOpacity
                 style={{ marginLeft: 10 }}
@@ -629,7 +631,7 @@ class Addplant extends Component {
       Plant_Name: this.state.plantname,
       Plant_Cat_Pkey: parseInt(this.state.catid),
       Plant_Cat_Name: this.state.categoryname,
-      Plant_IsParent: 1,
+      Plant_IsParent: 0,
       Plant_MyPlant: this.state.savemyplant,
       Plant_PkeyID: this.props.plantid > 0 ? this.props.plantid : 0,
       Plant_IsActive: 1,
@@ -656,7 +658,7 @@ class Addplant extends Component {
 
         // this.props.setPlantImage([require("../../../assets/plantname.png")]); //this.props.setPlantImage(this.state.imagePath);
         // this.props.setPlantImageArr([require("../../../assets/plantname.png")]);
-        this.showMessage("Plant save successfully.", "success");
+        this.showMessage("Plant saved successfully.", "success");
         this._GetPlantMaster();
       })
       .catch((error) => {
@@ -785,7 +787,7 @@ class Addplant extends Component {
                       this.searchText(categoryname);
                       // this.setState({ categoryname });
                     }}
-                    // value={categoryname}
+                    value={this.state.categoryname}
                     placeholder={"Category"}
                   />
                 </View>
@@ -876,19 +878,7 @@ class Addplant extends Component {
       Characteristics_2,
       Characteristics_1,
     } = PD_Description;
-    const {
-      addplantvisiable,
-      form,
-      plantname,
-      categoryname,
-      input,
-    } = this.state;
-    console.log(
-      this.props.plantdesc.length > 0 &&
-        // &&  this.props.plantimage.length > 0
-        this.state.categoryname !== "" &&
-        this.state.plantname !== ""
-    );
+    const { addplantvisiable, plantname, categoryname } = this.state;
     return (
       <View style={{ height: "100%" }}>
         <ScrollView keyboardShouldPersistTaps={"handled"}>
@@ -905,7 +895,7 @@ class Addplant extends Component {
                 <Header
                   onpressedit={() => this.onPressEdit()}
                   // edit={true}
-                  edit={this.pros.isvalid}
+                  edit={this.props.isvalid}
                   share={true}
                   navigation={this.props.navigation}
                 />
@@ -1112,22 +1102,39 @@ class Addplant extends Component {
                         }}
                       >
                         <View style={{ width: "90%", height: 50 }}>
-                          <Text
-                            style={{
-                              fontWeight: "bold",
-                              fontSize: this.normalize(18),
-                              color: "#000",
-                              lineHeight: 40,
-                            }}
-                          >
-                            {plantname}{" "}
-                            <Text style={{ fontWeight: "normal" }}>
-                              ({categoryname})
-                            </Text>{" "}
-                          </Text>
+                          {plantname === "" && categoryname == "" ? (
+                            <Text
+                              style={{
+                                fontWeight: "bold",
+                                fontSize: this.normalize(18),
+                                color: "#000",
+                                lineHeight: 40,
+                              }}
+                            >
+                              {"Plant Name"}{" "}
+                              <Text style={{ fontWeight: "normal" }}>
+                                ({"Category Name"})
+                              </Text>{" "}
+                            </Text>
+                          ) : (
+                            <Text
+                              style={{
+                                fontWeight: "bold",
+                                fontSize: this.normalize(18),
+                                color: "#000",
+                                lineHeight: 40,
+                              }}
+                            >
+                              {plantname}{" "}
+                              <Text style={{ fontWeight: "normal" }}>
+                                ({categoryname})
+                              </Text>{" "}
+                            </Text>
+                          )}
                         </View>
+
                         <View>
-                          {this.pros.isvalid && (
+                          {this.props.isvalid && (
                             <TouchableOpacity
                               onPress={() => this._ChangeName(false)}
                             >
@@ -1188,9 +1195,26 @@ class Addplant extends Component {
                                 width: "100%",
                               }}
                             >
-                              <Text style={{ textTransform: "capitalize" }}>
-                                {categoryname}
-                              </Text>
+                              {categoryname === "" ? (
+                                <Text
+                                  style={{
+                                    textTransform: "capitalize",
+                                    color: "lightgray",
+                                  }}
+                                >
+                                  {"Category Name"}
+                                </Text>
+                              ) : (
+                                <Text
+                                  style={{
+                                    textTransform: "capitalize",
+                                    color: "black",
+                                  }}
+                                >
+                                  {categoryname}
+                                </Text>
+                              )}
+
                               {/* <InputField
                               editable={true}
                               // onChangeText={(categoryname) => {
@@ -1202,6 +1226,7 @@ class Addplant extends Component {
                             </TouchableOpacity>
                           </View>
                         </View>
+
                         <View>
                           <TouchableOpacity
                             onPress={() => this._ChangeName(true)}
@@ -1220,7 +1245,7 @@ class Addplant extends Component {
                   /> */}
 
                   <View>
-                    {this.pros.isvalid && (
+                    {this.props.isvalid && (
                       <View>
                         {this.props.plantid > 0 && (
                           <ViewButton
@@ -1255,7 +1280,7 @@ class Addplant extends Component {
                         keyExtractor={(item) => item.id}
                       />
                     </View>
-                    {this.pros.isvalid && (
+                    {this.props.isvalid && (
                       <View
                         style={{
                           flexDirection: "row",
@@ -1295,7 +1320,7 @@ class Addplant extends Component {
                         </Text>
                       </View>
                     )}
-                    {this.pros.isvalid && (
+                    {this.props.isvalid && (
                       <TouchableBotton
                         onPress={() => this.AddCharacteristics()}
                         color={"#30AD4A"}
@@ -1308,8 +1333,7 @@ class Addplant extends Component {
                         font={true}
                       />
                     )}
-                    {this.props.plantdesc.length > 0 &&
-                      this.props.plantimagearr.length > 0 &&
+                    {this.props.plantimagearr.length > 0 &&
                       this.state.categoryname !== "" &&
                       this.state.plantname !== "" && (
                         <>

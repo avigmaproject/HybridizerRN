@@ -68,8 +68,8 @@ class AddNewSpouse extends Component {
       addplantvisiable: false,
       isLoading: false,
       input: [],
-      plantname: "Hybrid",
-      categoryname: "101",
+      plantname: "",
+      categoryname: "",
       form: { PD_Description: {} },
       description: {},
       viewstatus: false,
@@ -271,10 +271,13 @@ class AddNewSpouse extends Component {
       } else {
         this.setState({
           imagePath: [require("../../../assets/plantname.png")],
-          plantname: "Hybrid",
-          categoryname: "101",
+          plantname: "",
+          categoryname: "",
           uploadimage: "",
           setplantdesc: [],
+          setplantdesc: [],
+          savemyplant: false,
+          iconvisible: true,
         });
       }
     });
@@ -509,10 +512,10 @@ class AddNewSpouse extends Component {
       PD_Title: this.state.form.PD_Title,
     };
 
-    // this.state.setplantdesc.push(form1);
+    this.state.setplantdesc.push(form1);
     this.setState({ setplantdesc: [...this.state.setplantdesc, form1] });
     this.props.setPlantDesc(this.state.setplantdesc);
-    console.log(this.state.setplantdesc);
+    console.log("setplantdesc", this.state.setplantdesc);
 
     this.setState({
       ...this.state,
@@ -592,14 +595,14 @@ class AddNewSpouse extends Component {
       // isLoading: true,
     });
     let data = {
-      Type: 1,
+      Type: 6,
       strPlant_Image_Master_DTO: JSON.stringify(this.props.plantimage),
       strPlant_Description_DTO: JSON.stringify(this.state.setplantdesc),
       Plant_Name: this.state.plantname,
       Plant_Cat_Pkey: parseInt(this.state.catid),
       Plant_Cat_Name: this.state.categoryname,
-      Plant_ParentID: this.props.spouseid,
-      Plant_IsParent: this.props.plantid ? 1 : 0,
+      Plant_ParentID: this.props.plantid,
+      Plant_IsParent: 1,
       Plant_MyPlant: this.state.savemyplant,
       Plant_IsActive: 1,
     };
@@ -626,7 +629,7 @@ class AddNewSpouse extends Component {
         // this.props.setPlantImage([require("../../../assets/plantname.png")]); //this.props.setPlantImage(this.state.imagePath);
         // this.props.setPlantImageArr([require("../../../assets/plantname.png")]);
         this.showMessage("Plant save successfully.", "success");
-        this.CreateUpdateAddSpouse();
+        // this.CreateUpdateAddSpouse();
       })
 
       .catch((error) => {
@@ -938,7 +941,7 @@ class AddNewSpouse extends Component {
                 marginTop: -15,
                 paddingHorizontal: 20,
                 height: "100%",
-                paddingBottom: "50%",
+                paddingBottom: "90%",
               }}
             >
               {addplantvisiable ? (
@@ -1106,20 +1109,37 @@ class AddNewSpouse extends Component {
                         }}
                       >
                         <View style={{ width: "90%", height: 50 }}>
-                          <Text
-                            style={{
-                              fontWeight: "bold",
-                              fontSize: this.normalize(18),
-                              color: "#000",
-                              lineHeight: 40,
-                            }}
-                          >
-                            {plantname}{" "}
-                            <Text style={{ fontWeight: "normal" }}>
-                              ({categoryname})
-                            </Text>{" "}
-                          </Text>
+                          {plantname === "" && categoryname == "" ? (
+                            <Text
+                              style={{
+                                fontWeight: "bold",
+                                fontSize: this.normalize(18),
+                                color: "#000",
+                                lineHeight: 40,
+                              }}
+                            >
+                              {"Plant Name"}{" "}
+                              <Text style={{ fontWeight: "normal" }}>
+                                ({"Category Name"})
+                              </Text>{" "}
+                            </Text>
+                          ) : (
+                            <Text
+                              style={{
+                                fontWeight: "bold",
+                                fontSize: this.normalize(18),
+                                color: "#000",
+                                lineHeight: 40,
+                              }}
+                            >
+                              {plantname}{" "}
+                              <Text style={{ fontWeight: "normal" }}>
+                                ({categoryname})
+                              </Text>{" "}
+                            </Text>
+                          )}
                         </View>
+
                         <View>
                           <TouchableOpacity
                             onPress={() => this._ChangeName(false)}
@@ -1180,9 +1200,26 @@ class AddNewSpouse extends Component {
                                 width: "100%",
                               }}
                             >
-                              <Text style={{ textTransform: "capitalize" }}>
-                                {categoryname}
-                              </Text>
+                              {categoryname === "" ? (
+                                <Text
+                                  style={{
+                                    textTransform: "capitalize",
+                                    color: "lightgray",
+                                  }}
+                                >
+                                  {"Category Name"}
+                                </Text>
+                              ) : (
+                                <Text
+                                  style={{
+                                    textTransform: "capitalize",
+                                    color: "lightgray",
+                                  }}
+                                >
+                                  {categoryname}
+                                </Text>
+                              )}
+
                               {/* <InputField
                               editable={true}
                               // onChangeText={(categoryname) => {
@@ -1194,6 +1231,7 @@ class AddNewSpouse extends Component {
                             </TouchableOpacity>
                           </View>
                         </View>
+
                         <View>
                           <TouchableOpacity
                             onPress={() => this._ChangeName(true)}

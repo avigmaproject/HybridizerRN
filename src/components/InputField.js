@@ -24,6 +24,7 @@ export default class InputField extends Component {
           // multiline={true}
           // numberOfLines={10}
           editable={!editable}
+          placeholderTextColor={"lightgray"}
         />
       </View>
     );
