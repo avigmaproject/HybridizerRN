@@ -14,7 +14,7 @@ export default class Header extends Component {
           flexDirection: "row",
           justifyContent: "space-between",
           paddingHorizontal: 10,
-          marginTop: hasNotch ? 55 : 30,
+          marginTop: hasNotch && !this.props.logout ? 40 : 30,
           // backgroundColor: "pink",
         }}
       >
@@ -56,7 +56,7 @@ export default class Header extends Component {
                 borderRadius: 3,
                 padding: 1,
               }}
-              onPress={() => alert("hiii")}
+              onPress={this.props.onpressshare}
             >
               <Icon name="share-social-outline" size={30} color="black" />
             </TouchableOpacity>

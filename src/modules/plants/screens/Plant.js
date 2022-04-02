@@ -20,6 +20,7 @@ import {
   setPlantId,
   setPlantTitle,
   logoutAccount,
+  setCopyPlant,
 } from "../../../store/action/plant/action";
 import { setValidUserID } from "../../../store/action/auth/action";
 import { gethomemyplants } from "../../../services/api.function";
@@ -100,20 +101,30 @@ class Plant extends Component {
     this.setState({ title: !this.state.title });
   };
   _SelectItem = (type, item) => {
-    console.log("_SelectItem", item);
-    if (type) {
-      if (item.Plant_User_PkeyID === this.props.userid) {
-        this.props.setValidUserID(true);
-      } else {
-        this.props.setValidUserID(false);
-      }
-      this.props.setPlantId(item.Plant_PkeyID);
-      this.props.navigation.navigate("Addplant");
+    console.log("_SelectItemcopyplant", this.props.copyplant);
+    if (this.props.copyplant) {
+      console.log("ifffff_SelectItem", item);
+      this.props.navigation.navigate("Plant", {
+        screen: "Addplant",
+        params: { plantpkeyid: item.Plant_PkeyID },
+      });
     } else {
-      this.props.setValidUserID(true);
-      this.props.setPlantId(0);
-      this.props.logoutAccount();
-      this.props.navigation.navigate("Addplant");
+      this.props.setCopyPlant(false);
+      console.log("elsle_SelectItem", item);
+      if (type) {
+        if (item.Plant_User_PkeyID === this.props.userid) {
+          this.props.setValidUserID(true);
+        } else {
+          this.props.setValidUserID(false);
+        }
+        this.props.setPlantId(item.Plant_PkeyID);
+        this.props.navigation.navigate("Addplant");
+      } else {
+        this.props.setValidUserID(true);
+        this.props.setPlantId(0);
+        this.props.logoutAccount();
+        this.props.navigation.navigate("Addplant");
+      }
     }
   };
   // _SelectItem = (type, item) => {
@@ -427,6 +438,7 @@ class Plant extends Component {
                 </View>
               </View>
             </View>
+
             <View
               style={{
                 backgroundColor: "#fff",
@@ -483,12 +495,14 @@ const mapStateToProps = (state, ownProps) => ({
   token: state.authReducer.token,
   planttitle: state.plantReducer.planttitle,
   userid: state.authReducer.userid,
+  copyplant: state.plantReducer.copyplant,
 });
 const mapDispatchToProps = {
   setPlantId,
   setPlantTitle,
   logoutAccount,
   setValidUserID,
+  setCopyPlant,
 };
 export default connect(mapStateToProps, mapDispatchToProps)(Plant);
 const styles = StyleSheet.create({

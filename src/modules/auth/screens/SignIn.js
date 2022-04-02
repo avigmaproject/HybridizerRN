@@ -130,14 +130,13 @@ const SignIn = ({ navigation }) => {
   };
 
   return (
-    <SafeAreaView style={{ backgroundColor: "#fff" }}>
+    <View style={{ backgroundColor: "#fff" }}>
       <KeyboardAwareScrollView
         keyboardShouldPersistTaps="handled"
         style={{ backgroundColor: "#fff", height: "100%" }}
       >
         <Spinner visible={loading} />
-
-        <View style={{}}>
+        <View>
           <View>
             <Image
               resizeMode="stretch"
@@ -215,7 +214,7 @@ const SignIn = ({ navigation }) => {
           </Animatable.View>
         </View>
       </KeyboardAwareScrollView>
-    </SafeAreaView>
+    </View>
   );
 };
 

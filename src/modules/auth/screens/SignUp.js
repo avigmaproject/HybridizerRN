@@ -172,7 +172,7 @@ const SignUp = ({ navigation }) => {
   };
 
   return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: "#fff" }}>
+    <View style={{ flex: 1, backgroundColor: "#fff" }}>
       <KeyboardAwareScrollView
         keyboardShouldPersistTaps="handled"
         style={{ height: windowHeight }}
@@ -268,7 +268,7 @@ const SignUp = ({ navigation }) => {
           </View>
         </Animatable.View>
       </KeyboardAwareScrollView>
-    </SafeAreaView>
+    </View>
   );
 };
 

@@ -7,6 +7,9 @@ export const initialState = {
   spouseid: 0,
   planttitle: "My Plants",
   chlidid: 0,
+  copyplant: false,
+  plantname: "",
+  plantcategory: "",
 };
 
 const reducer = (state = initialState, action) => {
@@ -57,6 +60,24 @@ const reducer = (state = initialState, action) => {
       return {
         ...state,
         planttitle: action.planttitle,
+      };
+    }
+    case "SET_PLANT_NAME": {
+      return {
+        ...state,
+        plantname: action.plantname,
+      };
+    }
+    case "SET_PLANT_CATEGORY": {
+      return {
+        ...state,
+        plantcategory: action.plantcategory,
+      };
+    }
+    case "SET_COPY_PLANT": {
+      return {
+        ...state,
+        copyplant: action.copyplant,
       };
     }
 

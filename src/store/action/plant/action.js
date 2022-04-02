@@ -44,3 +44,18 @@ export const logoutAccount = () => {
     dispatch({ type: "DELETE_PLANT_DETAIL" });
   };
 };
+export const setCopyPlant = (copyplant) => {
+  return (dispatch) => {
+    dispatch({ type: "SET_COPY_PLANT", copyplant });
+  };
+};
+export const setPlantName = (plantname) => {
+  return (dispatch) => {
+    dispatch({ type: "SET_PLANT_NAME", plantname });
+  };
+};
+export const setPlantCategory = (plantcategory) => {
+  return (dispatch) => {
+    dispatch({ type: "SET_PLANT_CATEGORY", plantcategory });
+  };
+};

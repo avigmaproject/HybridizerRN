@@ -50,6 +50,20 @@ export const resetpassword = async (data) => {
       throw error;
     });
 };
+export const registerstoreimage = async (data, access_token) => {
+  return axios(API.STORE_IMAGE_API, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: "Bearer " + access_token,
+    },
+    data,
+  })
+    .then((response) => response.data)
+    .catch((error) => {
+      throw error;
+    });
+};
 export const registerstoreplantimage = async (data, access_token) => {
   return axios(API.STORE_PLANT_IMAGE_API, {
     method: "POST",
@@ -120,6 +134,20 @@ export const createupdateaddspouse = async (data, access_token) => {
       throw error;
     });
 };
+export const createupdateaddseedling = async (data, access_token) => {
+  return axios(API.CREATE_UPDATE_ADD_SEEDLING, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: "Bearer " + access_token,
+    },
+    data,
+  })
+    .then((response) => response.data)
+    .catch((error) => {
+      throw error;
+    });
+};
 export const getaddspouse = async (data, access_token) => {
   return axios(API.GET_ADD_SPOUSE, {
     method: "POST",
@@ -178,7 +206,6 @@ export const getusermasterdata = async (data, access_token) => {
     });
 };
 export const createupdateplantdescription = async (data, access_token) => {
-  //left
   return axios(API.CREATE_UPDATE_PLANT_DESCRIPTION, {
     method: "POST",
     headers: {
@@ -193,8 +220,22 @@ export const createupdateplantdescription = async (data, access_token) => {
     });
 };
 export const getplantdescription = async (data, access_token) => {
-  //left
   return axios(API.GET_PLANT_DESCRIPTION, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: "Bearer " + access_token,
+    },
+    data,
+  })
+    .then((response) => response.data)
+    .catch((error) => {
+      throw error;
+    });
+};
+
+export const userprofileupdate = async (data, access_token) => {
+  return axios(API.ADD_USER_MASTER_DATA, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",

@@ -28,7 +28,7 @@ import {
   getplantmaster,
   createupdateaddspouse,
   getaddspouse,
-  createupdateplantdescription,
+  createupdateaddseedling,
 } from "../../../services/api.function";
 import { connect } from "react-redux";
 import {
@@ -197,6 +197,7 @@ class AddSpouse extends Component {
       ASP_Description: item.Plant_Description,
       ASP_Plant_PkeyID: item.Plant_PkeyID,
       ASP_ParentID: this.props.plantid,
+      ASP_Type: 1,
     };
 
     console.log(data, this.props.token);
@@ -220,7 +221,45 @@ class AddSpouse extends Component {
         }
       });
   };
+  DeleteDescriptionSeedling = (item) =>
+    Alert.alert("Delete", "Are you sure to delete Spouse plant.", [
+      {
+        text: "Cancel",
+        onPress: () => console.log("Cancel Pressed"),
+        style: "cancel",
+      },
+      { text: "OK", onPress: () => this.CreateUpdateAddSeedlingDelete(item) },
+    ]);
+  CreateUpdateAddSeedlingDelete = async (item) => {
+    console.log("createupdateaddseedlingdelete", item);
+    this.setState({ isLoading: true });
+    let data = {
+      Type: 4,
+      ASE_PkeyID: item.ASE_PkeyID,
+    };
 
+    console.log(data, this.props.token);
+    // return 0;
+    await createupdateaddseedling(data, this.props.token)
+      .then((res) => {
+        console.log("res:createupdateaddseedling", res);
+        this.GetAddSpouse();
+        this.setState({
+          isLoading: false,
+        });
+        this.showMessage("Seddling plant deleted successfully.", "success");
+      })
+      .catch((error) => {
+        this.showMessage("Seddling plant deleted unsuccessfully.", "error");
+        if (error.request) {
+          console.log(error.request);
+        } else if (error.responce) {
+          console.log(error.responce);
+        } else {
+          console.log(error);
+        }
+      });
+  };
   DeleteDescription = (item) =>
     Alert.alert("Delete", "Are you sure to delete Spouse plant.", [
       {
@@ -271,7 +310,7 @@ class AddSpouse extends Component {
   _GetPlantMaster1 = async () => {
     let newplant = [];
     let data = {
-      Type: 1,
+      Type: 4,
     };
 
     console.log("_GetPlantMaster", data, this.props.token);
@@ -536,72 +575,87 @@ class AddSpouse extends Component {
           </View>
         </View>
 
-        {this.state.hide && this.props.spouseid === item.ASP_PkeyID && (
-          <FlatList
-            showsHorizontalScrollIndicator={false}
-            horizontal
-            // numColumns={4}
-            data={item.add_Seedling_DTOs}
-            renderItem={({ item, index }) => {
-              // console.log("add_Seedling_DTOs", item);
-              return (
-                <TouchableOpacity
-                  onPress={() => alert(`${item.ASE_Title}_${index + 1}`)}
-                  style={{
-                    height: 100,
-                    width: 90,
-                    alignItems: "center",
-                    marginLeft: 5,
-                    backgroundColor: "#fff",
-                    marginTop: 10,
-                  }}
-                >
-                  <View
-                    style={{
-                      height: "70%",
-                      width: "50%",
-                      paddingVertical: 3,
-                    }}
-                  >
-                    <Image
-                      resizeMode="stretch"
-                      style={{ height: "90%", width: "90%" }}
-                      source={require("../../../assets/flower1.png")}
-                    />
-                  </View>
-                  <View
-                    style={{
-                      backgroundColor: "#30AD4A",
-                      width: "100%",
-                      height: "30%",
-                      justifyContent: "center",
-                      alignItems: "center",
-                      borderTopEndRadius: 10,
-                      borderTopStartRadius: 10,
-                      padding: 5,
-                    }}
-                  >
-                    <Text
-                      ellipsizeMode={"middle"}
-                      numberOfLines={2}
-                      style={{ color: "#fff" }}
-                    >{`${item.ASE_Title}_${index + 1}`}</Text>
-                  </View>
-                </TouchableOpacity>
-              );
-            }}
-            keyExtractor={() => "_" + Math.random().toString(36).substr(2, 9)}
-          />
-          // <View
-          //   style={{
-          //     flexDirection: "row",
-          //     flexWrap: "wrap",
-          //     alignItems: "center",
-          //   }}
-          // >
-          //   {this.flower(totalduplicates)}
-          // </View>
-        )}
+        <View style={{ marginRight: 20 }}>
+          {this.state.hide && this.props.spouseid === item.ASP_PkeyID && (
+            <FlatList
+              showsVerticalScrollIndicator={false}
+              numColumns={4}
+              initialNumToRender={item.add_Seedling_DTOs.length}
+              data={item.add_Seedling_DTOs}
+              renderItem={({ item, index }) => {
+                // console.log("add_Seedling_DTOs", item);
+                return (
+                  <>
+                    <View
+                      style={{
+                        height: 100,
+                        width: "25%",
+                        alignItems: "center",
+                        marginLeft: 5,
+                        backgroundColor: "#fff",
+                        marginTop: 10,
+                      }}
+                    >
+                      <TouchableOpacity
+                        onPress={() => alert(`${item.ASE_Title}_${index + 1}`)}
+                        style={{
+                          height: "70%",
+                          width: "100%",
+                          paddingVertical: 3,
+                        }}
+                      >
+                        <Image
+                          resizeMode="contain"
+                          style={{ height: "90%", width: "90%" }}
+                          source={require("../../../assets/flower1.png")}
+                        />
+                      </TouchableOpacity>
+                      <TouchableOpacity
+                        onPress={() => this.DeleteDescriptionSeedling(item)}
+                        style={{
+                          justifyContent: "center",
+                          position: "absolute",
+                          top: -5,
+                          left: -5,
+                        }}
+                      >
+                        <AntDesign name="delete" size={20} color="red" />
+                      </TouchableOpacity>
+                      <View
+                        style={{
+                          backgroundColor: "#30AD4A",
+                          width: "100%",
+                          height: "30%",
+                          justifyContent: "center",
+                          alignItems: "center",
+                          borderTopEndRadius: 10,
+                          borderTopStartRadius: 10,
+                          padding: 5,
+                        }}
+                      >
+                        <Text
+                          ellipsizeMode={"middle"}
+                          numberOfLines={2}
+                          style={{ color: "#fff" }}
+                        >{`${item.ASE_Title}_${index + 1}`}</Text>
+                      </View>
+                    </View>
+                  </>
+                );
+              }}
+              keyExtractor={() => "_" + Math.random().toString(36).substr(2, 9)}
+            />
+            // <View
+            //   style={{
+            //     flexDirection: "row",
+            //     flexWrap: "wrap",
+            //     alignItems: "center",
+            //   }}
+            // >
+            //   {this.flower(totalduplicates)}
+            // </View>
+          )}
+        </View>
       </View>
     );
   };
@@ -712,9 +766,7 @@ class AddSpouse extends Component {
       plantname,
       duplicates,
       newplantarrar,
-      note,
     } = this.state;
-    console.log("note", note);
     return (
       <View style={{ height: "100%" }}>
         <ScrollView keyboardShouldPersistTaps={"handled"}>
@@ -888,11 +940,16 @@ class AddSpouse extends Component {
                 <>
                   <View
                     style={{
-                      paddingHorizontal: 20,
+                      paddingHorizontal: 10,
                       marginTop: 20,
                     }}
                   >
-                    <Text style={{ fontWeight: "bold", fontSize: 20 }}>
+                    <Text
+                      style={{
+                        fontWeight: "bold",
+                        fontSize: 20,
+                      }}
+                    >
                       Select existing profile as spouse
                     </Text>
 
@@ -928,7 +985,7 @@ class AddSpouse extends Component {
                               />
                               <Text
                                 style={{
-                                  fontWeight: "bold",
+                                  // fontWeight: "bold",
                                   paddingHorizontal: 5,
                                   paddingBottom: 10,
                                 }}
@@ -939,6 +996,7 @@ class AddSpouse extends Component {
                           );
                         }}
                         renderItem={({ item }) => {
+                          // console.log("renderItemrenderItem", item);
                           return (
                             <TouchableOpacity
                               onPress={() => this._AddToPlant(item)}
@@ -1000,7 +1058,7 @@ class AddSpouse extends Component {
                                   numberOfLines={2}
                                   style={{
                                     color: "black",
-                                    fontWeight: "bold",
+                                    // fontWeight: "bold",
                                   }}
                                 >
                                   {item.Plant_Name}
@@ -1085,6 +1143,7 @@ class AddSpouse extends Component {
                       marginTop: 30,
                       borderTopLeftRadius: 20,
                       borderTopRightRadius: 20,
+                      flex: 1,
                     }}
                   >
                     <View style={{ marginTop: 10 }}>
@@ -1108,7 +1167,7 @@ class AddSpouse extends Component {
                           style={{
                             width: "100%",
                             // backgroundColor: "pink",
-                            height: 200,
+                            // height: 200,
                             justifyContent: "center",
                             alignItems: "center",
                           }}

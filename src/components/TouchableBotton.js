@@ -39,6 +39,7 @@ export default class TouchableBotton extends Component {
           ellipsizeMode={"tail"}
           numberOfLines={2}
           style={{
+            alignSelf: "center",
             // color: "black",
             fontSize: this.props.font ? this.normalize(15) : this.normalize(10),
             fontWeight: "bold",

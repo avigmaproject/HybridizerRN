@@ -22,10 +22,13 @@ import {
 } from "../../../services/api.function";
 import { connect } from "react-redux";
 import { setUserID, setValidUserID } from "../../../store/action/auth/action";
-import { setPlantId, logoutAccount } from "../../../store/action/plant/action";
+import {
+  setPlantId,
+  logoutAccount,
+  setCopyPlant,
+} from "../../../store/action/plant/action";
 import InputField from "../../../components/InputField";
 import Spinner from "react-native-loading-spinner-overlay";
-
 let hasNotch = DeviceInfo.hasNotch();
 // const DATA = [
 //   {
@@ -144,7 +147,11 @@ class Explore extends Component {
     await gethomemyplants(data, this.props.token)
       .then((res) => {
         console.log("res:gethomemyplantsexplore ", res[0]);
-        this.setState({ plant: res[0], backupplant: res[0], isLoading: false });
+        this.setState({
+          plant: res[0] ? res[0] : [],
+          backupplant: res[0],
+          isLoading: false,
+        });
         this.setState({ isLoading: false });
       })
       .catch((error) => {
@@ -176,7 +183,6 @@ class Explore extends Component {
       });
   };
   _SelectItem = (type, item) => {
-    console.log("_SelectItem", item);
     if (type) {
       if (item.Plant_User_PkeyID === this.props.userid) {
         this.props.setValidUserID(true);
@@ -321,209 +327,215 @@ class Explore extends Component {
   render() {
     return (
       <View style={{ height: "100%" }}>
-        <ScrollView keyboardShouldPersistTaps={"handled"}>
-          <Spinner visible={this.state.isLoading} />
-          <View>
-            <Image
-              resizeMode="stretch"
-              source={require("../../../assets/Main.png")}
-              style={{ width: "100%", height: hasNotch ? 285 : 250 }}
-            />
+        {/* <ScrollView keyboardShouldPersistTaps={"handled"}> */}
+        <Spinner visible={this.state.isLoading} />
+        <View>
+          <Image
+            resizeMode="stretch"
+            source={require("../../../assets/Main.png")}
+            style={{ width: "100%", height: hasNotch ? 285 : 250 }}
+          />
+          <View
+            style={{
+              position: "absolute",
+              top: hasNotch ? 50 : 30,
+            }}
+          >
             <View
               style={{
-                position: "absolute",
-                top: hasNotch ? 50 : 30,
+                flexDirection: "row",
+                height: 50,
               }}
             >
               <View
                 style={{
-                  flexDirection: "row",
-                  height: 50,
+                  // backgroundColor: "red",
+                  justifyContent: "center",
+                  width: "55%",
+                  paddingLeft: 20,
                 }}
               >
-                <View
+                <Text
                   style={{
-                    // backgroundColor: "red",
-                    justifyContent: "center",
-                    width: "55%",
-                    paddingLeft: 20,
+                    fontSize: 25,
+                    color: "black",
+                    fontWeight: "600",
+                    fontFamily: "Poppins-Bold",
                   }}
                 >
-                  <Text
-                    style={{ fontSize: 25, color: "black", fontWeight: "bold" }}
-                  >
-                    Explore
-                  </Text>
-                </View>
-                <View
-                  style={{
-                    flexDirection: "row",
-                    width: "45%",
-                    justifyContent: "space-around",
-                    alignItems: "center",
-                  }}
-                >
-                  <View style={styles.icon}>
-                    <AntDesign name={"bells"} size={25} color="#ACACAC" />
-                  </View>
-                  <TouchableOpacity
-                    onPress={() => this._SelectCategory()}
-                    style={styles.icon}
-                  >
-                    <Feather name={"search"} size={25} color="#ACACAC" />
-                  </TouchableOpacity>
-                  <View style={styles.icon}>
-                    <Feather name={"info"} size={25} color="#ACACAC" />
-                  </View>
-                </View>
+                  Explore
+                </Text>
               </View>
               <View
                 style={{
                   flexDirection: "row",
-                  backgroundColor: "#fff",
-                  marginTop: 30,
-                  paddingHorizontal: 10,
-                  marginHorizontal: 10,
-                  paddingVertical: 20,
+                  width: "45%",
+                  justifyContent: "space-around",
+                  alignItems: "center",
                 }}
               >
-                <View
-                  style={{
-                    width: "65%",
-                    // backgroundColor: "red",
-                  }}
-                >
-                  <Text
-                    style={{ fontSize: 12, color: "#30AD4A", marginLeft: 20 }}
-                  >
-                    Plant Story{" "}
-                  </Text>
-                  <Text
-                    style={{
-                      fontSize: 15,
-                      marginTop: 10,
-                      color: "black",
-                      fontWeight: "bold",
-                    }}
-                  >
-                    Help Your Plant Survive When You Are Away
-                  </Text>
+                <View style={styles.icon}>
+                  <AntDesign name={"bells"} size={25} color="#ACACAC" />
                 </View>
-                <View style={{ width: "35%" }}>
-                  <Image
-                    resizeMode="cover"
-                    source={require("../../../assets/leaf.png")}
-                    style={{ width: "90%", height: 100 }}
-                  />
+                <TouchableOpacity
+                  onPress={() => this._SelectCategory()}
+                  style={styles.icon}
+                >
+                  <Feather name={"search"} size={25} color="#ACACAC" />
+                </TouchableOpacity>
+                <View style={styles.icon}>
+                  <Feather name={"info"} size={25} color="#ACACAC" />
                 </View>
               </View>
             </View>
-
-            <Animatable.View
-              animation={"fadeInUpBig"}
-              style={{ marginHorizontal: 10 }}
+            <View
+              style={{
+                flexDirection: "row",
+                backgroundColor: "#fff",
+                marginTop: 30,
+                paddingHorizontal: 10,
+                marginHorizontal: 10,
+                paddingVertical: 20,
+              }}
             >
-              <FlatList
-                numColumns={2}
-                data={this.state.plant}
-                ListHeaderComponent={() => {
-                  return (
-                    <>
-                      {this.state.plant.length > 0 && (
-                        <View>
-                          <Text
-                            style={{
-                              color: "black",
-                              fontWeight: "bold",
-                              fontSize: 20,
-                            }}
-                          >
-                            Recommended Post
-                          </Text>
-                        </View>
-                      )}
-                    </>
-                  );
+              <View
+                style={{
+                  width: "65%",
+                  // backgroundColor: "red",
                 }}
-                ListFooterComponent={() => {
-                  return <View></View>;
-                }}
-                ListEmptyComponent={() => {
-                  return (
-                    <View
-                      style={{
-                        flex: 1,
-                        // backgroundColor: "pink",
-                        justifyContent: "center",
-                        alignItems: "center",
-                        marginTop: 20,
-                      }}
-                    >
-                      <Text style={{ fontSize: 50, fontWeight: "bold" }}>
-                        No Plant Found
-                      </Text>
-                    </View>
-                  );
-                }}
-                renderItem={({ item }) => {
-                  return (
-                    <TouchableOpacity
-                      onPress={() => this._SelectItem(true, item)}
-                      style={{
-                        width: "50%",
-                        backgroundColor: "#fff",
-                        borderRadius: 5,
-                        // paddingHorizontal: 5,
-                        marginTop: 10,
-                        marginRight: 5,
-                        shadowOffset: { width: 1, height: 1 },
-                        shadowColor: "gray",
-                        shadowOpacity: 0.9,
-                        elevation: 5,
-                      }}
-                    >
-                      {!item.PIM_ImagePath ? (
-                        <Image
-                          resizeMode="stretch"
-                          source={require("../../../assets/plantname.png")}
+              >
+                <Text
+                  style={{ fontSize: 12, color: "#30AD4A", marginLeft: 20 }}
+                >
+                  Plant Story{" "}
+                </Text>
+                <Text
+                  style={{
+                    fontSize: 15,
+                    marginTop: 10,
+                    color: "black",
+                    fontWeight: "bold",
+                    // fontFamily: "Poppins-Bold",
+                  }}
+                >
+                  Help Your Plant Survive When You Are Away
+                </Text>
+              </View>
+              <View style={{ width: "35%" }}>
+                <Image
+                  resizeMode="cover"
+                  source={require("../../../assets/leaf.png")}
+                  style={{ width: "90%", height: 100 }}
+                />
+              </View>
+            </View>
+          </View>
+
+          <Animatable.View
+            animation={"fadeInUpBig"}
+            style={{ marginHorizontal: 10 }}
+          >
+            <FlatList
+              numColumns={2}
+              data={this.state.plant}
+              ListEmptyComponent={() => {
+                return (
+                  <View
+                    style={{
+                      flex: 1,
+                      // backgroundColor: "pink",
+                      justifyContent: "center",
+                      alignItems: "center",
+                      marginTop: 30,
+                    }}
+                  >
+                    <Text style={{ fontSize: 50, fontWeight: "bold" }}>
+                      No Plant Found
+                    </Text>
+                  </View>
+                );
+              }}
+              ListHeaderComponent={() => {
+                return (
+                  <>
+                    {this.state.plant.length > 0 && (
+                      <View>
+                        <Text
                           style={{
-                            width: "100%",
-                            height: 150,
-                            borderRadius: 3,
+                            color: "black",
+                            fontWeight: "bold",
+                            fontSize: 20,
                           }}
-                        />
-                      ) : (
-                        <Image
-                          resizeMode="stretch"
-                          source={{ uri: item.PIM_ImagePath }}
-                          style={{
-                            width: "100%",
-                            height: 150,
-                            borderRadius: 3,
-                          }}
-                        />
-                      )}
-                      {/* <Image
+                        >
+                          Recommended Post
+                        </Text>
+                      </View>
+                    )}
+                  </>
+                );
+              }}
+              ListFooterComponent={() => {
+                return <View></View>;
+              }}
+              renderItem={({ item }) => {
+                return (
+                  <TouchableOpacity
+                    onPress={() => this._SelectItem(true, item)}
+                    style={{
+                      width: "50%",
+                      backgroundColor: "#fff",
+                      borderRadius: 5,
+                      // paddingHorizontal: 5,
+                      marginTop: 10,
+                      marginRight: 5,
+                      shadowOffset: { width: 1, height: 1 },
+                      shadowColor: "gray",
+                      shadowOpacity: 0.9,
+                      elevation: 5,
+                    }}
+                  >
+                    {!item.PIM_ImagePath ? (
+                      <Image
+                        resizeMode="stretch"
+                        source={require("../../../assets/plantname.png")}
+                        style={{
+                          width: "100%",
+                          height: 150,
+                          borderRadius: 3,
+                        }}
+                      />
+                    ) : (
+                      <Image
+                        resizeMode="stretch"
+                        source={{ uri: item.PIM_ImagePath }}
+                        style={{
+                          width: "100%",
+                          height: 150,
+                          borderRadius: 3,
+                        }}
+                      />
+                    )}
+                    {/* <Image
                         resizeMode="stretch"
                         source={item.PIM_ImagePath}
                         style={{ width: "100%", height: 150, borderRadius: 3 }}
                       /> */}
-                      <View
-                        style={{
-                          // backgroundColor: "pink",
-                          flexDirection: "row",
-                          justifyContent: "space-between",
-                          alignItems: "center",
-                          padding: 10,
-                        }}
-                      >
-                        <View>
-                          <Text style={{ color: "black", fontWeight: "bold" }}>
-                            {item.Plant_Name}
-                          </Text>
-                          <Text style={{ fontSize: 10 }}>@{item.Cat_Name}</Text>
-                        </View>
-                        {/* <View
+                    <View
+                      style={{
+                        // backgroundColor: "pink",
+                        flexDirection: "row",
+                        justifyContent: "space-between",
+                        alignItems: "center",
+                        padding: 10,
+                      }}
+                    >
+                      <View>
+                        <Text style={{ color: "black", fontWeight: "bold" }}>
+                          {item.Plant_Name}
+                        </Text>
+                        <Text style={{ fontSize: 10 }}>@{item.Cat_Name}</Text>
+                      </View>
+                      {/* <View
                           style={{
                             flexDirection: "row",
                             borderWidth: 1,
@@ -537,15 +549,15 @@ class Explore extends Component {
                           <Entypo name={"heart"} size={15} color="#30AD4A" />
                           <Text style={{ fontSize: 10 }}>{item.like}</Text>
                         </View> */}
-                      </View>
-                    </TouchableOpacity>
-                  );
-                }}
-                keyExtractor={(item) => item.Plant_PkeyID}
-              />
-            </Animatable.View>
-          </View>
-        </ScrollView>
+                    </View>
+                  </TouchableOpacity>
+                );
+              }}
+              keyExtractor={(item) => item.Plant_PkeyID}
+            />
+          </Animatable.View>
+        </View>
+        {/* </ScrollView> */}
         <FAB
           style={styles.fab}
           // small
@@ -583,6 +595,7 @@ const mapStateToProps = (state, ownProps) => ({
   token: state.authReducer.token,
   userid: state.authReducer.userid,
   isvalid: state.authReducer.isvalid,
+  copyplant: state.plantReducer.copyplant,
 });
 
 const mapDispatchToProps = {
@@ -590,5 +603,6 @@ const mapDispatchToProps = {
   setPlantId,
   logoutAccount,
   setValidUserID,
+  setCopyPlant,
 };
 export default connect(mapStateToProps, mapDispatchToProps)(Explore);

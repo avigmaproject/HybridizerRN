@@ -1,7 +1,6 @@
 import React, { Component } from "react";
 import {
   View,
-  Platform,
   Image,
   Text,
   ScrollView,
@@ -10,6 +9,7 @@ import {
   Alert,
   Dimensions,
   PixelRatio,
+  Platform,
   FlatList,
   Modal,
 } from "react-native";
@@ -43,6 +43,7 @@ import {
   setPlantDesc,
   setPlantImageArr,
   setPlantId,
+  setCopyPlant,
 } from "../../../store/action/plant/action";
 import KeyboardSpacer from "react-native-keyboard-spacer";
 import DeviceInfo from "react-native-device-info";
@@ -56,6 +57,15 @@ const options = [
 ];
 const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get("window");
 let hasNotch = DeviceInfo.hasNotch();
+import Share from "react-native-share";
+const url = "https://awesome.contents.com/";
+const title = "Awesome Contents";
+const message = "Please check this out.";
+var options1 = {
+  title,
+  url,
+  message,
+};
 // based on iphone 5s's scale
 const scale = SCREEN_WIDTH / 320;
 class Addplant extends Component {
@@ -96,6 +106,8 @@ class Addplant extends Component {
       catid: 0,
       setimage: [],
       setimagearr: [],
+      plantcreatedon: null,
+      selecetedindex: 0,
     };
     this.Delete = this.Delete.bind(this);
   }
@@ -107,6 +119,16 @@ class Addplant extends Component {
       return Math.round(PixelRatio.roundToNearestPixel(newSize)) - 2;
     }
   }
+  ShareOpen = async (customOptions = options1) => {
+    try {
+      await Share.open({
+        url: `Flower Image : - ${this.state.imagePath[0]}`,
+        message: `Flower name : - ${this.state.plantname}`,
+      });
+    } catch (err) {
+      console.log(err);
+    }
+  };
 
   showMessage = (message, status) => {
     if (message !== "" && message !== null && message !== undefined) {
@@ -262,19 +284,23 @@ class Addplant extends Component {
       });
   };
   componentDidMount = async () => {
-    this._unsubscribe = this.props.navigation.addListener("focus", () => {
-      console.log("componentDidMount", this.props.route.name);
+    const text = [];
+    this._unsubscribe = this.props.navigation.addListener("focus", async () => {
+      console.log("componentDidMount", this.props.route.params);
       this._GetCategoryMaster();
       if (this.props.plantid > 0) {
         this._GetPlantMaster();
       } else {
+        if (this.props.copyplant) {
+          const { plantpkeyid } = this.props.route.params;
+          this._GetPlantMasterId(plantpkeyid);
+        }
         this.setState({
           imagePath: [require("../../../assets/plantname.png")],
           plantname: "",
           categoryname: "",
           uploadimage: "",
-          setplantdesc: [],
-          setplantdesc: [],
+          setplantdesc: text,
           savemyplant: false,
           iconvisible: true,
         });
@@ -308,7 +334,6 @@ class Addplant extends Component {
     });
     console.log("filteredCategorybefore", filteredCategory);
     if (Array.isArray(filteredCategory)) {
-      console.log("after", filteredCategory);
       this.setState({
         filterdata: filteredCategory,
         categoryname: e,
@@ -317,6 +342,35 @@ class Addplant extends Component {
     } else {
       this.setState({ categoryname: e, catid: -90 });
     }
+  };
+  _GetPlantMasterId = async (id) => {
+    console.log("_GetPlantMasterId", id);
+    this.setState({
+      isLoading: true,
+    });
+    this.props.setCopyPlant(false);
+
+    let data = {
+      Plant_PkeyID: id,
+      Type: 2,
+    };
+    console.log("_GetPlantMasterID", data, this.props.token);
+    await getplantmaster(data, this.props.token)
+      .then((res) => {
+        console.log("_GetPlantMaster:res", res);
+        this.setState({
+          setplantdesc: res[0][0].plant_Description_DTOs,
+          isLoading: false,
+        });
+      })
+
+      .catch((error) => {
+        if (error.response) {
+          console.log("responce_error", error.response);
+        } else if (error.request) {
+          console.log("request error", error.request);
+        }
+      });
   };
   _GetPlantMaster = async () => {
     this.setState({
@@ -355,6 +409,7 @@ class Addplant extends Component {
               : "Save to my plant",
             isLoading: false,
             plantuserid: res[0][0].Plant_User_PkeyID,
+            plantcreatedon: res[0][0].Plant_CreatedOn,
             iconvisible: true,
           },
           () => this.props.setPlantImageArr(this.state.imagePath)
@@ -379,7 +434,7 @@ class Addplant extends Component {
       >
         <InputField
           onChangeText={(characteristics) =>
-            this.onHandleChange(`Characteristics_${key + 3}`, characteristics)
+            this.onHandleChange(`Characteristics_${key + 2}`, characteristics)
           }
           // value={this.state.form.PD_Description.Characteristics_1}
           key={key}
@@ -399,7 +454,7 @@ class Addplant extends Component {
       >
         <InputField
           onChangeText={(characteristics) =>
-            this.onHandleChange(`Characteristics_${index + 2}`, characteristics)
+            this.onHandleChange(`Characteristics_${index + 3}`, characteristics)
           }
           defaultValue={value}
           // value={}
@@ -412,9 +467,8 @@ class Addplant extends Component {
   };
 
   AddplantvisiableClose = (item, index) => {
-    this.setState({ input: [] });
-    // console.log("item", item);
-    console.log("input", this.state.input);
+    this.setState({ input: [], selecetedindex: index });
+
     let result = [];
     let jsonarr;
     if (typeof item.PD_Description === "object") {
@@ -431,6 +485,7 @@ class Addplant extends Component {
           PD_Title: item.PD_Title,
           PD_Description: jsonarr,
         },
+        selecetedindex: index,
       });
       {
         result.length > 3 &&
@@ -448,11 +503,13 @@ class Addplant extends Component {
         ...this.state,
         addplantvisiable: !this.state.addplantvisiable,
         edit: true,
+        input: [],
         form: {
           ...this.state.form,
           PD_Title: item.PD_Title,
           PD_Description: jsonarr,
         },
+        selecetedindex: index,
       });
       {
         result.length > 3 &&
@@ -462,8 +519,9 @@ class Addplant extends Component {
           });
       }
     }
+    console.log("selecetedindex after", this.state.selecetedindex, index);
 
-    this.state.setplantdesc.splice(index, 1);
+    // this.state.setplantdesc.splice(index, 1);
   };
   _ChangeName = (action) => {
     if (action) {
@@ -514,6 +572,7 @@ class Addplant extends Component {
       { text: "OK", onPress: () => this.Delete(index) },
     ]);
   _handleSave = () => {
+    console.log("_handleSave", this.state.selecetedindex);
     const { PD_Title, PD_Description } = this.state.form;
     const {
       Characteristics_0,
@@ -523,17 +582,16 @@ class Addplant extends Component {
     if (Characteristics_0 === undefined && PD_Title === undefined) {
       this.showMessage("Please enter title and description.", "error");
     } else {
-      console.log(
-        "inammmmmm",
-        Characteristics_0,
-        PD_Title,
-        Characteristics_0 === "" && PD_Title === ""
-      );
       let form1 = {
         PD_Description: JSON.stringify(this.state.form.PD_Description),
         PD_Title: PD_Title,
       };
-      this.state.setplantdesc.push(form1);
+      // console.log("setplantdesc", this.state.selecetedindex);
+      console.log("before", this.state.setplantdesc);
+      this.state.setplantdesc.splice(this.state.selecetedindex, 1, form1);
+      console.log("after", this.state.setplantdesc);
+
+      // this.state.setplantdesc.push(form1);
       this.setState({ setplantdesc: [...this.state.setplantdesc, form1] });
       this.props.setPlantDesc(this.state.setplantdesc);
       console.log(this.state.setplantdesc);
@@ -618,7 +676,10 @@ class Addplant extends Component {
       </View>
     );
   };
-
+  CopyToMyPlant = async () => {
+    this.props.setCopyPlant(true);
+    this.props.navigation.navigate("PlantScreen");
+  };
   SavePlantDecs = async () => {
     console.log("SavePlantDecs", this.state.data);
     this.setState({
@@ -635,6 +696,7 @@ class Addplant extends Component {
       Plant_MyPlant: this.state.savemyplant,
       Plant_PkeyID: this.props.plantid > 0 ? this.props.plantid : 0,
       Plant_IsActive: 1,
+      Plant_Type: 1,
     };
 
     console.log(data, this.props.token);
@@ -680,10 +742,12 @@ class Addplant extends Component {
     this.setState({ savemyplant: !this.state.savemyplant });
   };
   AddCharacteristics = () => {
+    console.log("AddCharacteristics", this.state.setplantdesc.length);
     this.setState({
       input: [],
       addplantvisiable: !this.state.addplantvisiable,
       form: { PD_Description: {} },
+      selecetedindex: this.state.setplantdesc.length,
     });
   };
   ListViewItemSeparator = () => {
@@ -894,6 +958,7 @@ class Addplant extends Component {
               >
                 <Header
                   onpressedit={() => this.onPressEdit()}
+                  onpressshare={() => this.ShareOpen()}
                   // edit={true}
                   edit={this.props.isvalid}
                   share={true}
@@ -1236,8 +1301,13 @@ class Addplant extends Component {
                         </View>
                       </View>
                     )}
-
-                    <Text> {moment().format("LL")}</Text>
+                    {this.state.plantcreatedon ? (
+                      <Text>
+                        {moment(this.state.plantcreatedon).format("LL")}
+                      </Text>
+                    ) : (
+                      <Text>{moment().format("LL")}</Text>
+                    )}
                   </View>
                   {/* <ViewButton
                     source={require("../../../assets/ImgTree.png")}
@@ -1320,31 +1390,35 @@ class Addplant extends Component {
                         </Text>
                       </View>
                     )}
-                    {this.props.isvalid && (
+                    {this.props.plantid > 0 ? null : (
                       <TouchableBotton
-                        onPress={() => this.AddCharacteristics()}
-                        color={"#30AD4A"}
+                        onPress={() => this.CopyToMyPlant()}
                         backgroundColor={"#EAF7ED"}
-                        title={"+ Add Characteristics"}
-                        borderWidth={2}
-                        borderColor={"#30AD4A"}
-                        borderStyle={"dashed"}
+                        title={"Copy From Plant"}
                         height={50}
                         font={true}
                       />
                     )}
+                    {this.props.isvalid && (
+                      <>
+                        <TouchableBotton
+                          onPress={() => this.AddCharacteristics()}
+                          color={"#30AD4A"}
+                          backgroundColor={"#EAF7ED"}
+                          title={"+ Add Characteristics"}
+                          borderWidth={2}
+                          borderColor={"#30AD4A"}
+                          borderStyle={"dashed"}
+                          height={50}
+                          font={true}
+                        />
+                      </>
+                    )}
                     {this.props.plantimagearr.length > 0 &&
                       this.state.categoryname !== "" &&
-                      this.state.plantname !== "" && (
+                      this.state.plantname !== "" &&
+                      this.props.isvalid && (
                         <>
-                          {/* <TouchableBotton
-                            onPress={() => this.SaveToMyPlant()}
-                            backgroundColor={"#EAF7ED"}
-                            title={this.state.title}
-                            height={50}
-                            font={true}
-                          /> */}
-
                           <TouchableBotton
                             onPress={() => this.SavePlantDecs()}
                             color={"#fff"}
@@ -1419,6 +1493,7 @@ const mapStateToProps = (state, ownProps) => ({
   plantid: state.plantReducer.plantid,
   userid: state.authReducer.userid,
   isvalid: state.authReducer.isvalid,
+  copyplant: state.plantReducer.copyplant,
 });
 
 const mapDispatchToProps = {
@@ -1427,5 +1502,6 @@ const mapDispatchToProps = {
   setPlantImage,
   setPlantImageArr,
   setPlantId,
+  setCopyPlant,
 };
 export default connect(mapStateToProps, mapDispatchToProps)(Addplant);

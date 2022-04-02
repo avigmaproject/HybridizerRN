@@ -9,6 +9,7 @@ import {
   Dimensions,
   PixelRatio,
   StyleSheet,
+  SafeAreaView,
 } from "react-native";
 import Header from "../../../components/Header";
 import Icon from "react-native-vector-icons/Entypo";
@@ -22,8 +23,9 @@ import Spinner from "react-native-loading-spinner-overlay";
 import ImagePicker from "react-native-image-crop-picker";
 import { SliderBox } from "react-native-image-slider-box";
 import {
-  registerstoreplantimage,
+  registerstoreimage,
   getusermasterdata,
+  userprofileupdate,
 } from "../../../services/api.function";
 import { connect } from "react-redux";
 import DeviceInfo from "react-native-device-info";
@@ -68,17 +70,6 @@ class Addplant extends Component {
     }
   }
 
-  showMessage = (message, status) => {
-    if (message !== "" && message !== null && message !== undefined) {
-      Toast.show({
-        title: message,
-        placement: "bottom",
-        status: status,
-        duration: 5000,
-        // backgroundColor: 'red.500',
-      });
-    }
-  };
   Logout = () => {
     this.props.signout();
     this.props.logoutAccount();
@@ -99,7 +90,7 @@ class Addplant extends Component {
             imagePath: [image.path],
             base64: image.data,
           });
-          // this.uploadImage(image);
+          this.uploadImage(image);
         });
       }.bind(this),
       1000
@@ -140,13 +131,13 @@ class Addplant extends Component {
     });
     console.log(data, this.props.token);
     // return 0;
-    await registerstoreplantimage(data, this.props.token)
+    await registerstoreimage(data, this.props.token)
       .then((res) => {
         this.setState({
           isLoading: false,
           imagePath: [res[0].Image_Path],
         });
-        console.log("res:registerstoreplantimage", res[0].Image_Path);
+        console.log("res:registerstoreimage", res[0].Image_Path);
       })
       .catch((error) => {
         if (error.request) {
@@ -184,20 +175,71 @@ class Addplant extends Component {
       secureTextEntry1: !this.state.secureTextEntry1,
     });
   };
-  // onHandleChange = (key, value) => {
-  //   this.setState({
-  //     ...this.state,
-  //     form: {
-  //       ...this.state.form,
-  //       [key]: value,
-  //     },
-  //   });
-  // };
-  Submit = () => {
-    alert("submit");
+  showMessage = (message, status) => {
+    if (message !== "" && message !== null && message !== undefined) {
+      Toast.show({
+        description: message,
+        title: status.toUpperCase(),
+        placement: "bottom",
+        status: status,
+        duration: 5000,
+        // backgroundColor: 'red.500',
+      });
+    }
   };
-  _ChangeName = () => {
-    this.setState({ iconvisible: !this.state.iconvisible });
+  Validation = () => {
+    const invalidFields = [];
+
+    const { password, name, imagePath, confirmpassword } = this.state;
+    if (!name) {
+      invalidFields.push("firstname");
+      this.showMessage("Name is required.", "error");
+    }
+    if (!password) {
+      invalidFields.push("password");
+      this.showMessage("Password is required.", "error");
+    }
+    if (password !== confirmpassword) {
+      this.showMessage("Password  Confirm Password is required.", "error");
+    }
+    return invalidFields.length > 0;
+  };
+
+  Submit = async () => {
+    const validate = this.Validation();
+    if (!validate) {
+      let data = {
+        User_Name: this.state.name,
+        User_Password: this.state.password,
+        Type: 12,
+        User_Image_Path: this.state.imagePath[0],
+      };
+      console.log(data, this.props.token);
+      await userprofileupdate(data, this.props.token)
+        .then((res) => {
+          console.log("res: ", res[0]);
+          this.showMessage("Profile updated successfully.", "success");
+
+          this.setState(
+            {
+              visible: true,
+            },
+            () => this._GetUserMasterData()
+          );
+        })
+        .catch((error) => {
+          if (error.response) {
+            this.setState({ isLoading: false });
+            console.log("error.response", error.response);
+          } else if (error.request) {
+            this.setState({ isLoading: false });
+            console.log("request error", error.request);
+          } else if (error) {
+            alert("Server Error");
+            this.setState({ isLoading: false });
+          }
+        });
+    }
   };
 
   Logout = () => {
@@ -236,7 +278,7 @@ class Addplant extends Component {
   render() {
     const { addplantvisiable, username, surname } = this.state;
     return (
-      <View style={{ height: "100%" }}>
+      <SafeAreaView style={{ height: "100%", backgroundColor: "black" }}>
         <ScrollView keyboardShouldPersistTaps={"handled"}>
           <Spinner visible={this.state.isLoading} />
           <View>
@@ -261,7 +303,7 @@ class Addplant extends Component {
                 <SliderBox
                   imageLoadingColor={"#30AD4A"}
                   resizeMode={"cover"}
-                  sliderBoxHeight={hasNotch ? 300 : 250}
+                  sliderBoxHeight={300}
                   images={this.state.imagePath}
                   // onCurrentImagePressed={(index) =>
                   //   console.warn(`image ${index} pressed`)
@@ -392,7 +434,7 @@ class Addplant extends Component {
             />
           </View>
         </ScrollView>
-      </View>
+      </SafeAreaView>
     );
   }
 }
