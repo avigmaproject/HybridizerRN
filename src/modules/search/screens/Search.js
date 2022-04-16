@@ -379,6 +379,7 @@ class Search extends Component {
                       this.setState({ search });
                     }}
                     value={this.state.search}
+                    autoFocus={true}
                   />
                 </View>
                 <View

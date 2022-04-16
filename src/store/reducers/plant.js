@@ -1,5 +1,5 @@
 export const initialState = {
-  plant: [],
+  plant: { categoryname1: "", plantname1: "" },
   plantdesc: [],
   plantimage: [],
   plantimagearr: [require("../../assets/plantname.png")],
@@ -84,7 +84,7 @@ const reducer = (state = initialState, action) => {
     case "DELETE_PLANT_DETAIL": {
       return {
         ...state,
-        plant: [],
+        plant: { categoryname1: "", plantname1: "" },
         plantdesc: [],
         plantimage: [],
         plantimagearr: [require("../../assets/plantname.png")],

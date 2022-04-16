@@ -299,6 +299,7 @@ class Explore extends Component {
                     }}
                     value={this.state.plantname}
                     placeholder={"Plant name"}
+                    autoFocus={true}
                   />
                 </View>
 

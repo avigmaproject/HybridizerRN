@@ -25,6 +25,7 @@ export default class InputField extends Component {
           // numberOfLines={10}
           editable={!editable}
           placeholderTextColor={"lightgray"}
+          autoFocus={this.props.autoFocus}
         />
       </View>
     );

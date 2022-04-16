@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React, { Component } from 'react'
 import {
   View,
   Platform,
@@ -11,81 +11,74 @@ import {
   Dimensions,
   PixelRatio,
   FlatList,
-  Modal,
-} from "react-native";
-import Header from "../../../components/Header";
-import AntDesign from "react-native-vector-icons/AntDesign";
-import Feather from "react-native-vector-icons/Feather";
-import Entypo from "react-native-vector-icons/Entypo";
+  Modal
+} from 'react-native'
+import Header from '../../../components/Header'
+import AntDesign from 'react-native-vector-icons/AntDesign'
+import Feather from 'react-native-vector-icons/Feather'
+import Entypo from 'react-native-vector-icons/Entypo'
 
-import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
-import Icon from "react-native-vector-icons/Ionicons";
-import InputField from "../../../components/InputField";
-import ViewButton from "../../../components/ViewButton";
-import TouchableBotton from "../../../components/TouchableBotton";
-import { Toast } from "native-base";
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
+import Icon from 'react-native-vector-icons/Ionicons'
+import InputField from '../../../components/InputField'
+import ViewButton from '../../../components/ViewButton'
+import TouchableBotton from '../../../components/TouchableBotton'
+import { Toast } from 'native-base'
 
-import { ActionSheetCustom as ActionSheet } from "react-native-actionsheet";
-import Spinner from "react-native-loading-spinner-overlay";
-import moment from "moment";
-import ImagePicker from "react-native-image-crop-picker";
-import { SliderBox } from "react-native-image-slider-box";
+import { ActionSheetCustom as ActionSheet } from 'react-native-actionsheet'
+import Spinner from 'react-native-loading-spinner-overlay'
+import moment from 'moment'
+import ImagePicker from 'react-native-image-crop-picker'
+import { SliderBox } from 'react-native-image-slider-box'
 import {
   registerstoreplantimage,
   createupdateplantmaster,
   getplantmaster,
   getcategorymaster,
-  createupdateaddspouse,
-} from "../../../services/api.function";
-import { connect } from "react-redux";
+  createupdateaddspouse
+} from '../../../services/api.function'
+import { connect } from 'react-redux'
 import {
   setPlantImage,
   setPlantInfo,
   setPlantDesc,
   setPlantImageArr,
   setPlantId,
-  setSpouseId,
-} from "../../../store/action/plant/action";
-import KeyboardSpacer from "react-native-keyboard-spacer";
-import DeviceInfo from "react-native-device-info";
+  setSpouseId
+} from '../../../store/action/plant/action'
+import KeyboardSpacer from 'react-native-keyboard-spacer'
+import DeviceInfo from 'react-native-device-info'
 
 const options = [
-  "Cancel",
+  'Cancel',
   <View>
-    <Text style={{ color: "#53a20a" }}>Gallery</Text>
+    <Text style={{ color: '#53a20a' }}>Gallery</Text>
   </View>,
-  <Text style={{ color: "#53a20a" }}>Camera</Text>,
-];
-const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get("window");
-let hasNotch = DeviceInfo.hasNotch();
+  <Text style={{ color: '#53a20a' }}>Camera</Text>
+]
+const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get('window')
+let hasNotch = DeviceInfo.hasNotch()
 // based on iphone 5s's scale
-const scale = SCREEN_WIDTH / 320;
+const scale = SCREEN_WIDTH / 320
 class AddNewSpouse extends Component {
   constructor(props) {
-    super(props);
-    this.userNameInputRef = React.createRef();
+    super(props)
+    this.userNameInputRef = React.createRef()
     this.state = {
       addplantvisiable: false,
       isLoading: false,
       input: [],
-      plantname: "",
-      categoryname: "",
+      plantname: '',
+      categoryname: '',
       form: { PD_Description: {} },
       description: {},
       viewstatus: false,
       iconvisible: true,
-      imagePath: [require("../../../assets/plantname.png")],
-      // images: [
-      //   "https://source.unsplash.com/1024x768/?nature",
-      //   "https://source.unsplash.com/1024x768/?water",
-      //   "https://source.unsplash.com/1024x768/?girl",
-      //   "https://source.unsplash.com/1024x768/?tree", // Network image
-      //   require("../../../assets/plantname.png"), // Local image
-      // ],
+      imagePath: [require('../../../assets/plantname.png')],
       setplantdesc: [],
       savemyplant: false,
-      title: "Save to my plant",
-      formdata: "",
+      title: 'Save to my plant',
+      formdata: '',
       plantdescription: [],
       uploadimage: [],
       singleitem: [],
@@ -98,31 +91,32 @@ class AddNewSpouse extends Component {
       catid: 0,
       setimage: [],
       setimagearr: [],
-    };
-    this.Delete = this.Delete.bind(this);
+      listPlant: []
+    }
+    this.Delete = this.Delete.bind(this)
   }
   normalize(size) {
-    const newSize = size * scale;
-    if (Platform.OS === "ios") {
-      return Math.round(PixelRatio.roundToNearestPixel(newSize));
+    const newSize = size * scale
+    if (Platform.OS === 'ios') {
+      return Math.round(PixelRatio.roundToNearestPixel(newSize))
     } else {
-      return Math.round(PixelRatio.roundToNearestPixel(newSize)) - 2;
+      return Math.round(PixelRatio.roundToNearestPixel(newSize)) - 2
     }
   }
 
   showMessage = (message, status) => {
-    if (message !== "" && message !== null && message !== undefined) {
+    if (message !== '' && message !== null && message !== undefined) {
       Toast.show({
         title: message,
-        placement: "bottom",
+        placement: 'bottom',
         status: status,
-        duration: 5000,
+        duration: 5000
         // backgroundColor: 'red.500',
-      });
+      })
     }
-  };
+  }
 
-  onPressEdit = async () => this.ActionSheet.show();
+  onPressEdit = async () => this.ActionSheet.show()
   ImageGallery = async () => {
     setTimeout(
       function () {
@@ -132,14 +126,14 @@ class AddNewSpouse extends Component {
           cropping: true,
           includeBase64: true,
           multiple: true,
-          compressImageQuality: 0.5,
+          compressImageQuality: 0.5
         }).then((image) => {
-          this.uploadImage("gallery", image);
-        });
+          this.uploadImage('gallery', image)
+        })
       }.bind(this),
       1000
-    );
-  };
+    )
+  }
   ImageCamera = async () => {
     setTimeout(
       function () {
@@ -149,159 +143,160 @@ class AddNewSpouse extends Component {
           cropping: true,
           includeBase64: true,
           multiple: true,
-          compressImageQuality: 0.5,
+          compressImageQuality: 0.5
         }).then((image) => {
-          console.log(image);
-          this.uploadImage("camera", image);
-        });
+          console.log(image)
+          this.uploadImage('camera', image)
+        })
       }.bind(this),
       1000
-    );
-  };
+    )
+  }
   uploadImage = async (type, image) => {
-    let setimage = [];
-    let setimagearr = [];
+    let setimage = []
+    let setimagearr = []
     this.setState({
-      isLoading: true,
-    });
-    if (type === "camera") {
-      console.log("image", image);
+      isLoading: true
+    })
+    if (type === 'camera') {
+      console.log('image', image)
       let data = JSON.stringify({
         Type: 1,
-        Image_Base: "data:image/png;base64, " + image.data,
-      });
-      console.log(data, this.props.token);
+        Image_Base: 'data:image/png;base64, ' + image.data
+      })
+      console.log(data, this.props.token)
       // return 0;
       await registerstoreplantimage(data, this.props.token)
         .then((res) => {
-          this.state.setimagearr.push(res[0].Image_Path);
+          this.state.setimagearr.push(res[0].Image_Path)
           this.state.setimage.push({
             PIM_ImageName: image.modificationDate,
             PIM_ImagePath: res[0].Image_Path,
-            PIM_Size: image.size,
-          });
+            PIM_Size: image.size
+          })
           this.setState({
-            isLoading: false,
-          });
-          console.log("res:registerstoreplantimage", res[0].Image_Path);
+            isLoading: false
+          })
+          console.log('res:registerstoreplantimage', res[0].Image_Path)
         })
         .catch((error) => {
           if (error.request) {
-            console.log(error.request);
+            console.log(error.request)
           } else if (error.responce) {
-            console.log(error.responce);
+            console.log(error.responce)
           } else {
-            console.log(error);
+            console.log(error)
           }
-        });
-      console.log("==>", setimagearr);
+        })
+      console.log('==>', setimagearr)
       this.setState(
         {
           ...this.state,
-          imagePath: this.state.setimage,
+          imagePath: this.state.setimage
         },
         () => {
-          this.props.setPlantImage(this.state.imagePath);
+          this.props.setPlantImage(this.state.imagePath)
         }
-      );
-      this.props.setPlantImageArr(this.state.setimagearr);
+      )
+      this.props.setPlantImageArr(this.state.setimagearr)
     } else {
       for (let i = 0; i < image.length; i++) {
         this.setState({
-          isLoading: true,
-        });
+          isLoading: true
+        })
         let data = JSON.stringify({
           Type: 1,
-          Image_Base: "data:image/png;base64, " + image[i].data,
-        });
-        console.log(data, this.props.token);
+          Image_Base: 'data:image/png;base64, ' + image[i].data
+        })
+        console.log(data, this.props.token)
         await registerstoreplantimage(data, this.props.token)
           .then((res) => {
-            setimagearr.push(res[0].Image_Path);
+            setimagearr.push(res[0].Image_Path)
             setimage.push({
               PIM_ImageName: `index_${i}`,
               PIM_ImagePath: res[0].Image_Path,
               PIM_Size: image[i].size,
-              PIM_IsFirst: i == 0 ? true : false,
-            });
-            console.log("res:registerstoreplantimage", res[0].Image_Path);
+              PIM_IsFirst: i == 0 ? true : false
+            })
+            console.log('res:registerstoreplantimage', res[0].Image_Path)
             this.setState({
-              isLoading: false,
-            });
+              isLoading: false
+            })
           })
           .catch((error) => {
             if (error.request) {
-              console.log(error.request);
+              console.log(error.request)
             } else if (error.responce) {
-              console.log(error.responce);
+              console.log(error.responce)
             } else {
-              console.log(error);
+              console.log(error)
             }
-          });
+          })
       }
-      console.log("==>", setimagearr);
+      console.log('==>', setimagearr)
       this.setState(
         {
           ...this.state,
-          imagePath: setimage,
+          imagePath: setimage
         },
         () => {
-          this.props.setPlantImage(this.state.imagePath);
+          this.props.setPlantImage(this.state.imagePath)
         }
-      );
-      this.props.setPlantImageArr(setimagearr);
+      )
+      this.props.setPlantImageArr(setimagearr)
     }
-    this.Clean();
-  };
+    this.Clean()
+  }
   Clean = () => {
     ImagePicker.clean()
       .then(() => {
-        console.log("removed all tmp images from tmp directory");
+        console.log('removed all tmp images from tmp directory')
       })
       .catch((e) => {
-        console.log(e);
-      });
-  };
+        console.log(e)
+      })
+  }
   componentDidMount = async () => {
-    this._unsubscribe = this.props.navigation.addListener("focus", () => {
-      console.log("componentDidMount", this.props.spouseid);
-      this._GetCategoryMaster();
+    this._unsubscribe = this.props.navigation.addListener('focus', () => {
+      console.log('componentDidMount', this.props.spouseid)
+      this._GetCategoryMaster()
       if (this.props.spouseid > 0) {
-        this._GetPlantMaster();
+        this._GetPlantMaster()
+        this.setState({ spouseid: this.props.route.params.spouseid })
       } else {
         this.setState({
-          imagePath: [require("../../../assets/plantname.png")],
-          plantname: "",
-          categoryname: "",
-          uploadimage: "",
+          imagePath: [require('../../../assets/plantname.png')],
+          plantname: '',
+          categoryname: '',
+          uploadimage: '',
           setplantdesc: [],
           setplantdesc: [],
           savemyplant: false,
-          iconvisible: true,
-        });
+          iconvisible: true
+        })
       }
-    });
-  };
+    })
+  }
 
   _GetPlantMaster = async () => {
-    console.log("_GetPlantMaster", this.props.spouseid);
-    let defualt = [];
-    let imagesrc = [];
+    console.log('_GetPlantMaster', this.props.spouseid)
+    let defualt = []
+    let imagesrc = []
     let data = {
       Plant_PkeyID: this.props.spouseid,
-      Type: 2,
-    };
+      Type: 2
+    }
 
-    console.log("_GetPlantMaster", data, this.props.token);
+    console.log('_GetPlantMaster', data, this.props.token)
     await getplantmaster(data, this.props.token)
       .then((res) => {
-        console.log("res :GetPlantMaster", res);
+        console.log('res :GetPlantMaster', res)
         if (res[0][0].plant_Image_Master_DTOs.length > 0) {
           for (let i = 0; i < res[0][0].plant_Image_Master_DTOs.length; i++) {
-            imagesrc.push(res[0][0].plant_Image_Master_DTOs[i].PIM_ImagePath);
+            imagesrc.push(res[0][0].plant_Image_Master_DTOs[i].PIM_ImagePath)
           }
         } else {
-          defualt = [require("../../../assets/plantname.png")];
+          defualt = [require('../../../assets/plantname.png')]
         }
         this.setState({
           plantname: res[0][0].Plant_Name,
@@ -313,65 +308,65 @@ class AddNewSpouse extends Component {
             res[0][0].plant_Image_Master_DTOs.length > 0 ? imagesrc : defualt,
           savemyplant: res[0][0].Plant_MyPlant,
           title: res[0][0].Plant_MyPlant
-            ? "Remove from my plant"
-            : "Save to my plant",
-          isLoading: false,
-        });
-        this.props.setPlantImageArr(this.state.imagePath);
-        this.props.setPlantImage(res[0][0].plant_Image_Master_DTOs);
+            ? 'Remove from my plant'
+            : 'Save to my plant',
+          isLoading: false
+        })
+        this.props.setPlantImageArr(this.state.imagePath)
+        this.props.setPlantImage(res[0][0].plant_Image_Master_DTOs)
       })
       .catch((error) => {
         if (error.response) {
-          console.log("responce_error", error.response);
+          console.log('responce_error', error.response)
         } else if (error.request) {
-          console.log("request error", error.request);
+          console.log('request error', error.request)
         }
-      });
-  };
+      })
+  }
   _GetCategoryMaster = async () => {
     let data = {
-      Type: 1,
-    };
+      Type: 1
+    }
     // console.log("_GetCategoryMaster", data, this.props.token);
     await getcategorymaster(data, this.props.token)
       .then((res) => {
         // console.log("res:_GetCategoryMaster ", res[0]);
-        this.setState({ category: res[0], backupcatogry: res[0] });
+        this.setState({ category: res[0], backupcatogry: res[0] })
       })
       .catch((error) => {
         if (error.response) {
-          console.log("responce_error", error.response);
+          console.log('responce_error', error.response)
         } else if (error.request) {
-          console.log("request error", error.request);
+          console.log('request error', error.request)
         }
-      });
-  };
+      })
+  }
   searchText = (e) => {
     // console.log("searchText", e);
-    let text = e.toLowerCase();
-    let category = this.state.backupcatogry;
+    let text = e.toLowerCase()
+    let category = this.state.backupcatogry
     let filteredCategory = category.filter((item) => {
-      return item.Cat_Name.toLowerCase().match(text);
-    });
+      return item.Cat_Name.toLowerCase().match(text)
+    })
     // console.log("filteredCategorybefore", filteredCategory);
     if (Array.isArray(filteredCategory)) {
       // console.log("after", filteredCategory);
       this.setState({
         filterdata: filteredCategory,
         categoryname: e,
-        catid: -90,
-      });
+        catid: -90
+      })
     } else {
-      this.setState({ categoryname: e, catid: -90 });
+      this.setState({ categoryname: e, catid: -90 })
     }
-  };
+  }
 
   AddInput = (key) => {
     // console.log("this.state.input", this.state.input);
-    let textInput = this.state.input;
+    let textInput = this.state.input
     textInput.push(
       <View
-        style={{ backgroundColor: "#F6F6F6", marginVertical: 10, height: 40 }}
+        style={{ backgroundColor: '#F6F6F6', marginVertical: 10, height: 40 }}
       >
         <InputField
           onChangeText={(characteristics) =>
@@ -382,15 +377,15 @@ class AddNewSpouse extends Component {
           placeholder={`Characteristics`}
         />
       </View>
-    );
-    this.setState({ input: textInput });
-  };
+    )
+    this.setState({ input: textInput })
+  }
   AddInput1 = (key, value, index) => {
-    const { PD_Description } = this.state.form;
-    let textInput = this.state.input;
+    const { PD_Description } = this.state.form
+    let textInput = this.state.input
     textInput.push(
       <View
-        style={{ backgroundColor: "#F6F6F6", marginVertical: 10, height: 40 }}
+        style={{ backgroundColor: '#F6F6F6', marginVertical: 10, height: 40 }}
       >
         <InputField
           onChangeText={(characteristics) =>
@@ -402,20 +397,20 @@ class AddNewSpouse extends Component {
           placeholder={`Characteristics`}
         />
       </View>
-    );
-    this.setState({ input: textInput });
-  };
+    )
+    this.setState({ input: textInput })
+  }
 
   AddplantvisiableClose = (item, index) => {
-    this.setState({ input: [] });
+    this.setState({ input: [] })
     // console.log("item", item);
-    console.log("input", this.state.input);
-    let result = [];
-    let jsonarr;
-    if (typeof item.PD_Description === "object") {
-      jsonarr = item.PD_Description;
-      for (var i in item.PD_Description) result.push([i, jsonarr[i]]);
-      console.log("typeof", result.length);
+    console.log('input', this.state.input)
+    let result = []
+    let jsonarr
+    if (typeof item.PD_Description === 'object') {
+      jsonarr = item.PD_Description
+      for (var i in item.PD_Description) result.push([i, jsonarr[i]])
+      console.log('typeof', result.length)
       this.setState({
         ...this.state,
         addplantvisiable: !this.state.addplantvisiable,
@@ -424,20 +419,20 @@ class AddNewSpouse extends Component {
         form: {
           ...this.state.form,
           PD_Title: item.PD_Title,
-          PD_Description: jsonarr,
-        },
-      });
+          PD_Description: jsonarr
+        }
+      })
       {
         result.length > 3 &&
           result.splice(3).map((item, index) => {
             // console.log("descriptiondescription", item);
-            return this.AddInput1(item[0], item[1], index + 4);
-          });
+            return this.AddInput1(item[0], item[1], index + 4)
+          })
       }
     } else {
-      jsonarr = JSON.parse(item.PD_Description);
+      jsonarr = JSON.parse(item.PD_Description)
       // console.log("jsonarr", jsonarr);
-      for (var i in jsonarr) result.push([i, jsonarr[i]]);
+      for (var i in jsonarr) result.push([i, jsonarr[i]])
       // console.log("result", result[2][0]);
       this.setState({
         ...this.state,
@@ -446,125 +441,125 @@ class AddNewSpouse extends Component {
         form: {
           ...this.state.form,
           PD_Title: item.PD_Title,
-          PD_Description: jsonarr,
-        },
-      });
+          PD_Description: jsonarr
+        }
+      })
       {
         result.length > 3 &&
           result.splice(3).map((item, index) => {
             // console.log("descriptiondescription", item[0], item[1]);
-            return this.AddInput1(item[0], item[1], index);
-          });
+            return this.AddInput1(item[0], item[1], index)
+          })
       }
     }
 
-    this.state.setplantdesc.splice(index, 1);
-  };
+    this.state.setplantdesc.splice(index, 1)
+  }
   _ChangeName = (action) => {
     if (action) {
       this.props.setPlantInfo({
         PlantName: this.state.plantname,
-        PlantCategory: this.state.categoryname,
-      });
+        PlantCategory: this.state.categoryname
+      })
     }
-    this.setState({ iconvisible: !this.state.iconvisible });
-  };
+    this.setState({ iconvisible: !this.state.iconvisible })
+  }
   onHandleChange = (key, value) => {
-    if (key.startsWith("Characteristics_")) {
+    if (key.startsWith('Characteristics_')) {
       this.setState({
         ...this.state,
         form: {
           ...this.state.form,
           PD_Description: {
             ...this.state.form.PD_Description,
-            [key]: value,
-          },
-        },
-      });
+            [key]: value
+          }
+        }
+      })
     } else {
       this.setState({
         ...this.state,
         form: {
           ...this.state.form,
-          [key]: value,
-        },
-      });
+          [key]: value
+        }
+      })
     }
-  };
+  }
 
   Delete = (index) => {
-    const reducedArr = [...this.state.setplantdesc];
-    reducedArr.splice(index, 1);
-    this.setState({ setplantdesc: reducedArr });
-  };
+    const reducedArr = [...this.state.setplantdesc]
+    reducedArr.splice(index, 1)
+    this.setState({ setplantdesc: reducedArr })
+  }
   DeleteDescription = (item, index) =>
-    Alert.alert("Delete", "Are you sure to delete description", [
+    Alert.alert('Delete', 'Are you sure to delete description', [
       {
-        text: "Cancel",
-        onPress: () => console.log("Cancel Pressed"),
-        style: "cancel",
+        text: 'Cancel',
+        onPress: () => console.log('Cancel Pressed'),
+        style: 'cancel'
       },
-      { text: "OK", onPress: () => this.Delete(index) },
-    ]);
+      { text: 'OK', onPress: () => this.Delete(index) }
+    ])
   _handleSave = () => {
     let form1 = {
       PD_Description: JSON.stringify(this.state.form.PD_Description),
-      PD_Title: this.state.form.PD_Title,
-    };
+      PD_Title: this.state.form.PD_Title
+    }
 
-    this.state.setplantdesc.push(form1);
-    this.setState({ setplantdesc: [...this.state.setplantdesc, form1] });
-    this.props.setPlantDesc(this.state.setplantdesc);
-    console.log("setplantdesc", this.state.setplantdesc);
+    this.state.setplantdesc.push(form1)
+    this.setState({ setplantdesc: [...this.state.setplantdesc, form1] })
+    this.props.setPlantDesc(this.state.setplantdesc)
+    console.log('setplantdesc', this.state.setplantdesc)
 
     this.setState({
       ...this.state,
       input: [],
       // formdata: stringdata,
       addplantvisiable: !this.state.addplantvisiable,
-      form: { PD_Description: {} },
-    });
-  };
+      form: { PD_Description: {} }
+    })
+  }
 
   _renderItem = (item, index) => {
-    var arr;
-    if (typeof item.PD_Description === "object") {
-      arr = Object.values(item.PD_Description);
+    var arr
+    if (typeof item.PD_Description === 'object') {
+      arr = Object.values(item.PD_Description)
     } else {
-      let jsonarr = JSON.parse(item.PD_Description);
-      arr = Object.values(jsonarr);
+      let jsonarr = JSON.parse(item.PD_Description)
+      arr = Object.values(jsonarr)
     }
     return (
       <View>
         <View
           style={{
-            flexDirection: "row",
-            alignItems: "center",
+            flexDirection: 'row',
+            alignItems: 'center'
             // backgroundColor: "pink",
           }}
         >
           <Text
             style={{
               fontSize: this.normalize(20),
-              color: "#000",
+              color: '#000',
               lineHeight: 50,
-              textTransform: "capitalize",
+              textTransform: 'capitalize'
             }}
           >
             {item.PD_Title}
-            {"  "}
+            {'  '}
           </Text>
           <TouchableOpacity
             style={{ marginLeft: 10 }}
             onPress={() => this.AddplantvisiableClose(item, index)}
           >
-            <Feather name="edit" size={18} color={"gray"} />
+            <Feather name='edit' size={18} color={'gray'} />
           </TouchableOpacity>
           <TouchableOpacity
             style={{ marginLeft: 10 }}
             onPress={() => this.DeleteDescription(item, index)}
           >
-            <AntDesign name="delete" size={20} color={"gray"} />
+            <AntDesign name='delete' size={20} color={'gray'} />
           </TouchableOpacity>
         </View>
         {arr.map((comment) => {
@@ -573,163 +568,156 @@ class AddNewSpouse extends Component {
             <View>
               <Text
                 style={{
-                  color: "#30AD4A",
+                  color: '#30AD4A',
                   elevation: 10,
-                  lineHeight: 30,
+                  lineHeight: 30
                 }}
               >
-                {"\u2B24"}
-                {"    "}
-                <Text style={{ color: "black" }}>{comment}</Text>
+                {'\u2B24'}
+                {'    '}
+                <Text style={{ color: 'black' }}>{comment}</Text>
               </Text>
             </View>
-          );
+          )
         })}
       </View>
-    );
-  };
+    )
+  }
 
   SavePlantDecs = async () => {
-    console.log("SavePlantDecs", this.state.data);
+    console.log('SavePlantDecs', this.state.data)
     this.setState({
       // isLoading: true,
-    });
+    })
     let data = {
-      Type: 6,
+      Type: this.props.plantid > 0 ? 2 : 1,
       strPlant_Image_Master_DTO: JSON.stringify(this.props.plantimage),
       strPlant_Description_DTO: JSON.stringify(this.state.setplantdesc),
       Plant_Name: this.state.plantname,
       Plant_Cat_Pkey: parseInt(this.state.catid),
       Plant_Cat_Name: this.state.categoryname,
-      Plant_ParentID: this.props.plantid,
-      Plant_IsParent: 1,
+      Plant_IsParent: 0,
       Plant_MyPlant: this.state.savemyplant,
+      Plant_PkeyID: this.props.spouseid,
       Plant_IsActive: 1,
-    };
+      Plant_Type: 1,
+      Plant_Gender: 1
+    }
 
-    console.log(data, this.props.token);
+    console.log(data, this.props.token)
     // return 0;
     await createupdateplantmaster(data, this.props.token)
       .then((res) => {
-        console.log("res:createupdateplantmaster", res[0]);
+        console.log('res:createupdateplantmaster', res[0])
         this.setState({
-          isLoading: false,
-          // imagePath: [require("../../../assets/plantname.png")],
-          // plantname: "",
-          // categoryname: 0,
-          // uploadimage: "",
-          // setplantdesc: null,
-          // setplantdesc: null,
-        });
-        // if (this.props.plantid === 0) {
-        //   this.props.setPlantId(res[0]);
-        // }
-        this.props.setSpouseId(res[0]);
+          isLoading: false
+        })
 
-        // this.props.setPlantImage([require("../../../assets/plantname.png")]); //this.props.setPlantImage(this.state.imagePath);
-        // this.props.setPlantImageArr([require("../../../assets/plantname.png")]);
-        this.showMessage("Plant save successfully.", "success");
-        // this.CreateUpdateAddSpouse();
+        this.props.setSpouseId(res[0])
+        this.showMessage('Plant updated successfully.', 'success')
+        this.CreateUpdateAddSpouse()
       })
 
       .catch((error) => {
         if (error.request) {
-          console.log(error.request);
+          console.log(error.request)
         } else if (error.responce) {
-          console.log(error.responce);
+          console.log(error.responce)
         } else {
-          console.log(error);
+          console.log(error)
         }
-      });
-  };
+      })
+  }
   CreateUpdateAddSpouse = async () => {
-    console.log("CreateUpdateAddSpouse");
-    this.setState({ isLoading: true });
     let data = {
-      Type: 1,
+      Type: 2,
       ASP_Title: this.state.plantname,
       ASP_Description: null,
-      ASP_PkeyID: this.props.spouseid,
-      ASP_Plant_PkeyID: this.props.plantid,
-    };
-
-    console.log(data, this.props.token);
+      ASP_Plant_PkeyID: this.props.spouseid,
+      ASP_ParentID: this.props.plantid,
+      ASP_Type: 1,
+      ASP_Gender: 1,
+      Plant_Type: 1,
+      ASP_PkeyID: this.state.spouseid,
+      ASP_IsActive: true
+    }
+    console.log(data, this.props.token)
     // return 0;
     await createupdateaddspouse(data, this.props.token)
       .then((res) => {
-        console.log("res:createupdateaddspouse", res);
+        console.log('res:createupdateaddspouse', res)
         this.setState({
-          isLoading: false,
-        });
-        this.showMessage("Spouse plant save successfully.", "success");
+          isLoading: false
+        })
+        this.showMessage('Spouse plant updated successfully.', 'success')
+        this.props.navigation.goBack()
       })
       .catch((error) => {
         if (error.request) {
-          console.log(error.request);
+          console.log(error.request)
         } else if (error.responce) {
-          console.log(error.responce);
+          console.log(error.responce)
         } else {
-          console.log(error);
+          console.log(error)
         }
-      });
-  };
-
+      })
+  }
   SaveToMyPlant = () => {
     if (this.state.savemyplant) {
-      this.setState({ title: "Save to my plant" });
+      this.setState({ title: 'Save to my plant' })
     } else {
-      this.setState({ title: "Remove from my plant" });
+      this.setState({ title: 'Remove from my plant' })
     }
-    this.setState({ savemyplant: !this.state.savemyplant });
-  };
+    this.setState({ savemyplant: !this.state.savemyplant })
+  }
   AddCharacteristics = () => {
     this.setState({
       input: [],
       addplantvisiable: !this.state.addplantvisiable,
-      form: { PD_Description: {} },
-    });
-  };
+      form: { PD_Description: {} }
+    })
+  }
   ListViewItemSeparator = () => {
     //Item sparator view
     return (
       <View
         style={{
           height: 0.3,
-          width: "90%",
-          backgroundColor: "#080808",
+          width: '90%',
+          backgroundColor: '#080808'
         }}
       />
-    );
-  };
+    )
+  }
   _SelectCategory = (bool, item) => {
     if (bool) {
       this.setState({
         modalVisible: !this.state.modalVisible,
-        catid: -90,
-      });
+        catid: -90
+      })
     } else {
       this.setState({
         categoryname: item.Cat_Name,
         modalVisible: !this.state.modalVisible,
-        catid: item.Cat_Pkey,
-      });
+        catid: item.Cat_Pkey
+      })
     }
-  };
+  }
   _renderModal = () => {
     return (
       <View
         style={{
           flex: 1,
-          justifyContent: "center",
-          alignItems: "center",
+          justifyContent: 'center',
+          alignItems: 'center'
         }}
       >
         <Modal
-          animationType="slide"
+          animationType='slide'
           transparent={true}
           visible={this.state.modalVisible}
           onRequestClose={() => {
-            this.setState({ modalVisible: !this.state.modalVisible });
+            this.setState({ modalVisible: !this.state.modalVisible })
           }}
         >
           <ScrollView>
@@ -737,34 +725,34 @@ class AddNewSpouse extends Component {
               style={{
                 marginTop: 150,
                 margin: 20,
-                backgroundColor: "white",
+                backgroundColor: 'white',
                 borderRadius: 20,
-                alignItems: "center",
-                shadowColor: "#000",
+                alignItems: 'center',
+                shadowColor: '#000',
                 shadowOffset: {
                   width: 0,
-                  height: 2,
+                  height: 2
                 },
                 shadowOpacity: 0.25,
                 shadowRadius: 4,
                 elevation: 5,
-                width: "90%",
-                paddingBottom: 100,
+                width: '90%',
+                paddingBottom: 100
               }}
             >
               <View
                 style={{
-                  width: "100%",
-                  flexDirection: "row",
-                  justifyContent: "flex-end",
+                  width: '100%',
+                  flexDirection: 'row',
+                  justifyContent: 'flex-end',
                   paddingRight: 20,
-                  paddingTop: 10,
+                  paddingTop: 10
                 }}
               >
                 <Entypo
-                  name="circle-with-cross"
+                  name='circle-with-cross'
                   size={18}
-                  color={"black"}
+                  color={'black'}
                   onPress={() =>
                     this.setState({ modalVisible: !this.state.modalVisible })
                   }
@@ -772,42 +760,42 @@ class AddNewSpouse extends Component {
               </View>
               <View
                 style={{
-                  width: "100%",
-                  flexDirection: "row",
+                  width: '100%',
+                  flexDirection: 'row',
                   // backgroundColor: "pink",
-                  justifyContent: "center",
-                  alignItems: "center",
+                  justifyContent: 'center',
+                  alignItems: 'center'
                 }}
               >
                 <View
                   style={{
-                    width: "85%",
-                    paddingLeft: 20,
+                    width: '85%',
+                    paddingLeft: 20
                   }}
                 >
                   <InputField
                     onChangeText={(categoryname) => {
-                      this.searchText(categoryname);
+                      this.searchText(categoryname)
                       // this.setState({ categoryname });
                     }}
                     // value={categoryname}
-                    placeholder={"Category"}
+                    placeholder={'Category'}
                   />
                 </View>
 
                 <View
                   style={{
-                    width: "15%",
-                    justifyContent: "center",
-                    alignItems: "center",
+                    width: '15%',
+                    justifyContent: 'center',
+                    alignItems: 'center'
                   }}
                 >
                   {this.state.filterdata.length === 0 &&
-                    this.state.categoryname !== "" && (
+                    this.state.categoryname !== '' && (
                       <Entypo
-                        name="add-to-list"
+                        name='add-to-list'
                         size={18}
-                        color={"black"}
+                        color={'black'}
                         onPress={() => this._SelectCategory(true)}
                       />
                     )}
@@ -815,8 +803,8 @@ class AddNewSpouse extends Component {
               </View>
               <View
                 style={{
-                  width: "90%",
-                  justifyContent: "center",
+                  width: '90%',
+                  justifyContent: 'center'
                   // alignItems: "center",
                 }}
               >
@@ -830,26 +818,26 @@ class AddNewSpouse extends Component {
                         style={{
                           marginBottom: 5,
                           paddingVertical: 5,
-                          backgroundColor: "#EAF7ED",
+                          backgroundColor: '#EAF7ED',
                           // paddingHorizontal: "40%",
-                          justifyContent: "center",
-                          alignItems: "center",
-                          width: "90%",
+                          justifyContent: 'center',
+                          alignItems: 'center',
+                          width: '90%'
                         }}
                       >
                         <Text
                           style={{
                             fontSize: 15,
-                            fontWeight: "bold",
-                            textTransform: "capitalize",
-                            color: "#30AD4A",
-                            width: "100%",
+                            fontWeight: 'bold',
+                            textTransform: 'capitalize',
+                            color: '#30AD4A',
+                            width: '100%'
                           }}
                         >
                           {item.Cat_Name}
                         </Text>
                       </TouchableOpacity>
-                    );
+                    )
                   }}
                   enableEmptySections={true}
                   // style={{
@@ -859,10 +847,10 @@ class AddNewSpouse extends Component {
                   // }}
                   keyExtractor={(item, index) => index.toString()}
                   ListHeaderComponent={() => {
-                    return <View style={{ height: 10, width: "100%" }}></View>;
+                    return <View style={{ height: 10, width: '100%' }}></View>
                   }}
                   ListFooterComponent={() => {
-                    return <View style={{ height: 10, width: "100%" }}></View>;
+                    return <View style={{ height: 10, width: '100%' }}></View>
                   }}
                 />
               </View>
@@ -870,34 +858,34 @@ class AddNewSpouse extends Component {
           </ScrollView>
         </Modal>
       </View>
-    );
-  };
+    )
+  }
   render() {
-    const { PD_Title, PD_Description } = this.state.form;
+    const { PD_Title, PD_Description } = this.state.form
     const {
       Characteristics_0,
       Characteristics_2,
-      Characteristics_1,
-    } = PD_Description;
+      Characteristics_1
+    } = PD_Description
     const {
       addplantvisiable,
       form,
       plantname,
       categoryname,
-      input,
-    } = this.state;
-    console.log(this.props.spouseid);
+      input
+    } = this.state
+    console.log(this.props.spouseid)
     return (
-      <View style={{ height: "100%" }}>
-        <ScrollView keyboardShouldPersistTaps={"handled"}>
+      <View style={{ height: '100%' }}>
+        <ScrollView keyboardShouldPersistTaps={'handled'}>
           <Spinner visible={this.state.isLoading} />
           <View>
             <View>
               <View
                 style={{
-                  position: "absolute",
+                  position: 'absolute',
                   zIndex: 1,
-                  width: "100%",
+                  width: '100%'
                 }}
               >
                 <Header
@@ -909,8 +897,8 @@ class AddNewSpouse extends Component {
               </View>
               <View style={{}}>
                 <SliderBox
-                  imageLoadingColor={"#30AD4A"}
-                  resizeMode={"cover"}
+                  imageLoadingColor={'#30AD4A'}
+                  resizeMode={'cover'}
                   sliderBoxHeight={hasNotch ? 300 : 250}
                   images={
                     this.props.plantimagearr
@@ -925,72 +913,72 @@ class AddNewSpouse extends Component {
                   // }
                   autoplay
                   circleLoop
-                  dotColor="#FFF"
-                  inactiveDotColor="#90A4AE"
+                  dotColor='#FFF'
+                  inactiveDotColor='#90A4AE'
                   dotStyle={{
-                    bottom: 20,
+                    bottom: 20
                   }}
                 />
               </View>
             </View>
             <View
               style={{
-                backgroundColor: addplantvisiable ? "#F2F2F2" : "#fff",
+                backgroundColor: addplantvisiable ? '#F2F2F2' : '#fff',
                 borderTopLeftRadius: 20,
                 borderTopRightRadius: 20,
                 marginTop: -15,
                 paddingHorizontal: 20,
-                height: "100%",
-                paddingBottom: "90%",
+                height: '100%',
+                paddingBottom: '90%'
               }}
             >
               {addplantvisiable ? (
                 <ScrollView>
                   <View
                     style={{
-                      backgroundColor: "#fff",
-                      padding: 20,
+                      backgroundColor: '#fff',
+                      padding: 20
                     }}
                   >
                     <View
                       style={{
-                        flexDirection: "row",
-                        justifyContent: "space-between",
-                        alignItems: "center",
+                        flexDirection: 'row',
+                        justifyContent: 'space-between',
+                        alignItems: 'center'
                       }}
                     >
                       <Text
                         style={{
-                          color: "#000",
-                          fontWeight: "bold",
-                          fontSize: this.normalize(20),
+                          color: '#000',
+                          fontWeight: 'bold',
+                          fontSize: this.normalize(20)
                         }}
                       >
                         Title
                       </Text>
                       <Icon
-                        name="close-circle-outline"
+                        name='close-circle-outline'
                         size={20}
                         onPress={() =>
                           this.setState({
-                            addplantvisiable: !this.state.addplantvisiable,
+                            addplantvisiable: !this.state.addplantvisiable
                           })
                         }
                       />
                     </View>
                     <InputField
                       onChangeText={(title) =>
-                        this.onHandleChange("PD_Title", title)
+                        this.onHandleChange('PD_Title', title)
                       }
                       value={PD_Title}
-                      placeholder={"Title"}
+                      placeholder={'Title'}
                     />
                     <View>
                       <Text
                         style={{
-                          color: "#000",
-                          fontWeight: "bold",
-                          fontSize: this.normalize(20),
+                          color: '#000',
+                          fontWeight: 'bold',
+                          fontSize: this.normalize(20)
                         }}
                       >
                         Description
@@ -1002,8 +990,8 @@ class AddNewSpouse extends Component {
                             characteristics
                           )
                         }
-                        placeholder={"Characteristics"}
-                        value={Characteristics_0 || ""}
+                        placeholder={'Characteristics'}
+                        value={Characteristics_0 || ''}
                       />
                       <InputField
                         onChangeText={(characteristics) =>
@@ -1012,8 +1000,8 @@ class AddNewSpouse extends Component {
                             characteristics
                           )
                         }
-                        placeholder={"Characteristics"}
-                        value={Characteristics_1 || ""}
+                        placeholder={'Characteristics'}
+                        value={Characteristics_1 || ''}
                       />
                       <InputField
                         onChangeText={(characteristics) =>
@@ -1022,71 +1010,71 @@ class AddNewSpouse extends Component {
                             characteristics
                           )
                         }
-                        placeholder={"Characteristics"}
-                        value={Characteristics_2 || ""}
+                        placeholder={'Characteristics'}
+                        value={Characteristics_2 || ''}
                       />
                       {this.state.input.map((value, index) => {
-                        return value;
+                        return value
                       })}
 
                       <View
                         style={{
                           marginTop: 20,
-                          flexDirection: "row",
-                          justifyContent: "space-between",
+                          flexDirection: 'row',
+                          justifyContent: 'space-between'
                         }}
                       >
-                        <View style={{ width: "45%", height: 50 }}>
+                        <View style={{ width: '45%', height: 50 }}>
                           <Image
-                            resizeMode="stretch"
-                            style={{ width: "100%", height: "100%" }}
-                            source={require("../../../assets/Rectangle1.png")}
+                            resizeMode='stretch'
+                            style={{ width: '100%', height: '100%' }}
+                            source={require('../../../assets/Rectangle1.png')}
                           />
                           <TouchableOpacity
                             onPress={() =>
                               this.AddInput(this.state.input.length + 1)
                             }
                             style={{
-                              position: "absolute",
-                              width: "100%",
-                              height: "100%",
-                              justifyContent: "center",
-                              alignItems: "center",
+                              position: 'absolute',
+                              width: '100%',
+                              height: '100%',
+                              justifyContent: 'center',
+                              alignItems: 'center'
                             }}
                           >
                             <Text
                               style={{
-                                color: "#30AD4A",
+                                color: '#30AD4A',
                                 fontSize: this.normalize(15),
-                                fontWeight: "bold",
+                                fontWeight: 'bold'
                               }}
                             >
                               + <Text>Add more</Text>
                             </Text>
                           </TouchableOpacity>
                         </View>
-                        <View style={{ width: "45%", height: 50 }}>
+                        <View style={{ width: '45%', height: 50 }}>
                           <Image
-                            resizeMode="stretch"
-                            style={{ width: "100%", height: "100%" }}
-                            source={require("../../../assets/Rectangle1.png")}
+                            resizeMode='stretch'
+                            style={{ width: '100%', height: '100%' }}
+                            source={require('../../../assets/Rectangle1.png')}
                           />
                           <TouchableOpacity
                             onPress={() => this._handleSave()}
                             style={{
                               // backgroundColor: "pink",
-                              position: "absolute",
-                              width: "100%",
-                              height: "100%",
-                              justifyContent: "center",
-                              alignItems: "center",
+                              position: 'absolute',
+                              width: '100%',
+                              height: '100%',
+                              justifyContent: 'center',
+                              alignItems: 'center'
                             }}
                           >
                             <Text
                               style={{
-                                color: "#30AD4A",
+                                color: '#30AD4A',
                                 fontSize: this.normalize(15),
-                                fontWeight: "bold",
+                                fontWeight: 'bold'
                               }}
                             >
                               <Text>Save</Text>
@@ -1104,38 +1092,38 @@ class AddNewSpouse extends Component {
                     {this.state.iconvisible ? (
                       <View
                         style={{
-                          flexDirection: "row",
-                          alignItems: "center",
+                          flexDirection: 'row',
+                          alignItems: 'center'
                         }}
                       >
-                        <View style={{ width: "90%", height: 50 }}>
-                          {plantname === "" && categoryname == "" ? (
+                        <View style={{ width: '90%', height: 50 }}>
+                          {plantname === '' && categoryname == '' ? (
                             <Text
                               style={{
-                                fontWeight: "bold",
+                                fontWeight: 'bold',
                                 fontSize: this.normalize(18),
-                                color: "#000",
-                                lineHeight: 40,
+                                color: '#000',
+                                lineHeight: 40
                               }}
                             >
-                              {"Plant Name"}{" "}
-                              <Text style={{ fontWeight: "normal" }}>
-                                ({"Category Name"})
-                              </Text>{" "}
+                              {'Plant Name'}{' '}
+                              <Text style={{ fontWeight: 'normal' }}>
+                                ({'Category Name'})
+                              </Text>{' '}
                             </Text>
                           ) : (
                             <Text
                               style={{
-                                fontWeight: "bold",
+                                fontWeight: 'bold',
                                 fontSize: this.normalize(18),
-                                color: "#000",
-                                lineHeight: 40,
+                                color: '#000',
+                                lineHeight: 40
                               }}
                             >
-                              {plantname}{" "}
-                              <Text style={{ fontWeight: "normal" }}>
+                              {plantname}{' '}
+                              <Text style={{ fontWeight: 'normal' }}>
                                 ({categoryname})
-                              </Text>{" "}
+                              </Text>{' '}
                             </Text>
                           )}
                         </View>
@@ -1144,28 +1132,28 @@ class AddNewSpouse extends Component {
                           <TouchableOpacity
                             onPress={() => this._ChangeName(false)}
                           >
-                            <AntDesign name="edit" size={25} color={"gray"} />
+                            <AntDesign name='edit' size={25} color={'gray'} />
                           </TouchableOpacity>
                         </View>
                       </View>
                     ) : (
                       <View
                         style={{
-                          flexDirection: "row",
-                          alignItems: "center",
-                          height: 50,
+                          flexDirection: 'row',
+                          alignItems: 'center',
+                          height: 50
                         }}
                       >
                         <View
                           style={{
-                            width: "90%",
-                            flexDirection: "row",
+                            width: '90%',
+                            flexDirection: 'row'
                           }}
                         >
                           <View
                             style={{
-                              width: "49%",
-                              marginRight: 5,
+                              width: '49%',
+                              marginRight: 5
                             }}
                           >
                             <InputField
@@ -1173,47 +1161,47 @@ class AddNewSpouse extends Component {
                                 this.setState({ plantname })
                               }
                               value={plantname}
-                              placeholder={"Plant Name"}
+                              placeholder={'Plant Name'}
                             />
                           </View>
                           <View
                             style={{
                               // backgroundColor: "pink",
-                              width: "49%",
-                              zIndex: 11,
+                              width: '49%',
+                              zIndex: 11
                             }}
                           >
                             <TouchableOpacity
                               onPress={() =>
                                 this.setState({
                                   modalVisible: !this.state.modalVisible,
-                                  categoryname: "",
+                                  categoryname: ''
                                 })
                               }
                               style={{
-                                backgroundColor: "#F6F6F6",
+                                backgroundColor: '#F6F6F6',
                                 marginVertical: 10,
                                 height: 40,
                                 paddingLeft: 10,
                                 // width: 300,
-                                justifyContent: "center",
-                                width: "100%",
+                                justifyContent: 'center',
+                                width: '100%'
                               }}
                             >
-                              {categoryname === "" ? (
+                              {categoryname === '' ? (
                                 <Text
                                   style={{
-                                    textTransform: "capitalize",
-                                    color: "lightgray",
+                                    textTransform: 'capitalize',
+                                    color: 'lightgray'
                                   }}
                                 >
-                                  {"Category Name"}
+                                  {'Category Name'}
                                 </Text>
                               ) : (
                                 <Text
                                   style={{
-                                    textTransform: "capitalize",
-                                    color: "lightgray",
+                                    textTransform: 'capitalize',
+                                    color: 'lightgray'
                                   }}
                                 >
                                   {categoryname}
@@ -1236,13 +1224,13 @@ class AddNewSpouse extends Component {
                           <TouchableOpacity
                             onPress={() => this._ChangeName(true)}
                           >
-                            <AntDesign name="save" size={30} color={"gray"} />
+                            <AntDesign name='save' size={30} color={'gray'} />
                           </TouchableOpacity>
                         </View>
                       </View>
                     )}
 
-                    <Text> {moment().format("LL")}</Text>
+                    <Text> {moment().format('LL')}</Text>
                   </View>
                   {/* <ViewButton
                     source={require("../../../assets/ImgTree.png")}
@@ -1253,40 +1241,40 @@ class AddNewSpouse extends Component {
                     {this.props.spouseid > 0 && (
                       <ViewButton
                         onpress={() =>
-                          this.props.navigation.navigate("AddSpouse")
+                          this.props.navigation.navigate('AddSpouse')
                         }
-                        source={require("../../../assets/leaftree.png")}
-                        title={"Add Seedling/Spouse"}
+                        source={require('../../../assets/leaftree.png')}
+                        title={'Add Seedling/Spouse'}
                       />
                     )}
 
                     <View
                       style={{
-                        backgroundColor: "#F7F8FD",
+                        backgroundColor: '#F7F8FD',
                         borderTopLeftRadius: 50,
                         borderTopRightRadius: 25,
                         paddingHorizontal:
                           this.state.setplantdesc.length > 0 ? 20 : 0,
                         paddingVertical:
                           this.state.setplantdesc.length > 0 ? 10 : 0,
-                        marginHorizontal: -17,
+                        marginHorizontal: -17
                       }}
                     >
                       <FlatList
                         data={this.state.setplantdesc}
                         // data={this.props.plantdesc}
                         renderItem={({ item, index }) => {
-                          return this._renderItem(item, index);
+                          return this._renderItem(item, index)
                         }}
                         keyExtractor={(item) => item.id}
                       />
                     </View>
                     <View
                       style={{
-                        flexDirection: "row",
-                        alignItems: "center",
+                        flexDirection: 'row',
+                        alignItems: 'center',
                         // paddingVertical: 10,
-                        marginBottom: 10,
+                        marginBottom: 10
                         // backgroundColor: "red",
                       }}
                     >
@@ -1294,26 +1282,26 @@ class AddNewSpouse extends Component {
                         <View>
                           <MaterialCommunityIcons
                             onPress={() => this.SaveToMyPlant()}
-                            name="checkbox-blank-outline"
+                            name='checkbox-blank-outline'
                             size={30}
-                            color={"#30AD4A"}
+                            color={'#30AD4A'}
                           />
                         </View>
                       ) : (
                         <View>
                           <MaterialCommunityIcons
                             onPress={() => this.SaveToMyPlant()}
-                            name="checkbox-intermediate"
+                            name='checkbox-intermediate'
                             size={30}
-                            color={"#30AD4A"}
+                            color={'#30AD4A'}
                           />
                         </View>
                       )}
                       <Text
                         style={{
                           marginLeft: 10,
-                          color: "#30AD4A",
-                          fontWeight: "bold",
+                          color: '#30AD4A',
+                          fontWeight: 'bold'
                         }}
                       >
                         {this.state.title}
@@ -1321,20 +1309,20 @@ class AddNewSpouse extends Component {
                     </View>
                     <TouchableBotton
                       onPress={() => this.AddCharacteristics()}
-                      color={"#30AD4A"}
-                      backgroundColor={"#EAF7ED"}
-                      title={"+ Add Characteristics"}
+                      color={'#30AD4A'}
+                      backgroundColor={'#EAF7ED'}
+                      title={'+ Add Characteristics'}
                       borderWidth={2}
-                      borderColor={"#30AD4A"}
-                      borderStyle={"dashed"}
+                      borderColor={'#30AD4A'}
+                      borderStyle={'dashed'}
                       height={50}
                       font={true}
                     />
 
                     {this.state.setplantdesc.length > 0 &&
                       this.props.plantimagearr.length > 0 &&
-                      this.state.categoryname !== "" &&
-                      this.state.plantname !== "" && (
+                      this.state.categoryname !== '' &&
+                      this.state.plantname !== '' && (
                         <>
                           {/* <TouchableBotton
                             onPress={() => this.SaveToMyPlant()}
@@ -1346,9 +1334,9 @@ class AddNewSpouse extends Component {
 
                           <TouchableBotton
                             onPress={() => this.SavePlantDecs()}
-                            color={"#fff"}
-                            backgroundColor={"#30AD4A"}
-                            title={"Save"}
+                            color={'#fff'}
+                            backgroundColor={'#30AD4A'}
+                            title={'Save'}
                             height={50}
                             font={true}
                           />
@@ -1360,8 +1348,8 @@ class AddNewSpouse extends Component {
                       title={
                         <Text
                           style={{
-                            color: "#53a20a",
-                            fontSize: this.normalize(18),
+                            color: '#53a20a',
+                            fontSize: this.normalize(18)
                           }}
                         >
                           Profile Photo
@@ -1375,9 +1363,9 @@ class AddNewSpouse extends Component {
                         if (index === 0) {
                           // cancel action
                         } else if (index === 1) {
-                          this.ImageGallery();
+                          this.ImageGallery()
                         } else if (index === 2) {
-                          this.ImageCamera();
+                          this.ImageCamera()
                         }
                       }}
                     />
@@ -1407,7 +1395,7 @@ class AddNewSpouse extends Component {
           ))} */}
         {this._renderModal()}
       </View>
-    );
+    )
   }
 }
 const mapStateToProps = (state, ownProps) => ({
@@ -1416,8 +1404,8 @@ const mapStateToProps = (state, ownProps) => ({
   plantimage: state.plantReducer.plantimage,
   plantimagearr: state.plantReducer.plantimagearr,
   plantid: state.plantReducer.plantid,
-  spouseid: state.plantReducer.spouseid,
-});
+  spouseid: state.plantReducer.spouseid
+})
 
 const mapDispatchToProps = {
   setPlantInfo,
@@ -1425,6 +1413,6 @@ const mapDispatchToProps = {
   setPlantImage,
   setPlantImageArr,
   setPlantId,
-  setSpouseId,
-};
-export default connect(mapStateToProps, mapDispatchToProps)(AddNewSpouse);
+  setSpouseId
+}
+export default connect(mapStateToProps, mapDispatchToProps)(AddNewSpouse)

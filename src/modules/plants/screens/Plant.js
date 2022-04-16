@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React, { Component } from 'react'
 import {
   SafeAreaView,
   Text,
@@ -8,24 +8,24 @@ import {
   StyleSheet,
   FlatList,
   TouchableOpacity,
-  Keyboard,
-} from "react-native";
-import Feather from "react-native-vector-icons/Feather";
-import Spinner from "react-native-loading-spinner-overlay";
-import DeviceInfo from "react-native-device-info";
-import AntDesign from "react-native-vector-icons/AntDesign";
-let hasNotch = DeviceInfo.hasNotch();
-import { connect } from "react-redux";
+  Keyboard
+} from 'react-native'
+import Feather from 'react-native-vector-icons/Feather'
+import Spinner from 'react-native-loading-spinner-overlay'
+import DeviceInfo from 'react-native-device-info'
+import AntDesign from 'react-native-vector-icons/AntDesign'
+let hasNotch = DeviceInfo.hasNotch()
+import { connect } from 'react-redux'
 import {
   setPlantId,
   setPlantTitle,
   logoutAccount,
-  setCopyPlant,
-} from "../../../store/action/plant/action";
-import { setValidUserID } from "../../../store/action/auth/action";
-import { gethomemyplants } from "../../../services/api.function";
-import { FAB } from "react-native-paper";
-import InputField from "../../../components/InputField";
+  setCopyPlant
+} from '../../../store/action/plant/action'
+import { setValidUserID } from '../../../store/action/auth/action'
+import { gethomemyplants } from '../../../services/api.function'
+import { FAB } from 'react-native-paper'
+import InputField from '../../../components/InputField'
 
 // const DATA = [
 //   {
@@ -56,77 +56,77 @@ import InputField from "../../../components/InputField";
 
 class Plant extends Component {
   constructor(props) {
-    super(props);
-    this.userNameInputRef = React.createRef();
+    super(props)
+    this.userNameInputRef = React.createRef()
     this.state = {
       title: true,
-      titlename: "",
-      plant: [],
-    };
+      titlename: '',
+      plant: []
+    }
   }
   componentDidMount = () => {
-    this._unsubscribe = this.props.navigation.addListener("focus", () => {
-      this._GetHomeMyPlants();
-    });
-  };
+    this._unsubscribe = this.props.navigation.addListener('focus', () => {
+      this._GetHomeMyPlants()
+    })
+  }
   _GetHomeMyPlants = async () => {
-    this.setState({ isLoading: true });
+    this.setState({ isLoading: true })
     let data = {
       // Plant_User_PkeyID: this.props.userid,
-      Type: 2,
-    };
-    console.log("_GetHomeMyPlants", data, this.props.token);
+      Type: 2
+    }
+    console.log('_GetHomeMyPlants', data, this.props.token)
     await gethomemyplants(data, this.props.token)
       .then((res) => {
-        console.log("res:gethomemyplants ", res[0]);
-        this.setState({ plant: res[0], isLoading: false });
+        console.log('res:gethomemyplants ', res[0])
+        this.setState({ plant: res[0], isLoading: false })
       })
       .catch((error) => {
         if (error.response) {
-          console.log("responce_error", error.response);
+          console.log('responce_error', error.response)
         } else if (error.request) {
-          console.log("request error", error.request);
+          console.log('request error', error.request)
         }
-      });
-  };
+      })
+  }
   _ChangeTitle = (type) => {
-    Keyboard.dismiss();
+    Keyboard.dismiss()
     if (type) {
-      if (this.state.titlename === "") {
-        alert("Please Enter title.");
+      if (this.state.titlename === '') {
+        alert('Please Enter title.')
       } else {
-        this.props.setPlantTitle(this.state.titlename);
+        this.props.setPlantTitle(this.state.titlename)
       }
     }
-    this.setState({ title: !this.state.title });
-  };
+    this.setState({ title: !this.state.title })
+  }
   _SelectItem = (type, item) => {
-    console.log("_SelectItemcopyplant", this.props.copyplant);
+    console.log('_SelectItemcopyplant', this.props.copyplant)
     if (this.props.copyplant) {
-      console.log("ifffff_SelectItem", item);
-      this.props.navigation.navigate("Plant", {
-        screen: "Addplant",
-        params: { plantpkeyid: item.Plant_PkeyID },
-      });
+      console.log('ifffff_SelectItem', item)
+      this.props.navigation.navigate('Plant', {
+        screen: 'Addplant',
+        params: { plantpkeyid: item.Plant_PkeyID }
+      })
     } else {
-      this.props.setCopyPlant(false);
-      console.log("elsle_SelectItem", item);
+      this.props.setCopyPlant(false)
+      console.log('elsle_SelectItem', item)
       if (type) {
         if (item.Plant_User_PkeyID === this.props.userid) {
-          this.props.setValidUserID(true);
+          this.props.setValidUserID(true)
         } else {
-          this.props.setValidUserID(false);
+          this.props.setValidUserID(false)
         }
-        this.props.setPlantId(item.Plant_PkeyID);
-        this.props.navigation.navigate("Addplant");
+        this.props.setPlantId(item.Plant_PkeyID)
+        this.props.navigation.navigate('Addplant')
       } else {
-        this.props.setValidUserID(true);
-        this.props.setPlantId(0);
-        this.props.logoutAccount();
-        this.props.navigation.navigate("Addplant");
+        this.props.setValidUserID(true)
+        this.props.setPlantId(0)
+        this.props.logoutAccount()
+        this.props.navigation.navigate('Addplant', { savemyplant: true })
       }
     }
-  };
+  }
   // _SelectItem = (type, item) => {
   //   if (type) {
   //     this.props.setPlantId(item.Plant_PkeyID);
@@ -143,51 +143,51 @@ class Plant extends Component {
       <TouchableOpacity
         onPress={() => this._SelectItem(true, item)}
         style={{
-          width: "50%",
-          backgroundColor: "#fff",
+          width: '50%',
+          backgroundColor: '#fff',
           borderRadius: 5,
           // paddingHorizontal: 5,
           marginTop: 10,
           marginRight: 10,
           shadowOffset: { width: 1, height: 1 },
-          shadowColor: "gray",
+          shadowColor: 'gray',
           shadowOpacity: 0.9,
           elevation: 5,
-          marginBottom: 5,
+          marginBottom: 5
         }}
       >
         {!item.PIM_ImagePath ? (
           <Image
-            resizeMode="stretch"
-            source={require("../../../assets/plantname.png")}
+            resizeMode='stretch'
+            source={require('../../../assets/plantname.png')}
             style={{
-              width: "100%",
+              width: '100%',
               height: 150,
-              borderRadius: 3,
+              borderRadius: 3
             }}
           />
         ) : (
           <Image
-            resizeMode="stretch"
+            resizeMode='stretch'
             source={{ uri: item.PIM_ImagePath }}
             style={{
-              width: "100%",
+              width: '100%',
               height: 150,
-              borderRadius: 3,
+              borderRadius: 3
             }}
           />
         )}
 
         <View
           style={{
-            flexDirection: "row",
-            justifyContent: "space-between",
-            alignItems: "center",
-            padding: 10,
+            flexDirection: 'row',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            padding: 10
           }}
         >
           <View>
-            <Text style={{ color: "black", fontWeight: "bold" }}>
+            <Text style={{ color: 'black', fontWeight: 'bold' }}>
               {item.Plant_Name}
             </Text>
             <Text style={{ fontSize: 10 }}>@{item.Cat_Name}</Text>
@@ -208,7 +208,7 @@ class Plant extends Component {
           </View> */}
         </View>
       </TouchableOpacity>
-    );
+    )
 
     // return (
     //   <TouchableOpacity
@@ -354,70 +354,70 @@ class Plant extends Component {
     //     </View>
     //   </TouchableOpacity>
     // );
-  };
+  }
   render() {
-    console.log("this.props.planttitle", this.props.planttitle);
+    console.log('this.props.planttitle', this.props.planttitle)
     return (
-      <View style={{ height: "100%" }}>
-        <ScrollView keyboardShouldPersistTaps="handled">
+      <View style={{ height: '100%' }}>
+        <ScrollView keyboardShouldPersistTaps='handled'>
           <Spinner visible={this.state.isLoading} />
 
           <View>
             <Image
-              resizeMode="stretch"
-              source={require("../../../assets/Main.png")}
-              style={{ width: "100%", height: hasNotch ? 115 : 100 }}
+              resizeMode='stretch'
+              source={require('../../../assets/Main.png')}
+              style={{ width: '100%', height: hasNotch ? 115 : 100 }}
             />
             <View
               style={{
-                position: "absolute",
-                top: hasNotch ? 50 : 30,
+                position: 'absolute',
+                top: hasNotch ? 50 : 30
               }}
             >
               <View
                 style={{
-                  flexDirection: "row",
-                  height: 50,
+                  flexDirection: 'row',
+                  height: 50
                 }}
               >
                 <View
                   style={{
                     // backgroundColor: "red",
-                    justifyContent: "center",
-                    width: "55%",
-                    paddingLeft: 20,
+                    justifyContent: 'center',
+                    width: '55%',
+                    paddingLeft: 20
                   }}
                 >
                   {this.state.title ? (
                     <Text
                       style={{
                         fontSize: 25,
-                        color: "black",
-                        fontWeight: "bold",
+                        color: 'black',
+                        fontWeight: 'bold'
                       }}
                     >
                       {this.props.planttitle}
                     </Text>
                   ) : (
-                    <View style={{ width: "100%" }}>
+                    <View style={{ width: '100%' }}>
                       <InputField
                         onChangeText={(titlename) =>
                           this.setState({ titlename })
                         }
                         value={this.state.titlename}
-                        placeholder={"Enter title"}
+                        placeholder={'Enter title'}
                       />
                     </View>
                   )}
                 </View>
                 <View
                   style={{
-                    flexDirection: "row",
+                    flexDirection: 'row',
                     // backgroundColor: "red",
-                    width: "45%",
-                    justifyContent: "flex-end",
-                    alignItems: "center",
-                    paddingRight: 20,
+                    width: '45%',
+                    justifyContent: 'flex-end',
+                    alignItems: 'center',
+                    paddingRight: 20
                   }}
                 >
                   {this.state.title ? (
@@ -425,14 +425,14 @@ class Plant extends Component {
                       onPress={() => this._ChangeTitle(false)}
                       style={styles.icon}
                     >
-                      <Feather name={"edit-3"} size={25} color="#ACACAC" />
+                      <Feather name={'edit-3'} size={25} color='#ACACAC' />
                     </TouchableOpacity>
                   ) : (
                     <TouchableOpacity
                       onPress={() => this._ChangeTitle(true)}
                       style={styles.icon}
                     >
-                      <AntDesign name="save" size={30} color={"gray"} />
+                      <AntDesign name='save' size={30} color={'gray'} />
                     </TouchableOpacity>
                   )}
                 </View>
@@ -441,21 +441,21 @@ class Plant extends Component {
 
             <View
               style={{
-                backgroundColor: "#fff",
+                backgroundColor: '#fff',
                 paddingVertical: 20,
                 borderTopEndRadius: 30,
                 borderTopStartRadius: 30,
-                paddingHorizontal: 10,
+                paddingHorizontal: 10
               }}
             >
               <FlatList
                 numColumns={2}
                 data={this.state.plant}
                 ListHeaderComponent={() => {
-                  return <View></View>;
+                  return <View></View>
                 }}
                 ListFooterComponent={() => {
-                  return <View></View>;
+                  return <View></View>
                 }}
                 ListEmptyComponent={() => {
                   return (
@@ -463,19 +463,19 @@ class Plant extends Component {
                       style={{
                         flex: 1,
                         // backgroundColor: "pink",
-                        justifyContent: "center",
-                        alignItems: "center",
-                        marginTop: 30,
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                        marginTop: 30
                       }}
                     >
-                      <Text style={{ fontSize: 50, fontWeight: "bold" }}>
+                      <Text style={{ fontSize: 50, fontWeight: 'bold' }}>
                         No Plant Found
                       </Text>
                     </View>
-                  );
+                  )
                 }}
                 renderItem={({ item }) => {
-                  return this._renderItem(item);
+                  return this._renderItem(item)
                 }}
                 keyExtractor={(item) => item.Plant_PkeyID}
               />
@@ -484,42 +484,42 @@ class Plant extends Component {
         </ScrollView>
         <FAB
           style={styles.fab}
-          icon="plus"
+          icon='plus'
           onPress={() => this._SelectItem(false, 0)}
         />
       </View>
-    );
+    )
   }
 }
 const mapStateToProps = (state, ownProps) => ({
   token: state.authReducer.token,
   planttitle: state.plantReducer.planttitle,
   userid: state.authReducer.userid,
-  copyplant: state.plantReducer.copyplant,
-});
+  copyplant: state.plantReducer.copyplant
+})
 const mapDispatchToProps = {
   setPlantId,
   setPlantTitle,
   logoutAccount,
   setValidUserID,
-  setCopyPlant,
-};
-export default connect(mapStateToProps, mapDispatchToProps)(Plant);
+  setCopyPlant
+}
+export default connect(mapStateToProps, mapDispatchToProps)(Plant)
 const styles = StyleSheet.create({
   icon: {
-    backgroundColor: "#fff",
+    backgroundColor: '#fff',
     borderRadius: 45,
     height: 40,
     width: 40,
-    justifyContent: "center",
-    alignItems: "center",
-    elevation: 20,
+    justifyContent: 'center',
+    alignItems: 'center',
+    elevation: 20
   },
   fab: {
-    position: "absolute",
+    position: 'absolute',
     margin: 16,
     right: 0,
     bottom: 0,
-    backgroundColor: "#30AD4A",
-  },
-});
+    backgroundColor: '#30AD4A'
+  }
+})
