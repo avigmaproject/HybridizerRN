@@ -105,7 +105,7 @@ class Plant extends Component {
     if (this.props.copyplant) {
       console.log('ifffff_SelectItem', item)
       this.props.navigation.navigate('Plant', {
-        screen: 'Addplant',
+        screen: this.props.route.params.screen,
         params: { plantpkeyid: item.Plant_PkeyID }
       })
     } else {

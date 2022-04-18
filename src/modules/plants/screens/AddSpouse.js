@@ -150,7 +150,7 @@ class AddSpouse extends Component {
     }
   }
   GetAddSpouse = async () => {
-    // this.setState({ isLoading: true });
+    this.setState({ isLoading: true, seddlingid: [] })
     let data = {
       Type: 3,
       ASP_Plant_PkeyID: this.props.plantid
@@ -166,7 +166,16 @@ class AddSpouse extends Component {
           isLoading: false,
           isLoading: false
         })
+        let filterdata = res[0].filter(
+          (item) => item.ASP_PkeyID === this.props.spouseid
+        )
+        console.log('filterdata', filterdata[0].add_Seedling_DTOs)
+        filterdata[0].add_Seedling_DTOs.map((item) =>
+          this.state.seddlingid.push(item.ASE_PkeyID)
+        )
+        console.log('seddlingid', this.state.seddlingid)
       })
+
       .catch((error) => {
         if (error.request) {
           console.log(error.request)
@@ -236,7 +245,9 @@ class AddSpouse extends Component {
         console.log('res:createupdateaddseedling', res)
         this.GetAddSpouse()
         this.setState({
-          isLoading: false
+          isLoading: false,
+          deleteseedling: [],
+          hide: !this.state.hide
         })
         this.showMessage('Seddling plant deleted successfully.', 'success')
       })
@@ -659,30 +670,18 @@ class AddSpouse extends Component {
                   '_' + Math.random().toString(36).substr(2, 9)
                 }
               />
-              {this.state.showdelete ? (
-                <View
-                  style={{
-                    flexDirection: 'row',
-                    justifyContent: 'space-evenly',
-                    alignItems: 'center',
-                    marginTop: 10
-                  }}
-                >
-                  <TouchableOpacity
-                    onPress={() => this._handleCancle()}
+              {item.add_Seedling_DTOs.length > 0 &&
+                (this.state.showdelete ? (
+                  <View
                     style={{
-                      padding: 10,
-                      borderRadius: 5,
-                      borderColor: 'gray',
-                      borderWidth: 2,
-                      backgroundColor: '#fff'
+                      flexDirection: 'row',
+                      justifyContent: 'space-evenly',
+                      alignItems: 'center',
+                      marginTop: 10
                     }}
                   >
-                    <Text>Cancle</Text>
-                  </TouchableOpacity>
-                  {this.state.listPlant.length > 0 ? (
                     <TouchableOpacity
-                      onPress={() => this.DeleteDescriptionSeedling()}
+                      onPress={() => this._handleCancle()}
                       style={{
                         padding: 10,
                         borderRadius: 5,
@@ -691,50 +690,63 @@ class AddSpouse extends Component {
                         backgroundColor: '#fff'
                       }}
                     >
-                      <Text>Delete</Text>
+                      <Text>Cancle</Text>
                     </TouchableOpacity>
-                  ) : (
-                    <TouchableOpacity
-                      onPress={() => this._handleSelectAll()}
-                      style={{
-                        padding: 10,
-                        borderRadius: 5,
-                        borderColor: 'gray',
-                        borderWidth: 2,
-                        backgroundColor: '#fff'
-                      }}
-                    >
-                      <Text>Select all</Text>
-                    </TouchableOpacity>
-                  )}
-                </View>
-              ) : (
-                <View
-                  style={{
-                    justifyContent: 'center',
-                    alignItems: 'center',
-                    width: '100%',
-                    marginTop: 10
-                  }}
-                >
-                  <View
-                    style={{ justifyContent: 'center', alignItems: 'center' }}
-                  >
-                    <TouchableOpacity
-                      onPress={() => this._handleDelete()}
-                      style={{
-                        padding: 10,
-                        borderRadius: 5,
-                        borderColor: 'gray',
-                        borderWidth: 2,
-                        backgroundColor: '#fff'
-                      }}
-                    >
-                      <Text>Edit</Text>
-                    </TouchableOpacity>
+                    {this.state.listPlant.length > 0 ? (
+                      <TouchableOpacity
+                        onPress={() => this.DeleteDescriptionSeedling()}
+                        style={{
+                          padding: 10,
+                          borderRadius: 5,
+                          borderColor: 'gray',
+                          borderWidth: 2,
+                          backgroundColor: '#fff'
+                        }}
+                      >
+                        <Text>Delete</Text>
+                      </TouchableOpacity>
+                    ) : (
+                      <TouchableOpacity
+                        onPress={() => this._handleSelectAll()}
+                        style={{
+                          padding: 10,
+                          borderRadius: 5,
+                          borderColor: 'gray',
+                          borderWidth: 2,
+                          backgroundColor: '#fff'
+                        }}
+                      >
+                        <Text>Select all</Text>
+                      </TouchableOpacity>
+                    )}
                   </View>
-                </View>
-              )}
+                ) : (
+                  <View
+                    style={{
+                      justifyContent: 'center',
+                      alignItems: 'center',
+                      width: '100%',
+                      marginTop: 10
+                    }}
+                  >
+                    <View
+                      style={{ justifyContent: 'center', alignItems: 'center' }}
+                    >
+                      <TouchableOpacity
+                        onPress={() => this._handleDelete()}
+                        style={{
+                          padding: 10,
+                          borderRadius: 5,
+                          borderColor: 'gray',
+                          borderWidth: 2,
+                          backgroundColor: '#fff'
+                        }}
+                      >
+                        <Text>Edit</Text>
+                      </TouchableOpacity>
+                    </View>
+                  </View>
+                ))}
             </>
           )}
         </View>
@@ -1160,7 +1172,8 @@ class AddSpouse extends Component {
                                 style={{
                                   // fontWeight: "bold",
                                   paddingHorizontal: 5,
-                                  paddingBottom: 10
+                                  paddingBottom: 10,
+                                  color: '#000'
                                 }}
                               >
                                 Add Spouse

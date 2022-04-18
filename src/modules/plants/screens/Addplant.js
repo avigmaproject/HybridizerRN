@@ -683,7 +683,7 @@ class Addplant extends Component {
   }
   CopyToMyPlant = async () => {
     this.props.setCopyPlant(true)
-    this.props.navigation.navigate('PlantScreen')
+    this.props.navigation.navigate('PlantScreen', { screen: 'Addplant' })
   }
   SavePlantDecs = async () => {
     console.log('SavePlantDecs', this.state.data)

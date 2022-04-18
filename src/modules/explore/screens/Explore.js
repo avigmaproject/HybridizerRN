@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React, { Component } from 'react'
 import {
   SafeAreaView,
   Text,
@@ -8,28 +8,28 @@ import {
   StyleSheet,
   FlatList,
   TouchableOpacity,
-  Modal,
-} from "react-native";
-import AntDesign from "react-native-vector-icons/AntDesign";
-import Feather from "react-native-vector-icons/Feather";
-import Entypo from "react-native-vector-icons/Entypo";
-import { FAB } from "react-native-paper";
-import * as Animatable from "react-native-animatable";
-import DeviceInfo from "react-native-device-info";
+  Modal
+} from 'react-native'
+import AntDesign from 'react-native-vector-icons/AntDesign'
+import Feather from 'react-native-vector-icons/Feather'
+import Entypo from 'react-native-vector-icons/Entypo'
+import { FAB } from 'react-native-paper'
+import * as Animatable from 'react-native-animatable'
+import DeviceInfo from 'react-native-device-info'
 import {
   getusermasterdata,
-  gethomemyplants,
-} from "../../../services/api.function";
-import { connect } from "react-redux";
-import { setUserID, setValidUserID } from "../../../store/action/auth/action";
+  gethomemyplants
+} from '../../../services/api.function'
+import { connect } from 'react-redux'
+import { setUserID, setValidUserID } from '../../../store/action/auth/action'
 import {
   setPlantId,
   logoutAccount,
-  setCopyPlant,
-} from "../../../store/action/plant/action";
-import InputField from "../../../components/InputField";
-import Spinner from "react-native-loading-spinner-overlay";
-let hasNotch = DeviceInfo.hasNotch();
+  setCopyPlant
+} from '../../../store/action/plant/action'
+import InputField from '../../../components/InputField'
+import Spinner from 'react-native-loading-spinner-overlay'
+let hasNotch = DeviceInfo.hasNotch()
 // const DATA = [
 //   {
 //     id: "1",
@@ -121,124 +121,124 @@ let hasNotch = DeviceInfo.hasNotch();
 // ];
 class Explore extends Component {
   constructor(props) {
-    super(props);
+    super(props)
     this.state = {
       userid: 0,
       plant: [],
       modalVisible: false,
       backupplant: [],
-      plantname: "",
-      isLoading: false,
-    };
+      plantname: '',
+      isLoading: false
+    }
   }
   componentDidMount = () => {
-    this._unsubscribe = this.props.navigation.addListener("focus", () => {
-      this._GetUserMasterData();
-      this._GetHomeMyPlants();
-    });
-  };
+    this._unsubscribe = this.props.navigation.addListener('focus', () => {
+      this._GetUserMasterData()
+      this._GetHomeMyPlants()
+    })
+  }
 
   _GetHomeMyPlants = async () => {
-    this.setState({ isLoading: true });
+    this.setState({ isLoading: true })
     let data = {
-      Type: 1,
-    };
-    console.log("_GetHomeMyPlantsExpolre", data, this.props.token);
+      Type: 1
+    }
+    console.log('_GetHomeMyPlantsExpolre', data, this.props.token)
     await gethomemyplants(data, this.props.token)
       .then((res) => {
-        console.log("res:gethomemyplantsexplore ", res[0]);
+        console.log('res:gethomemyplantsexplore ', res[0])
         this.setState({
           plant: res[0] ? res[0] : [],
           backupplant: res[0],
-          isLoading: false,
-        });
-        this.setState({ isLoading: false });
+          isLoading: false
+        })
+        this.setState({ isLoading: false })
       })
       .catch((error) => {
         if (error.response) {
-          console.log("responce_error", error.response);
+          console.log('responce_error', error.response)
         } else if (error.request) {
-          console.log("request error", error.request);
+          console.log('request error', error.request)
         }
-      });
-  };
+      })
+  }
   _GetUserMasterData = async () => {
     // this.setState({ isLoading: true });
     let data = {
-      Type: 2,
-    };
-    console.log("_GetUserMasterData", data, this.props.token);
+      Type: 2
+    }
+    console.log('_GetUserMasterData', data, this.props.token)
     await getusermasterdata(data, this.props.token)
       .then((res) => {
-        console.log("res:getusermasterdata ", res[0][0].User_PkeyID);
-        this.setState({ userid: res[0][0].User_PkeyID, isLoading: false });
-        this.props.setUserID(res[0][0].User_PkeyID);
+        console.log('res:getusermasterdata ', res[0][0].User_PkeyID)
+        this.setState({ userid: res[0][0].User_PkeyID, isLoading: false })
+        this.props.setUserID(res[0][0].User_PkeyID)
       })
       .catch((error) => {
         if (error.response) {
-          console.log("responce_error", error.response);
+          console.log('responce_error', error.response)
         } else if (error.request) {
-          console.log("request error", error.request);
+          console.log('request error', error.request)
         }
-      });
-  };
+      })
+  }
   _SelectItem = (type, item) => {
     if (type) {
       if (item.Plant_User_PkeyID === this.props.userid) {
-        this.props.setValidUserID(true);
+        this.props.setValidUserID(true)
       } else {
-        this.props.setValidUserID(false);
+        this.props.setValidUserID(false)
       }
-      this.props.setPlantId(item.Plant_PkeyID);
-      this.props.navigation.navigate("Plant", { screen: "Addplant" });
+      this.props.setPlantId(item.Plant_PkeyID)
+      this.props.navigation.navigate('Plant', { screen: 'Addplant' })
     } else {
-      this.props.setValidUserID(true);
-      this.props.setPlantId(0);
-      this.props.logoutAccount();
-      this.props.navigation.navigate("Plant", { screen: "Addplant" });
+      this.props.setValidUserID(true)
+      this.props.setPlantId(0)
+      this.props.logoutAccount()
+      this.props.navigation.navigate('Plant', { screen: 'Addplant' })
     }
-  };
+  }
   _SelectCategory = () => {
-    var data = [...this.state.backupplant];
+    var data = [...this.state.backupplant]
     this.setState({
       modalVisible: !this.state.modalVisible,
-      plantname: "",
-      plant: data,
-    });
-  };
+      plantname: '',
+      plant: data
+    })
+  }
   searchText = (e) => {
-    console.log("searchText", e);
-    let text = e.toLowerCase();
-    let plant = this.state.backupplant;
+    console.log('searchText', e)
+    let text = e.toLowerCase()
+    let plant = this.state.backupplant
     let filteredplant = plant.filter((item) => {
-      return item.Plant_Name.toLowerCase().match(text);
-    });
-    console.log("filteredplantbefore", filteredplant);
+      return item.Plant_Name.toLowerCase().match(text)
+    })
+    console.log('filteredplantbefore', filteredplant)
     if (Array.isArray(filteredplant)) {
-      console.log("after", filteredplant);
+      console.log('after', filteredplant)
       this.setState({
         plant: filteredplant,
-        plantname: e,
-      });
+        plantname: e
+      })
     } else {
-      this.setState({ plantname: e, plant: this.state.backupplant });
+      this.setState({ plantname: e, plant: this.state.backupplant })
     }
-  };
+  }
   _renderModal = () => {
     return (
       <View
         style={{
           flex: 1,
-          justifyContent: "center",
-          alignItems: "center",
+          justifyContent: 'center',
+          alignItems: 'center'
         }}
       >
         <Modal
-          animationType="slide"
+          animationType='slide'
           transparent={true}
           visible={this.state.modalVisible}
           onRequestClose={() => {
-            this.setState({ modalVisible: !this.state.modalVisible });
+            this.setState({ modalVisible: !this.state.modalVisible })
           }}
         >
           <ScrollView>
@@ -246,59 +246,59 @@ class Explore extends Component {
               style={{
                 marginTop: 150,
                 margin: 20,
-                backgroundColor: "white",
+                backgroundColor: 'white',
                 borderRadius: 20,
-                alignItems: "center",
-                shadowColor: "#000",
+                alignItems: 'center',
+                shadowColor: '#000',
                 shadowOffset: {
                   width: 0,
-                  height: 2,
+                  height: 2
                 },
                 shadowOpacity: 0.25,
                 shadowRadius: 4,
                 elevation: 5,
-                width: "90%",
-                paddingBottom: 30,
+                width: '90%',
+                paddingBottom: 30
               }}
             >
               <View
                 style={{
-                  width: "100%",
-                  flexDirection: "row",
-                  justifyContent: "flex-end",
+                  width: '100%',
+                  flexDirection: 'row',
+                  justifyContent: 'flex-end',
                   paddingRight: 20,
-                  paddingTop: 10,
+                  paddingTop: 10
                 }}
               >
                 <Entypo
-                  name="circle-with-cross"
+                  name='circle-with-cross'
                   size={18}
-                  color={"black"}
+                  color={'black'}
                   onPress={() => this._SelectCategory()}
                 />
               </View>
               <View
                 style={{
-                  width: "100%",
-                  flexDirection: "row",
+                  width: '100%',
+                  flexDirection: 'row',
                   // backgroundColor: "pink",
-                  justifyContent: "center",
-                  alignItems: "center",
+                  justifyContent: 'center',
+                  alignItems: 'center'
                 }}
               >
                 <View
                   style={{
-                    width: "85%",
-                    paddingLeft: 20,
+                    width: '85%',
+                    paddingLeft: 20
                   }}
                 >
                   <InputField
                     onChangeText={(plantname) => {
-                      this.searchText(plantname);
+                      this.searchText(plantname)
                       // this.setState({ categoryname });
                     }}
                     value={this.state.plantname}
-                    placeholder={"Plant name"}
+                    placeholder={'Plant name'}
                     autoFocus={true}
                   />
                 </View>
@@ -307,61 +307,61 @@ class Explore extends Component {
                   onPress={() =>
                     this.setState({
                       modalVisible: !this.state.modalVisible,
-                      plantname: "",
+                      plantname: ''
                     })
                   }
                   style={{
-                    width: "15%",
-                    justifyContent: "center",
-                    alignItems: "center",
+                    width: '15%',
+                    justifyContent: 'center',
+                    alignItems: 'center'
                   }}
                 >
-                  <AntDesign name={"caretright"} size={25} color="black" />
+                  <AntDesign name={'caretright'} size={25} color='black' />
                 </TouchableOpacity>
               </View>
             </View>
           </ScrollView>
         </Modal>
       </View>
-    );
-  };
+    )
+  }
   render() {
     return (
-      <View style={{ height: "100%" }}>
+      <View style={{ height: '100%' }}>
         {/* <ScrollView keyboardShouldPersistTaps={"handled"}> */}
         <Spinner visible={this.state.isLoading} />
         <View>
           <Image
-            resizeMode="stretch"
-            source={require("../../../assets/Main.png")}
-            style={{ width: "100%", height: hasNotch ? 285 : 250 }}
+            resizeMode='stretch'
+            source={require('../../../assets/Main.png')}
+            style={{ width: '100%', height: hasNotch ? 285 : 250 }}
           />
           <View
             style={{
-              position: "absolute",
-              top: hasNotch ? 50 : 30,
+              position: 'absolute',
+              top: hasNotch ? 50 : 30
             }}
           >
             <View
               style={{
-                flexDirection: "row",
-                height: 50,
+                flexDirection: 'row',
+                height: 50
               }}
             >
               <View
                 style={{
                   // backgroundColor: "red",
-                  justifyContent: "center",
-                  width: "55%",
-                  paddingLeft: 20,
+                  justifyContent: 'center',
+                  width: '55%',
+                  paddingLeft: 20
                 }}
               >
                 <Text
                   style={{
                     fontSize: 25,
-                    color: "black",
-                    fontWeight: "600",
-                    fontFamily: "Poppins-Bold",
+                    color: 'black',
+                    fontWeight: 'bold',
+                    fontFamily: 'Poppins-Bold'
                   }}
                 >
                   Explore
@@ -369,71 +369,71 @@ class Explore extends Component {
               </View>
               <View
                 style={{
-                  flexDirection: "row",
-                  width: "45%",
-                  justifyContent: "space-around",
-                  alignItems: "center",
+                  flexDirection: 'row',
+                  width: '45%',
+                  justifyContent: 'space-around',
+                  alignItems: 'center'
                 }}
               >
                 <View style={styles.icon}>
-                  <AntDesign name={"bells"} size={25} color="#ACACAC" />
+                  <AntDesign name={'bells'} size={25} color='#ACACAC' />
                 </View>
                 <TouchableOpacity
                   onPress={() => this._SelectCategory()}
                   style={styles.icon}
                 >
-                  <Feather name={"search"} size={25} color="#ACACAC" />
+                  <Feather name={'search'} size={25} color='#ACACAC' />
                 </TouchableOpacity>
                 <View style={styles.icon}>
-                  <Feather name={"info"} size={25} color="#ACACAC" />
+                  <Feather name={'info'} size={25} color='#ACACAC' />
                 </View>
               </View>
             </View>
             <View
               style={{
-                flexDirection: "row",
-                backgroundColor: "#fff",
+                flexDirection: 'row',
+                backgroundColor: '#fff',
                 marginTop: 30,
                 paddingHorizontal: 10,
                 marginHorizontal: 10,
-                paddingVertical: 20,
+                paddingVertical: 20
               }}
             >
               <View
                 style={{
-                  width: "65%",
+                  width: '65%'
                   // backgroundColor: "red",
                 }}
               >
                 <Text
-                  style={{ fontSize: 12, color: "#30AD4A", marginLeft: 20 }}
+                  style={{ fontSize: 12, color: '#30AD4A', marginLeft: 20 }}
                 >
-                  Plant Story{" "}
+                  Plant Story{' '}
                 </Text>
                 <Text
                   style={{
                     fontSize: 15,
                     marginTop: 10,
-                    color: "black",
-                    fontWeight: "bold",
+                    color: 'black',
+                    fontWeight: 'bold'
                     // fontFamily: "Poppins-Bold",
                   }}
                 >
                   Help Your Plant Survive When You Are Away
                 </Text>
               </View>
-              <View style={{ width: "35%" }}>
+              <View style={{ width: '35%' }}>
                 <Image
-                  resizeMode="cover"
-                  source={require("../../../assets/leaf.png")}
-                  style={{ width: "90%", height: 100 }}
+                  resizeMode='cover'
+                  source={require('../../../assets/leaf.png')}
+                  style={{ width: '90%', height: 100 }}
                 />
               </View>
             </View>
           </View>
 
           <Animatable.View
-            animation={"fadeInUpBig"}
+            animation={'fadeInUpBig'}
             style={{ marginHorizontal: 10 }}
           >
             <FlatList
@@ -445,16 +445,16 @@ class Explore extends Component {
                     style={{
                       flex: 1,
                       // backgroundColor: "pink",
-                      justifyContent: "center",
-                      alignItems: "center",
-                      marginTop: 30,
+                      justifyContent: 'center',
+                      alignItems: 'center',
+                      marginTop: 30
                     }}
                   >
-                    <Text style={{ fontSize: 50, fontWeight: "bold" }}>
+                    <Text style={{ fontSize: 50, fontWeight: 'bold' }}>
                       No Plant Found
                     </Text>
                   </View>
-                );
+                )
               }}
               ListHeaderComponent={() => {
                 return (
@@ -463,9 +463,9 @@ class Explore extends Component {
                       <View>
                         <Text
                           style={{
-                            color: "black",
-                            fontWeight: "bold",
-                            fontSize: 20,
+                            color: 'black',
+                            fontWeight: 'bold',
+                            fontSize: 20
                           }}
                         >
                           Recommended Post
@@ -473,46 +473,46 @@ class Explore extends Component {
                       </View>
                     )}
                   </>
-                );
+                )
               }}
               ListFooterComponent={() => {
-                return <View></View>;
+                return <View></View>
               }}
               renderItem={({ item }) => {
                 return (
                   <TouchableOpacity
                     onPress={() => this._SelectItem(true, item)}
                     style={{
-                      width: "50%",
-                      backgroundColor: "#fff",
+                      width: '50%',
+                      backgroundColor: '#fff',
                       borderRadius: 5,
                       // paddingHorizontal: 5,
                       marginTop: 10,
                       marginRight: 5,
                       shadowOffset: { width: 1, height: 1 },
-                      shadowColor: "gray",
+                      shadowColor: 'gray',
                       shadowOpacity: 0.9,
-                      elevation: 5,
+                      elevation: 5
                     }}
                   >
                     {!item.PIM_ImagePath ? (
                       <Image
-                        resizeMode="stretch"
-                        source={require("../../../assets/plantname.png")}
+                        resizeMode='stretch'
+                        source={require('../../../assets/plantname.png')}
                         style={{
-                          width: "100%",
+                          width: '100%',
                           height: 150,
-                          borderRadius: 3,
+                          borderRadius: 3
                         }}
                       />
                     ) : (
                       <Image
-                        resizeMode="stretch"
+                        resizeMode='stretch'
                         source={{ uri: item.PIM_ImagePath }}
                         style={{
-                          width: "100%",
+                          width: '100%',
                           height: 150,
-                          borderRadius: 3,
+                          borderRadius: 3
                         }}
                       />
                     )}
@@ -524,14 +524,14 @@ class Explore extends Component {
                     <View
                       style={{
                         // backgroundColor: "pink",
-                        flexDirection: "row",
-                        justifyContent: "space-between",
-                        alignItems: "center",
-                        padding: 10,
+                        flexDirection: 'row',
+                        justifyContent: 'space-between',
+                        alignItems: 'center',
+                        padding: 10
                       }}
                     >
                       <View>
-                        <Text style={{ color: "black", fontWeight: "bold" }}>
+                        <Text style={{ color: 'black', fontWeight: 'bold' }}>
                           {item.Plant_Name}
                         </Text>
                         <Text style={{ fontSize: 10 }}>@{item.Cat_Name}</Text>
@@ -552,7 +552,7 @@ class Explore extends Component {
                         </View> */}
                     </View>
                   </TouchableOpacity>
-                );
+                )
               }}
               keyExtractor={(item) => item.Plant_PkeyID}
             />
@@ -562,48 +562,48 @@ class Explore extends Component {
         <FAB
           style={styles.fab}
           // small
-          icon="plus"
+          icon='plus'
           onPress={() => this._SelectItem(false, 0)}
         />
         {this._renderModal()}
       </View>
-    );
+    )
   }
 }
 const styles = StyleSheet.create({
   icon: {
-    backgroundColor: "#fff",
+    backgroundColor: '#fff',
     borderRadius: 45,
     height: 40,
     width: 40,
-    justifyContent: "center",
-    alignItems: "center",
+    justifyContent: 'center',
+    alignItems: 'center',
     shadowOffset: { width: 0.1, height: 0.1 },
-    shadowColor: "gray",
+    shadowColor: 'gray',
     shadowOpacity: 0.5,
-    elevation: 1,
+    elevation: 1
   },
   fab: {
-    position: "absolute",
+    position: 'absolute',
     margin: 16,
     right: 0,
     bottom: 0,
-    backgroundColor: "#30AD4A",
-    zIndex: 1,
-  },
-});
+    backgroundColor: '#30AD4A',
+    zIndex: 1
+  }
+})
 const mapStateToProps = (state, ownProps) => ({
   token: state.authReducer.token,
   userid: state.authReducer.userid,
   isvalid: state.authReducer.isvalid,
-  copyplant: state.plantReducer.copyplant,
-});
+  copyplant: state.plantReducer.copyplant
+})
 
 const mapDispatchToProps = {
   setUserID,
   setPlantId,
   logoutAccount,
   setValidUserID,
-  setCopyPlant,
-};
-export default connect(mapStateToProps, mapDispatchToProps)(Explore);
+  setCopyPlant
+}
+export default connect(mapStateToProps, mapDispatchToProps)(Explore)

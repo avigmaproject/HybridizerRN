@@ -44,7 +44,8 @@ import {
   setPlantDesc,
   setPlantImageArr,
   setPlantId,
-  setSpouseId
+  setSpouseId,
+  setCopyPlant
 } from '../../../store/action/plant/action'
 import KeyboardSpacer from 'react-native-keyboard-spacer'
 import DeviceInfo from 'react-native-device-info'
@@ -103,7 +104,35 @@ class AddNewSpouse extends Component {
       return Math.round(PixelRatio.roundToNearestPixel(newSize)) - 2
     }
   }
+  _GetPlantMasterId = async (id) => {
+    console.log('_GetPlantMasterId', id)
+    this.setState({
+      isLoading: true
+    })
+    this.props.setCopyPlant(false)
 
+    let data = {
+      Plant_PkeyID: id,
+      Type: 2
+    }
+    console.log('_GetPlantMasterID', data, this.props.token)
+    await getplantmaster(data, this.props.token)
+      .then((res) => {
+        console.log('_GetPlantMaster:res', res)
+        this.setState({
+          setplantdesc: res[0][0].plant_Description_DTOs,
+          isLoading: false
+        })
+      })
+
+      .catch((error) => {
+        if (error.response) {
+          console.log('responce_error', error.response)
+        } else if (error.request) {
+          console.log('request error', error.request)
+        }
+      })
+  }
   showMessage = (message, status) => {
     if (message !== '' && message !== null && message !== undefined) {
       Toast.show({
@@ -258,22 +287,36 @@ class AddNewSpouse extends Component {
   }
   componentDidMount = async () => {
     this._unsubscribe = this.props.navigation.addListener('focus', () => {
-      console.log('componentDidMount', this.props.spouseid)
+      console.log(
+        'componentDidMount',
+        this.props.spouseid,
+        this.props.copyplant
+      )
       this._GetCategoryMaster()
-      if (this.props.spouseid > 0) {
-        this._GetPlantMaster()
-        this.setState({ spouseid: this.props.route.params.spouseid })
+      if (this.props.copyplant) {
+        const { plantpkeyid } = this.props.route.params
+        this._GetPlantMasterId(plantpkeyid)
       } else {
-        this.setState({
-          imagePath: [require('../../../assets/plantname.png')],
-          plantname: '',
-          categoryname: '',
-          uploadimage: '',
-          setplantdesc: [],
-          setplantdesc: [],
-          savemyplant: false,
-          iconvisible: true
-        })
+        if (this.props.spouseid > 0) {
+          this._GetPlantMaster()
+
+          this.setState({ spouseid: this.props.route.params.spouseid })
+        } else {
+          if (this.props.copyplant) {
+            const { plantpkeyid } = this.props.route.params
+            this._GetPlantMasterId(plantpkeyid)
+          }
+          this.setState({
+            imagePath: [require('../../../assets/plantname.png')],
+            plantname: '',
+            categoryname: '',
+            uploadimage: '',
+            setplantdesc: [],
+            setplantdesc: [],
+            savemyplant: false,
+            iconvisible: true
+          })
+        }
       }
     })
   }
@@ -860,6 +903,10 @@ class AddNewSpouse extends Component {
       </View>
     )
   }
+  CopyToMyPlant = async () => {
+    this.props.setCopyPlant(true)
+    this.props.navigation.navigate('PlantScreen', { screen: 'AddNewSpouse' })
+  }
   render() {
     const { PD_Title, PD_Description } = this.state.form
     const {
@@ -1238,7 +1285,7 @@ class AddNewSpouse extends Component {
                   /> */}
 
                   <View>
-                    {this.props.spouseid > 0 && (
+                    {/* {this.props.spouseid > 0 && (
                       <ViewButton
                         onpress={() =>
                           this.props.navigation.navigate('AddSpouse')
@@ -1246,8 +1293,14 @@ class AddNewSpouse extends Component {
                         source={require('../../../assets/leaftree.png')}
                         title={'Add Seedling/Spouse'}
                       />
-                    )}
-
+                    )} */}
+                    <TouchableBotton
+                      onPress={() => this.CopyToMyPlant()}
+                      backgroundColor={'#EAF7ED'}
+                      title={'Copy From Plant'}
+                      height={50}
+                      font={true}
+                    />
                     <View
                       style={{
                         backgroundColor: '#F7F8FD',
@@ -1319,9 +1372,7 @@ class AddNewSpouse extends Component {
                       font={true}
                     />
 
-                    {this.state.setplantdesc.length > 0 &&
-                      this.props.plantimagearr.length > 0 &&
-                      this.state.categoryname !== '' &&
+                    {this.state.categoryname !== '' &&
                       this.state.plantname !== '' && (
                         <>
                           {/* <TouchableBotton
@@ -1404,7 +1455,8 @@ const mapStateToProps = (state, ownProps) => ({
   plantimage: state.plantReducer.plantimage,
   plantimagearr: state.plantReducer.plantimagearr,
   plantid: state.plantReducer.plantid,
-  spouseid: state.plantReducer.spouseid
+  spouseid: state.plantReducer.spouseid,
+  copyplant: state.plantReducer.copyplant
 })
 
 const mapDispatchToProps = {
@@ -1413,6 +1465,7 @@ const mapDispatchToProps = {
   setPlantImage,
   setPlantImageArr,
   setPlantId,
-  setSpouseId
+  setSpouseId,
+  setCopyPlant
 }
 export default connect(mapStateToProps, mapDispatchToProps)(AddNewSpouse)
